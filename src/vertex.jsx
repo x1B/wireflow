@@ -1,7 +1,10 @@
 var Vertex = React.createClass( {
 
    render() {
-      var { label, selected, layout, ports } = this.props;
+
+      var self = this;
+
+      var { label, selected, layout, ports } = self.props;
 
       var style = {
          position: 'absolute', // :TODO: move to stylesheet
@@ -32,11 +35,20 @@ var Vertex = React.createClass( {
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+      function createMeasure( direction, port ) {
+         return function( coords ) {
+            self.props.measurePort( direction, port, coords )
+         };
+      }
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
       function renderPorts( direction ) {
          return ports[ direction ].map( port => <Port type={port.type}
                                                       key={port.id}
                                                       direction={direction}
-                                                      label={port.label} /> );
+                                                      label={port.label}
+                                                      measure={createMeasure( direction, port )} /> );
       }
 
    }
