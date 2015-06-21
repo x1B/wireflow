@@ -1,0 +1,670 @@
+@keyframes nbe-vertex-ping {
+   from {
+      box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 5px 3px #eeeeee, 0px 0px 0px 0px transparent;
+   }
+
+   20% {
+      box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 4px 5px #eeeeee, 0px 0px 6px 7px #a0a0a0;
+   }
+
+   to {
+      box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 18px 5px #eeeeee, 0px 0px 24px 10px transparent;
+   }
+}
+
+/**
+ * Use this to declare user-defined edge types.
+ */
+@keyframes nbe-vertex-ping {
+   from {
+      box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 5px 3px #eeeeee, 0px 0px 0px 0px transparent;
+   }
+
+   20% {
+      box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 4px 5px #eeeeee, 0px 0px 6px 7px #a0a0a0;
+   }
+
+   to {
+      box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 18px 5px #eeeeee, 0px 0px 24px 10px transparent;
+   }
+}
+
+/**
+ * Use this to declare user-defined edge types.
+ */
+[data-ng-cloak] {
+   display: none !important;
+}
+
+.nbe-graph {
+   background: #eeeeee;
+   box-sizing: border-box;
+   margin: 2px;
+}
+.nbe-graph:focus {
+   margin-top: 1px;
+   margin-left: 1px;
+   border: 1px dotted #646464;
+   outline: none;
+}
+.nbe-graph.nbe-highlight-inbound .nbe-ports.nbe-outbound .nbe-port-handle
+.nbe-graph.nbe-highlight-outbound .nbe-ports.nbe-inbound .nbe-port-handle {
+   background-color: #646464;
+}
+
+.nbe-graph-viewport {
+   position: absolute;
+   overflow: auto;
+   top: 0;
+   left: 0;
+   bottom: 0;
+   right: 0;
+}
+
+.nbe-graph-contents {
+   position: relative;
+}
+
+.nbe-graph-nodes {
+   position: relative;
+   z-index: 1;
+}
+
+.nbe-links {
+   position: relative;
+   left: 0;
+   top: 0;
+   width: 100%;
+   height: 100%;
+   z-index: 0;
+}
+
+.nbe-graph-viewport {
+   box-shadow: inset 0 1px 2px 1px #a0a0a0;
+}
+
+.nbe-graph,
+.nbe-graph * {
+   user-select: none;
+   cursor: default;
+}
+
+.nbe-graph *::selection {
+   background: transparent;
+}
+
+.nbe-graph *::-moz-selection {
+   background: transparent;
+}
+
+.nbe-graph *::-webkit-selection {
+   background: transparent;
+}
+
+.nbe-graph-canvas {
+   background: linear-gradient(0deg, transparent 24%, #e0e0e0 25%, #e0e0e0 26%, transparent 27%, transparent 74%, #e0e0e0 75%, #e0e0e0 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, #e0e0e0 25%, #e0e0e0 26%, transparent 27%, transparent 74%, #e0e0e0 75%, #e0e0e0 76%, transparent 77%, transparent);
+   width: 100%;
+   height: 100%;
+}
+
+.nbe-link {
+   position: absolute;
+   fill: transparent;
+}
+
+.nbe-ghost {
+   position: absolute;
+}
+
+.nbe-edge {
+   display: block;
+   width: 20px;
+   height: 40px;
+}
+
+.nbe-edge-icon {
+   background: #ef6c00;
+}
+
+.nbe-edge-label {
+   position: relative;
+   text-align: center;
+   font-family: "Roboto", "Arial", sans-serif;
+}
+
+.nbe-port-handle {
+   background: #ef6c00;
+   display: inline-block;
+   position: relative;
+}
+.nbe-port-handle:hover {
+   border-color: #f9f9f9;
+}
+
+.nbe-vertex,
+.nbe-edge-icon {
+   position: absolute;
+}
+
+.nbe-vertex {
+   box-shadow: 0 1px 3px 0 #a0a0a0;
+   border-radius: 2px;
+   background: white;
+}
+.nbe-vertex.nbe-ping {
+   animation-name: nbe-vertex-ping;
+   animation-duration: 0.3s;
+   animation-iteration-count: 1;
+}
+
+.nbe-vertex-header {
+   border-radius: 2px 2px 0 0;
+   text-align: center;
+   background: #e57373;
+   font-family: "Roboto", "Arial", sans-serif;
+   font-weight: bold;
+   color: #fff;
+}
+
+.nbe-port-group {
+   border-top: solid #f9f9f9 1px;
+   display: -webkit-flex;
+   -webkit-flex-direction: row;
+   -webkit-align-items: flex-start;
+}
+
+.nbe-ports {
+   flex: 0 1 auto;
+   display: flex;
+   flex-flow: column;
+   justify-content: space-between;
+}
+
+.nbe-inbound {
+   align-items: flex-start;
+}
+.nbe-inbound .nbe-port {
+   text-align: left;
+   padding-right: 9px;
+}
+
+.nbe-outbound {
+   align-items: flex-end;
+}
+.nbe-outbound .nbe-port {
+   text-align: right;
+   padding-left: 9px;
+}
+
+.nbe-port {
+   flex: 0 1 auto;
+   padding-top: 0;
+   color: #202020;
+   font-family: "Roboto", "Arial", sans-serif;
+   white-space: nowrap;
+}
+
+.nbe-selection {
+   border: 1px dashed #e91e63;
+   background: rgba(233, 30, 99, 0.1);
+   position: absolute;
+   top: 10px;
+   left: 10px;
+   width: 100px;
+   height: 100px;
+}
+
+.nbe-vertex .nbe-port.nbe-drop-hover > .nbe-port-handle {
+   background: #e91e63;
+}
+
+.nbe-node.nbe-vertex .nbe-port.nbe-drop-hover {
+   color: #e91e63;
+}
+
+.nbe-vertex.nbe-selected .nbe-vertex-header {
+   background: #c62828;
+}
+
+.nbe-minimap-graph {
+   background: rgba(255, 255, 255, 0.75);
+   position: absolute;
+   right: 30px;
+   bottom: 30px;
+   width: 200px;
+   box-shadow: 0 2px 2px #a0a0a0;
+   border: 1px solid orange;
+   z-index: 200;
+}
+
+.nbe-minimap-edge {
+   fill: #ccc;
+}
+
+.nbe-minimap-vertex {
+   fill: #999;
+}
+
+.nbe-minimap-graph .nbe-minimap-viewbox {
+   fill: rgba(128, 128, 128, 0.25);
+}
+
+.nbe-theme-fusebox-app .nbe-type-ACTION > .nbe-port-handle {
+   background: #ff943d;
+}
+.nbe-theme-fusebox-app .nbe-selected .nbe-type-ACTION > .nbe-port-handle {
+   background: #ef6c00;
+}
+.nbe-theme-fusebox-app .nbe-type-ACTION .nbe-edge-icon {
+   background: #ff943d;
+}
+.nbe-theme-fusebox-app .nbe-type-ACTION.nbe-selected .nbe-edge-icon {
+   background: #ef6c00;
+}
+.nbe-theme-fusebox-app .nbe-edge.nbe-type-ACTION.nbe-ping .nbe-edge-icon {
+   animation-name: nbe-edge-ping-fusebox-app-ACTION;
+   animation-duration: .3s;
+   animation-iteration-count: 1;
+}
+.nbe-theme-fusebox-app .nbe-node.nbe-type-ACTION.nbe-edge > .nbe-edge-icon.nbe-drop-hover {
+   animation-name: nbe-edge-ping-soft-fusebox-app-ACTION;
+   animation-duration: 0.5s;
+   animation-iteration-count: infinite;
+}
+.nbe-theme-fusebox-app .nbe-link.nbe-type-ACTION {
+   stroke: #ff943d;
+}
+.nbe-theme-fusebox-app .nbe-link.nbe-type-ACTION.nbe-selected {
+   stroke: #ef6c00;
+}
+.nbe-theme-fusebox-app.nbe-highlight-type-ACTION .nbe-port:not(.nbe-type-ACTION) > .nbe-port-handle,
+.nbe-theme-fusebox-app.nbe-highlight-type-ACTION .nbe-edge:not(.nbe-type-ACTION) > .nbe-edge-icon {
+   background: #646464;
+}
+.nbe-theme-fusebox-app.nbe-highlight-type-ACTION .nbe-link:not(.nbe-type-ACTION) {
+   stroke: #646464;
+}
+.nbe-theme-fusebox-app.nbe-hide-type-ACTION .nbe-type-ACTION {
+   display: none;
+}
+
+@keyframes nbe-edge-ping-fusebox-app-ACTION {
+   from {
+      box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 5px 3px #eeeeee, 0px 0px 0px 0px transparent;
+   }
+
+   20% {
+      box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 4px 5px #eeeeee, 0px 0px 6px 7px #ef6c00;
+   }
+
+   to {
+      box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 18px 5px #eeeeee, 0px 0px 24px 10px transparent;
+   }
+}
+
+@keyframes nbe-edge-ping-soft-fusebox-app-ACTION {
+   from {
+      box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 5px 3px #eeeeee, 0px 0px 0px 0px transparent;
+   }
+
+   10% {
+      box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 2px 2px #eeeeee, 0px 0px 3px 3px #ef6c00;
+   }
+
+   to {
+      box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 10px 2px #eeeeee, 0px 0px 12px 4px transparent;
+   }
+}
+
+.nbe-theme-fusebox-app .nbe-type-FLAG > .nbe-port-handle {
+   background: #80c883;
+}
+.nbe-theme-fusebox-app .nbe-selected .nbe-type-FLAG > .nbe-port-handle {
+   background: #4caf50;
+}
+.nbe-theme-fusebox-app .nbe-type-FLAG .nbe-edge-icon {
+   background: #80c883;
+}
+.nbe-theme-fusebox-app .nbe-type-FLAG.nbe-selected .nbe-edge-icon {
+   background: #4caf50;
+}
+.nbe-theme-fusebox-app .nbe-edge.nbe-type-FLAG.nbe-ping .nbe-edge-icon {
+   animation-name: nbe-edge-ping-fusebox-app-FLAG;
+   animation-duration: .3s;
+   animation-iteration-count: 1;
+}
+.nbe-theme-fusebox-app .nbe-node.nbe-type-FLAG.nbe-edge > .nbe-edge-icon.nbe-drop-hover {
+   animation-name: nbe-edge-ping-soft-fusebox-app-FLAG;
+   animation-duration: 0.5s;
+   animation-iteration-count: infinite;
+}
+.nbe-theme-fusebox-app .nbe-link.nbe-type-FLAG {
+   stroke: #80c883;
+}
+.nbe-theme-fusebox-app .nbe-link.nbe-type-FLAG.nbe-selected {
+   stroke: #4caf50;
+}
+.nbe-theme-fusebox-app.nbe-highlight-type-FLAG .nbe-port:not(.nbe-type-FLAG) > .nbe-port-handle,
+.nbe-theme-fusebox-app.nbe-highlight-type-FLAG .nbe-edge:not(.nbe-type-FLAG) > .nbe-edge-icon {
+   background: #646464;
+}
+.nbe-theme-fusebox-app.nbe-highlight-type-FLAG .nbe-link:not(.nbe-type-FLAG) {
+   stroke: #646464;
+}
+.nbe-theme-fusebox-app.nbe-hide-type-FLAG .nbe-type-FLAG {
+   display: none;
+}
+
+@keyframes nbe-edge-ping-fusebox-app-FLAG {
+   from {
+      box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 5px 3px #eeeeee, 0px 0px 0px 0px transparent;
+   }
+
+   20% {
+      box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 4px 5px #eeeeee, 0px 0px 6px 7px #4caf50;
+   }
+
+   to {
+      box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 18px 5px #eeeeee, 0px 0px 24px 10px transparent;
+   }
+}
+
+@keyframes nbe-edge-ping-soft-fusebox-app-FLAG {
+   from {
+      box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 5px 3px #eeeeee, 0px 0px 0px 0px transparent;
+   }
+
+   10% {
+      box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 2px 2px #eeeeee, 0px 0px 3px 3px #4caf50;
+   }
+
+   to {
+      box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 10px 2px #eeeeee, 0px 0px 12px 4px transparent;
+   }
+}
+
+.nbe-theme-fusebox-app .nbe-type-RESOURCE > .nbe-port-handle {
+   background: #916dd1;
+}
+.nbe-theme-fusebox-app .nbe-selected .nbe-type-RESOURCE > .nbe-port-handle {
+   background: #673ab7;
+}
+.nbe-theme-fusebox-app .nbe-type-RESOURCE .nbe-edge-icon {
+   background: #916dd1;
+}
+.nbe-theme-fusebox-app .nbe-type-RESOURCE.nbe-selected .nbe-edge-icon {
+   background: #673ab7;
+}
+.nbe-theme-fusebox-app .nbe-edge.nbe-type-RESOURCE.nbe-ping .nbe-edge-icon {
+   animation-name: nbe-edge-ping-fusebox-app-RESOURCE;
+   animation-duration: .3s;
+   animation-iteration-count: 1;
+}
+.nbe-theme-fusebox-app .nbe-node.nbe-type-RESOURCE.nbe-edge > .nbe-edge-icon.nbe-drop-hover {
+   animation-name: nbe-edge-ping-soft-fusebox-app-RESOURCE;
+   animation-duration: 0.5s;
+   animation-iteration-count: infinite;
+}
+.nbe-theme-fusebox-app .nbe-link.nbe-type-RESOURCE {
+   stroke: #916dd1;
+}
+.nbe-theme-fusebox-app .nbe-link.nbe-type-RESOURCE.nbe-selected {
+   stroke: #673ab7;
+}
+.nbe-theme-fusebox-app.nbe-highlight-type-RESOURCE .nbe-port:not(.nbe-type-RESOURCE) > .nbe-port-handle,
+.nbe-theme-fusebox-app.nbe-highlight-type-RESOURCE .nbe-edge:not(.nbe-type-RESOURCE) > .nbe-edge-icon {
+   background: #646464;
+}
+.nbe-theme-fusebox-app.nbe-highlight-type-RESOURCE .nbe-link:not(.nbe-type-RESOURCE) {
+   stroke: #646464;
+}
+.nbe-theme-fusebox-app.nbe-hide-type-RESOURCE .nbe-type-RESOURCE {
+   display: none;
+}
+
+@keyframes nbe-edge-ping-fusebox-app-RESOURCE {
+   from {
+      box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 5px 3px #eeeeee, 0px 0px 0px 0px transparent;
+   }
+
+   20% {
+      box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 4px 5px #eeeeee, 0px 0px 6px 7px #673ab7;
+   }
+
+   to {
+      box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 18px 5px #eeeeee, 0px 0px 24px 10px transparent;
+   }
+}
+
+@keyframes nbe-edge-ping-soft-fusebox-app-RESOURCE {
+   from {
+      box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 5px 3px #eeeeee, 0px 0px 0px 0px transparent;
+   }
+
+   10% {
+      box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 2px 2px #eeeeee, 0px 0px 3px 3px #673ab7;
+   }
+
+   to {
+      box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 10px 2px #eeeeee, 0px 0px 12px 4px transparent;
+   }
+}
+
+.nbe-theme-fusebox-app .nbe-type-CONTAINER > .nbe-port-handle {
+   background: #8ab4f8;
+}
+.nbe-theme-fusebox-app .nbe-selected .nbe-type-CONTAINER > .nbe-port-handle {
+   background: #4285f4;
+}
+.nbe-theme-fusebox-app .nbe-type-CONTAINER .nbe-edge-icon {
+   background: #8ab4f8;
+}
+.nbe-theme-fusebox-app .nbe-type-CONTAINER.nbe-selected .nbe-edge-icon {
+   background: #4285f4;
+}
+.nbe-theme-fusebox-app .nbe-edge.nbe-type-CONTAINER.nbe-ping .nbe-edge-icon {
+   animation-name: nbe-edge-ping-fusebox-app-CONTAINER;
+   animation-duration: .3s;
+   animation-iteration-count: 1;
+}
+.nbe-theme-fusebox-app .nbe-node.nbe-type-CONTAINER.nbe-edge > .nbe-edge-icon.nbe-drop-hover {
+   animation-name: nbe-edge-ping-soft-fusebox-app-CONTAINER;
+   animation-duration: 0.5s;
+   animation-iteration-count: infinite;
+}
+.nbe-theme-fusebox-app .nbe-link.nbe-type-CONTAINER {
+   stroke: #8ab4f8;
+}
+.nbe-theme-fusebox-app .nbe-link.nbe-type-CONTAINER.nbe-selected {
+   stroke: #4285f4;
+}
+.nbe-theme-fusebox-app.nbe-highlight-type-CONTAINER .nbe-port:not(.nbe-type-CONTAINER) > .nbe-port-handle,
+.nbe-theme-fusebox-app.nbe-highlight-type-CONTAINER .nbe-edge:not(.nbe-type-CONTAINER) > .nbe-edge-icon {
+   background: #646464;
+}
+.nbe-theme-fusebox-app.nbe-highlight-type-CONTAINER .nbe-link:not(.nbe-type-CONTAINER) {
+   stroke: #646464;
+}
+.nbe-theme-fusebox-app.nbe-hide-type-CONTAINER .nbe-type-CONTAINER {
+   display: none;
+}
+
+@keyframes nbe-edge-ping-fusebox-app-CONTAINER {
+   from {
+      box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 5px 3px #eeeeee, 0px 0px 0px 0px transparent;
+   }
+
+   20% {
+      box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 4px 5px #eeeeee, 0px 0px 6px 7px #4285f4;
+   }
+
+   to {
+      box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 18px 5px #eeeeee, 0px 0px 24px 10px transparent;
+   }
+}
+
+@keyframes nbe-edge-ping-soft-fusebox-app-CONTAINER {
+   from {
+      box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 5px 3px #eeeeee, 0px 0px 0px 0px transparent;
+   }
+
+   10% {
+      box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 2px 2px #eeeeee, 0px 0px 3px 3px #4285f4;
+   }
+
+   to {
+      box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 10px 2px #eeeeee, 0px 0px 12px 4px transparent;
+   }
+}
+
+.nbe-zoom-100 {
+   font-size: 12px;
+   border-radius: 2px;
+}
+.nbe-zoom-100 .nbe-graph-canvas {
+   background-size: 50px 50px;
+}
+.nbe-zoom-100 .nbe-port {
+   line-height: 16px;
+   font-size: 11px;
+}
+.nbe-zoom-100 .nbe-port-handle {
+   width: 11px;
+   height: 11px;
+   border-radius: 6px;
+   margin: 3px 5px -3px 5px;
+}
+.nbe-zoom-100 .nbe-vertex-header {
+   height: 22px;
+   padding: 4px 5px 1px 5px;
+   font-size: 12px;
+}
+.nbe-zoom-100 .nbe-edge-icon {
+   width: 20px;
+   height: 20px;
+   border-radius: 20px;
+   box-shadow: 0 2px 2px #a0a0a0;
+}
+.nbe-zoom-100 .nbe-edge-label {
+   width: 100px;
+   left: -40px;
+   top: 22px;
+   font-size: 12px;
+}
+.nbe-zoom-100 .nbe-link {
+   stroke-width: 2;
+}
+
+.nbe-zoom-75 {
+   font-size: 9px;
+   border-radius: 2px;
+}
+.nbe-zoom-75 .nbe-graph-canvas {
+   background-size: 38px 38px;
+}
+.nbe-zoom-75 .nbe-port {
+   line-height: 12px;
+   font-size: 8px;
+}
+.nbe-zoom-75 .nbe-port-handle {
+   width: 8.25px;
+   height: 8.25px;
+   border-radius: 4.5px;
+   margin: 2.25px 3.75px -2.25px 3.75px;
+}
+.nbe-zoom-75 .nbe-vertex-header {
+   height: 16.5px;
+   padding: 3px 3.75px 0.75px 3.75px;
+   font-size: 9px;
+}
+.nbe-zoom-75 .nbe-edge-icon {
+   width: 15px;
+   height: 15px;
+   border-radius: 15px;
+   box-shadow: 0 1.5px 1.5px #a0a0a0;
+}
+.nbe-zoom-75 .nbe-edge-label {
+   width: 75px;
+   left: -30px;
+   top: 16.5px;
+   font-size: 9px;
+}
+.nbe-zoom-75 .nbe-link {
+   stroke-width: 1.5;
+}
+
+.nbe-zoom-50 {
+   font-size: 6px;
+   border-radius: 1px;
+}
+.nbe-zoom-50 .nbe-graph-canvas {
+   background-size: 25px 25px;
+}
+.nbe-zoom-50 .nbe-port {
+   line-height: 8px;
+   font-size: 6px;
+}
+.nbe-zoom-50 .nbe-port-handle {
+   width: 5.5px;
+   height: 5.5px;
+   border-radius: 3px;
+   margin: 1.5px 2.5px -1.5px 2.5px;
+}
+.nbe-zoom-50 .nbe-vertex-header {
+   height: 11px;
+   padding: 2px 2.5px 0.5px 2.5px;
+   font-size: 6px;
+}
+.nbe-zoom-50 .nbe-edge-icon {
+   width: 10px;
+   height: 10px;
+   border-radius: 10px;
+   box-shadow: 0 1px 1px #a0a0a0;
+}
+.nbe-zoom-50 .nbe-edge-label {
+   width: 50px;
+   left: -20px;
+   top: 11px;
+   font-size: 6px;
+}
+.nbe-zoom-50 .nbe-link {
+   stroke-width: 1.5;
+}
+
+.nbe-zoom-25 {
+   font-size: 3px;
+   border-radius: 1px;
+}
+.nbe-zoom-25 .nbe-graph-canvas {
+   background-size: 13px 13px;
+}
+.nbe-zoom-25 .nbe-port {
+   line-height: 4px;
+   font-size: 3px;
+}
+.nbe-zoom-25 .nbe-port-handle {
+   width: 2.75px;
+   height: 2.75px;
+   border-radius: 1.5px;
+   margin: 0.75px 1.25px -0.75px 1.25px;
+}
+.nbe-zoom-25 .nbe-vertex-header {
+   height: 5.5px;
+   padding: 1px 1.25px 0.25px 1.25px;
+   font-size: 3px;
+}
+.nbe-zoom-25 .nbe-edge-icon {
+   width: 5px;
+   height: 5px;
+   border-radius: 5px;
+   box-shadow: 0 0.5px 0.5px #a0a0a0;
+}
+.nbe-zoom-25 .nbe-edge-label {
+   width: 25px;
+   left: -10px;
+   top: 5.5px;
+   font-size: 3px;
+}
+.nbe-zoom-25 .nbe-link {
+   stroke-width: 1.5;
+}
