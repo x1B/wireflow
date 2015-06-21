@@ -1,5 +1,14 @@
 var Port = React.createClass( {
 
+   componentDidMount() {
+      var node = React.findDOMNode( this.refs.handle );
+      var coords = {
+         left: node.offsetLeft + (node.offsetWidth / 2),
+         top: node.offsetTop + (node.offsetHeight / 2)
+      };
+      this.props.measureHandler( coords );
+   },
+
    render() {
 
       var { type, direction, label } = this.props;
@@ -8,10 +17,10 @@ var Port = React.createClass( {
 
       return (
          <div className={classes}>
-            {direction !== 'inbound' ? label : ''}
-            <i className="nbe-port-handle" />
-            {direction === 'inbound' ? label : ''}
             {/* :TODO: use float:left/right for ordering? */}
+            { direction !== 'inbound' ? label : '' }
+            <i className="nbe-port-handle" ref="handle" />
+            { direction === 'inbound' ? label : '' }
          </div>
       );
    }
