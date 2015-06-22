@@ -2,10 +2,10 @@ var Port = React.createClass( {
 
    componentDidMount() {
       var node = React.findDOMNode( this.refs.handle );
-      var coords = {
+      var coords = nbe.Coords( {
          left: node.offsetLeft + (node.offsetWidth / 2),
          top: node.offsetTop + (node.offsetHeight / 2)
-      };
+      } );
       this.props.measureHandler( coords );
    },
 
@@ -17,7 +17,6 @@ var Port = React.createClass( {
 
       return (
          <div className={classes}>
-            {/* :TODO: use float:left/right for ordering? */}
             { direction !== 'inbound' ? label : '' }
             <i className="nbe-port-handle" ref="handle" />
             { direction === 'inbound' ? label : '' }

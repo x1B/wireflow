@@ -1,41 +1,31 @@
-var IN = 'inbound', OUT = 'outbound';
-
-var update = React.addons.update;
-
+var PortsMeasurements = Record( { inbound: Map(), outbound: Map() } );
+var VertexMeasurements = Record( { box: nbe.Dimensions(), ports: new PortsMeasurements() } );
+var Measurements = Record( { vertices: Map(), edges: Map() } );
 
 var Graph = React.createClass( {
 
+
    getInitialState() {
       return {
-         measurements: null
+         measurements: new Measurements()
       };
    },
 
    getDefaultProps() {
       return {
-         types: {},
-         edges: {},
-         vertices: {},
-         layout: {},
+         types: Map(),
+         edges: Map(),
+         vertices: Map(),
+         layout: nbe.Layout(),
          zoom: 100,
          hasFocus: false
       }
    },
 
    render() {
-
       var self = this;
-
-      var { measurements } = self.state;
-
-      var {
-         types,
-         edges,
-         vertices,
-         layout,
-         zoom,
-         hasFocus
-      } = self.props;
+      var measurements = self.state.measurements;
+      var { types, edges, vertices, layout, zoom, hasFocus } = self.props;
 
       return (
          <div tabIndex="0" className={classes()}>
@@ -67,65 +57,69 @@ var Graph = React.createClass( {
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       function renderVertices() {
-         return keys( vertices ).map( key => {
-            var v = vertices[ key ];
-            var vertexLayout = layout.vertices[ key ];
-            return <Vertex key={key}
-                           layout={vertexLayout}
-                           ports={v.ports}
-                           label={v.label}
-                           portMeasureHandler={portMeasureHandler( key )} />;
-         } );
+         return vertices.entrySeq()
+            .map( ( [ key, v ] ) => (
+               <Vertex key={key}
+                       layout={layout.vertices.get( key )}
+                       ports={v.ports}
+                       label={v.label}
+                       portMeasureHandler={portMeasureHandler( key )}/>
+            ) )
+            .toJS();
       }
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       function renderEdges() {
-         return keys( edges ).filter( key =>
-            !types[ edges[ key ].type ].simple
-         ).map( key => {
-            var e = edges[ key ];
-            var edgeLayout = layout.edges[ key ];
-            return <Edge key={key}
-                         type={e.type}
-                         ports={e.ports}
-                         label={e.label || key}
-                         layout={edgeLayout}
-                         measureHandler={edgeMeasureHandler( key )} />;
-         } );
+         return edges.entrySeq()
+            .filter( ( [ edgeId, edge ] ) => !types.get( edge.type ).simple )
+            .map( ( [ edgeId, edge ] ) =>
+               <Edge key={edgeId}
+                     type={edge.type}
+                     ports={edge.ports}
+                     label={edge.label || edgeId}
+                     layout={layout.edges.get( edgeId )}
+                     measureHandler={edgeMeasureHandler( edgeId )}/>
+            )
+            .toJS();
       }
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       function renderLinks() {
-         if( !measurements ) {
+         if ( measurements.vertices.isEmpty() ) {
             return [];
          }
 
-         var vertexIds = keys( vertices );
+         // console.log( 'MEASUREMENTS', JSON.stringify( measurements.toJS(), null, 3 ) );
+         var vertexIds = vertices.keySeq();
 
-         // create lookup tables mapping simple edges to the coords of their representative ports
-         var portCoordsLookup = portCoordsByEdgeId( vertexIds );
+         // temporary lookup table mapping simple edges to the coords of their representative ports
+         var fallbackCoords = portCoordsByEdgeId( vertexIds.toJS() );
 
-         return flatten( vertexIds.map( vertexId =>
-            flatten( [ IN, OUT ].map( direction => links( vertexId, direction ) ) )
-         ) );
+         return vertexIds.flatMap( vertexId =>
+            List.of( IN, OUT ).flatMap( direction =>
+               links( vertexId, direction )
+            )
+         );
 
          function links( vertexId, direction ) {
-            var vertex = vertices[ vertexId ];
-            var vertexMeasurements = measurements.vertices[ vertexId ];
-            var vertexCoords = layout.vertices[ vertexId ];
+            var vertex = vertices.get( vertexId );
+            var edgeMeasurements = measurements.edges;
+            var portsMeasurements = measurements.vertices.get( vertexId ).ports;
+            var vertexCoords = layout.vertices.get( vertexId );
 
             return vertex.ports[ direction ]
                .filter( port => !!port.edgeId )
                .map( port => {
-                  var a = add( vertexMeasurements.ports[ direction ][ port.id ], vertexCoords );
+                  var a = add( portsMeasurements.getIn( [ direction, port.id ] ), vertexCoords );
                   var otherDirection = direction === IN ? OUT : IN;
-                  var b = measurements.edges[ port.edgeId ] || portCoordsLookup[ otherDirection ][ port.edgeId ];
+                  var b = edgeMeasurements.get( port.edgeId )
+                     || fallbackCoords[ otherDirection ][ port.edgeId ];
                   return <Link key={vertexId + '/' + port.id}
                                type={port.type}
                                from={a}
-                               to={b} />
+                               to={b}/>
                } );
          }
 
@@ -134,12 +128,11 @@ var Graph = React.createClass( {
             [ IN, OUT ].forEach( direction => {
                var table = coords[ direction ] = {};
                vertexIds.forEach( id => {
-                  var vertexMeasurements = measurements.vertices[ id ];
-                  var vertexCoords = layout.vertices[ id ];
-                  var portCoords = vertexMeasurements.ports[ direction ];
-                  vertices[ id ].ports[ direction ].forEach( port => {
-                     if( port.edgeId ) {
-                        table[ port.edgeId ] = add( portCoords[ port.id ], vertexCoords );
+                  var portsMeasurements = measurements.vertices.get( id ).ports[ direction ];
+                  var vertexCoords = layout.vertices.get( id );
+                  vertices.get( id ).ports[ direction ].forEach( port => {
+                     if ( port.edgeId ) {
+                        table[ port.edgeId ] = add( portsMeasurements.get( port.id ), vertexCoords );
                      }
                   } );
                } );
@@ -147,54 +140,44 @@ var Graph = React.createClass( {
             return coords;
          }
 
-         function add( aCoords, bCoords ) {
-            return {
-               left: aCoords.left + bCoords.left,
-               top: aCoords.top + bCoords.top
-            };
-         }
-      }
-
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-      function flatten( arrays ) {
-         return [].concat.apply( [], arrays );
-      }
-
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-      function portMeasureHandler( vertexId ) {
-         return function( direction, port, coords ) {
-            self.setState( function updateState( state ) {
-               var measurements = state.measurements || { edges: {}, vertices: {} };
-
-               if ( !measurements.vertices[ vertexId ] ) {
-                  var prepareCommand = { vertices: {} };
-                  prepareCommand.vertices[ vertexId ] = { $set: { ports: { inbound: {}, outbound: {} } } };
-                  measurements = update( measurements, prepareCommand );
-               }
-
-               var command = { vertices: {} };
-               command.vertices[ vertexId ] = { ports: {} };
-               command.vertices[ vertexId ].ports[ direction ] = {};
-               command.vertices[ vertexId ].ports[ direction ][ port.id ] = { $set: coords };
-               return { measurements: update( measurements, command ) };
+         function add( a, b ) {
+            return nbe.Coords( {
+               left: a.left + b.left,
+               top: a.top + b.top
             } );
          }
       }
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-      // :TODO: maybe determine from layout instead...
-      function edgeMeasureHandler( edgeId ) {
-         return function( coords ) {
-            self.setState( function updateState( state ) {
-               var measurements = state.measurements || { edges: {}, vertices: {} };
-               var command = { edges: {} };
-               command.edges[ edgeId ] = { $set: coords };
-               return { measurements: update( measurements, command ) };
+      function transformMeasurements( f ) {
+         return self.setState( ({ measurements }) => {
+            var next = f( measurements );
+            // console.log( 'NEXT', next.toJS() );
+            return { measurements: next };
+         } );
+      }
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+      function portMeasureHandler( id ) {
+         return ( direction, port, coords ) =>
+            transformMeasurements( measurements => {
+               var vertexMeasurements = ( measurements.vertices.get( id ) || VertexMeasurements() );
+               return measurements.setIn(
+                  [ 'vertices', id ],
+                  vertexMeasurements.setIn( [ 'ports', direction, port.id ], coords )
+               )
             } );
-         }
+      }
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+      function edgeMeasureHandler( id ) {
+         return ( coords ) =>
+            transformMeasurements( measurements =>
+               measurements.setIn( [ 'edges', id ], coords )
+            );
       }
 
    }
