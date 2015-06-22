@@ -1,13 +1,15 @@
 var IN = 'inbound', OUT = 'outbound';
 
-var update = React.addons.update;
+var { Map, List, Record } = Immutable;
 
+var Coords = Record( { left: 0, top: 0 } );
+var Dimensions = Record( { width: 0, height: 0 } );
 
 var Graph = React.createClass( {
 
    getInitialState() {
       return {
-         measurements: null
+         measurements: Map()
       };
    },
 
@@ -98,7 +100,7 @@ var Graph = React.createClass( {
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       function renderLinks() {
-         if( !measurements ) {
+         if( measurements.isEmpty() ) {
             return [];
          }
 
@@ -113,15 +115,16 @@ var Graph = React.createClass( {
 
          function links( vertexId, direction ) {
             var vertex = vertices[ vertexId ];
-            var vertexMeasurements = measurements.vertices[ vertexId ];
+            var edgeMeasurements = measurements.get( 'edges' );
+            var portsMeasurements = measurements.getIn( [ 'vertices', vertexId, 'ports' ] );
             var vertexCoords = layout.vertices[ vertexId ];
 
             return vertex.ports[ direction ]
                .filter( port => !!port.edgeId )
                .map( port => {
-                  var a = add( vertexMeasurements.ports[ direction ][ port.id ], vertexCoords );
+                  var a = add( portsMeasurements.getIn( [ direction, port.id ] ), vertexCoords );
                   var otherDirection = direction === IN ? OUT : IN;
-                  var b = measurements.edges[ port.edgeId ] || portCoordsLookup[ otherDirection ][ port.edgeId ];
+                  var b = edgeMeasurements.get( port.edgeId ) || portCoordsLookup[ otherDirection ][ port.edgeId ];
                   return <Link key={vertexId + '/' + port.id}
                                type={port.type}
                                from={a}
@@ -134,12 +137,11 @@ var Graph = React.createClass( {
             [ IN, OUT ].forEach( direction => {
                var table = coords[ direction ] = {};
                vertexIds.forEach( id => {
-                  var vertexMeasurements = measurements.vertices[ id ];
+                  var portsMeasurements = measurements.getIn( [ 'vertices', id, 'ports', direction ] );
                   var vertexCoords = layout.vertices[ id ];
-                  var portCoords = vertexMeasurements.ports[ direction ];
                   vertices[ id ].ports[ direction ].forEach( port => {
                      if( port.edgeId ) {
-                        table[ port.edgeId ] = add( portCoords[ port.id ], vertexCoords );
+                        table[ port.edgeId ] = add( portsMeasurements.get( port.id ), vertexCoords );
                      }
                   } );
                } );
@@ -163,37 +165,21 @@ var Graph = React.createClass( {
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-      function portMeasureHandler( vertexId ) {
+      function portMeasureHandler( id ) {
          return function( direction, port, coords ) {
-            self.setState( function updateState( state ) {
-               var measurements = state.measurements || { edges: {}, vertices: {} };
-
-               if ( !measurements.vertices[ vertexId ] ) {
-                  var prepareCommand = { vertices: {} };
-                  prepareCommand.vertices[ vertexId ] = { $set: { ports: { inbound: {}, outbound: {} } } };
-                  measurements = update( measurements, prepareCommand );
-               }
-
-               var command = { vertices: {} };
-               command.vertices[ vertexId ] = { ports: {} };
-               command.vertices[ vertexId ].ports[ direction ] = {};
-               command.vertices[ vertexId ].ports[ direction ][ port.id ] = { $set: coords };
-               return { measurements: update( measurements, command ) };
-            } );
+            self.setState( ({ measurements }) => ( {
+               measurements: measurements.setIn( [ 'vertices', id, 'ports', direction, port.id ], coords )
+            } ) );
          }
       }
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-      // :TODO: maybe determine from layout instead...
       function edgeMeasureHandler( edgeId ) {
          return function( coords ) {
-            self.setState( function updateState( state ) {
-               var measurements = state.measurements || { edges: {}, vertices: {} };
-               var command = { edges: {} };
-               command.edges[ edgeId ] = { $set: coords };
-               return { measurements: update( measurements, command ) };
-            } );
+            self.setState( ({ measurements }) => ( {
+               measurements: measurements.setIn( [ 'edges', edgeId ], coords )
+            } ) );
          }
       }
 
