@@ -39,11 +39,11 @@ var Vertex = React.createClass( {
 
          var measureHandler = ( port ) => ( coords ) => portMeasureHandler( direction, port, coords );
 
-         return ports[ direction ].map( port => <Port type={port.type}
+         return ports.get( direction ).map( port => <Port type={port.type}
                                                       key={port.id}
                                                       direction={direction}
                                                       label={port.label}
-                                                      measureHandler={measureHandler( port )} /> );
+                                                      measureHandler={measureHandler( port )} /> ).toJS();
       }
 
    }

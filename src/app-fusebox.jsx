@@ -1,4 +1,4 @@
-var model = {
+var model = Immutable.fromJS( {
    "vertices": {
       "command": {
          "label": "Command Button",
@@ -236,10 +236,10 @@ var model = {
          "type": "CONTAINER"
       }
    }
-};
+} );
 
 
-var layout = {
+var layout = Immutable.fromJS( {
    "vertices": {
       "command": {
          "left": 292,
@@ -284,9 +284,9 @@ var layout = {
          "top": 106
       }
    }
-};
+} );
 
-var types = {
+var types = Immutable.fromJS( {
    RESOURCE: {
       hidden: false,
       label: 'Resources'
@@ -305,14 +305,14 @@ var types = {
       label: 'Actions',
       hidden: false
    }
-};
+} );
 
 React.render(
    <div className="">
       <Graph types={types}
              layout={layout}
-             vertices={model.vertices}
-             edges={model.edges} />
+             vertices={model.get( 'vertices' )}
+             edges={model.get( 'edges' )} />
    </div>,
    document.getElementById( 'root' )
 );
