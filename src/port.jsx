@@ -17,7 +17,6 @@ var Port = React.createClass( {
 
       return (
          <div className={classes}>
-            {/* :TODO: use float:left/right for ordering? */}
             { direction !== 'inbound' ? label : '' }
             <i className="nbe-port-handle" ref="handle" />
             { direction === 'inbound' ? label : '' }

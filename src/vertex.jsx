@@ -9,8 +9,8 @@ var Vertex = React.createClass( {
       var style = {
          position: 'absolute', // :TODO: move to stylesheet
          visibility: layout ? 'visible' : 'hidden',
-         left: layout.left,
-         top: layout.top
+         left: layout.get( 'left' ),
+         top: layout.get( 'top' )
       };
 
       var classes = [
@@ -39,11 +39,12 @@ var Vertex = React.createClass( {
 
          var measureHandler = ( port ) => ( coords ) => portMeasureHandler( direction, port, coords );
 
-         return ports.get( direction ).map( port => <Port type={port.type}
-                                                      key={port.id}
-                                                      direction={direction}
-                                                      label={port.label}
-                                                      measureHandler={measureHandler( port )} /> ).toJS();
+         return ports[ direction ].map( port =>
+            <Port type={port.type}
+                  key={port.id}
+                  direction={direction}
+                  label={port.label}
+                  measureHandler={measureHandler( port )} /> ).toJS();
       }
 
    }

@@ -13,7 +13,7 @@ var Graph = React.createClass( {
          types: Map(),
          edges: Map(),
          vertices: Map(),
-         layout: Map(),
+         layout: nbe.create.layout(),
          zoom: 100,
          hasFocus: false
       }
@@ -57,9 +57,9 @@ var Graph = React.createClass( {
          return vertices.entrySeq()
             .map( ( [ key, v ] ) => (
                <Vertex key={key}
-                       layout={layout.getIn( [ 'vertices', key ] )}
-                       ports={v.get( 'ports' )}
-                       label={v.get( 'label' )}
+                       layout={layout.vertices.get( key )}
+                       ports={v.ports}
+                       label={v.label}
                        portMeasureHandler={portMeasureHandler( key )}/>
             ) )
             .toJS();
@@ -69,14 +69,14 @@ var Graph = React.createClass( {
 
       function renderEdges() {
          return edges.entrySeq()
-            .filter( ( [ key, e ] ) => !types.get( e.get( 'type' ) ).get( 'simple' ) )
-            .map( ([key, e]) =>
-               <Edge key={key}
-                     type={e.type}
-                     ports={e.ports}
-                     label={e.label || key}
-                     layout={layout.getIn( [ 'edges', key ] )}
-                     measureHandler={edgeMeasureHandler( key )}/>
+            .filter( ( [ edgeId, edge ] ) => !types.get( edge.type ).simple )
+            .map( ( [ edgeId, edge ] ) =>
+               <Edge key={edgeId}
+                     type={edge.type}
+                     ports={edge.ports}
+                     label={edge.label || edgeId}
+                     layout={layout.edges.get( edgeId )}
+                     measureHandler={edgeMeasureHandler( edgeId )}/>
             )
             .toJS();
       }
@@ -94,21 +94,24 @@ var Graph = React.createClass( {
          var fallbackCoords = portCoordsByEdgeId( vertexIds.toJS() );
 
          return vertexIds.flatMap( vertexId =>
-               List.of( IN, OUT ).flatMap( direction => links( vertexId, direction ) )
+            List.of( IN, OUT ).flatMap( direction =>
+               links( vertexId, direction )
+            )
          );
 
          function links( vertexId, direction ) {
             var vertex = vertices.get( vertexId );
             var edgeMeasurements = measurements.get( 'edges' );
             var portsMeasurements = measurements.getIn( [ 'vertices', vertexId, 'ports' ] );
-            var vertexCoords = layout.getIn( [ 'vertices', vertexId ] );
+            var vertexCoords = layout.vertices.get( vertexId );
 
-            return vertex.getIn( [ 'ports', direction ] )
+            return vertex.ports[ direction ]
                .filter( port => !!port.edgeId )
                .map( port => {
                   var a = add( portsMeasurements.getIn( [ direction, port.id ] ), vertexCoords );
                   var otherDirection = direction === IN ? OUT : IN;
-                  var b = edgeMeasurements.get( port.edgeId ) || fallbackCoords[ otherDirection ][ port.edgeId ];
+                  var b = edgeMeasurements.get( port.edgeId )
+                     || fallbackCoords[ otherDirection ][ port.edgeId ];
                   return <Link key={vertexId + '/' + port.id}
                                type={port.type}
                                from={a}
@@ -122,8 +125,8 @@ var Graph = React.createClass( {
                var table = coords[ direction ] = {};
                vertexIds.forEach( id => {
                   var portsMeasurements = measurements.getIn( [ 'vertices', id, 'ports', direction ] );
-                  var vertexCoords = layout.getIn( 'vertices', id );
-                  vertices.getIn( [ id, 'ports', direction ] ).forEach( port => {
+                  var vertexCoords = layout.vertices.get( id );
+                  vertices.get( id ).ports[ direction ].forEach( port => {
                      if ( port.edgeId ) {
                         table[ port.edgeId ] = add( portsMeasurements.get( port.id ), vertexCoords );
                      }
@@ -141,10 +144,12 @@ var Graph = React.createClass( {
          }
       }
 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
       function transformState( transform ) {
          return self.setState( ({ buckets }) => ({
             buckets: transform( buckets )
-         }) );
+         } ) );
       }
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -152,7 +157,8 @@ var Graph = React.createClass( {
       function portMeasureHandler( id ) {
          return function ( direction, port, coords ) {
             return transformState( buckets =>
-               buckets.setIn([ 'measurements', 'vertices', id, 'ports', direction, port.id ], coords ) );
+               buckets.setIn( [ 'measurements', 'vertices', id, 'ports', direction, port.id ], coords )
+            );
          }
       }
 
@@ -161,7 +167,8 @@ var Graph = React.createClass( {
       function edgeMeasureHandler( id ) {
          return function ( coords ) {
             return transformState( buckets =>
-               buckets.setIn([ 'measurements', 'edges', id ], coords ) );
+               buckets.setIn( [ 'measurements', 'edges', id ], coords )
+            );
          }
       }
 

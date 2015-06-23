@@ -1,4 +1,4 @@
-var model = Immutable.fromJS( {
+var graph = nbe.convert.graph( {
    "vertices": {
       "command": {
          "label": "Command Button",
@@ -239,7 +239,7 @@ var model = Immutable.fromJS( {
 } );
 
 
-var layout = Immutable.fromJS( {
+var layout = nbe.convert.layout( {
    "vertices": {
       "command": {
          "left": 292,
@@ -286,7 +286,7 @@ var layout = Immutable.fromJS( {
    }
 } );
 
-var types = Immutable.fromJS( {
+var types = nbe.convert.types( {
    RESOURCE: {
       hidden: false,
       label: 'Resources'
@@ -307,12 +307,14 @@ var types = Immutable.fromJS( {
    }
 } );
 
+
+
 React.render(
    <div className="">
       <Graph types={types}
              layout={layout}
-             vertices={model.get( 'vertices' )}
-             edges={model.get( 'edges' )} />
+             vertices={graph.vertices}
+             edges={graph.edges} />
    </div>,
    document.getElementById( 'root' )
 );
