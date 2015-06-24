@@ -2,12 +2,11 @@ var Link = React.createClass( {
 
    render() {
 
-      var r = Math.round;
-
       var { type, from, to } = this.props;
 
       var classes = [ 'nbe-link', 'nbe-type-' + type ].join( ' ' );
 
+      var r = Math.round;
       var data = [ 'M', r( from.left ), ',', r( from.top ), ' L', r( to.left ), ',', r( to.top ) ].join( '' );
 
       return (

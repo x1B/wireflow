@@ -4,7 +4,7 @@ var Vertex = React.createClass( {
 
       var self = this;
 
-      var { label, selected, layout, ports, portMeasureHandler } = self.props;
+      var { label, selected, layout, ports, portMeasureHandler, measureHandler } = self.props;
 
       var style = {
          position: 'absolute', // :TODO: move to stylesheet
@@ -18,6 +18,8 @@ var Vertex = React.createClass( {
          'nbe-node',
          selected ? 'nbe-selected' : ''
       ].join( ' ' );
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       return (
          <div style={style} className={classes} ref="handle">
@@ -37,13 +39,15 @@ var Vertex = React.createClass( {
 
       function renderPorts( direction ) {
 
-         var measureHandler = ( port ) => ( coords ) => portMeasureHandler( direction, port, coords );
+         var measureHandler = ( port ) =>
+            ( coords ) => portMeasureHandler( direction, port, coords );
 
-         return ports[ direction ].map( port => <Port type={port.type}
-                                                      key={port.id}
-                                                      direction={direction}
-                                                      label={port.label}
-                                                      measureHandler={measureHandler( port )} /> );
+         return ports[ direction ].map( port =>
+            <Port type={port.type}
+                  key={port.id}
+                  direction={direction}
+                  label={port.label}
+                  measureHandler={measureHandler( port )} /> ).toJS();
       }
 
    }

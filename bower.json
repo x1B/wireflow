@@ -16,6 +16,7 @@
   ],
   "dependencies": {
     "react": "~0.13.3",
-    "interact": "~1.2.4"
+    "interact": "~1.2.4",
+    "immutable": "~3.7.4"
   }
 }

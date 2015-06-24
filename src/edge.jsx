@@ -1,15 +1,5 @@
 var Edge = React.createClass( {
 
-   componentDidMount() {
-      var icon = React.findDOMNode( this.refs.icon );
-      var node = icon.parentNode;
-      var coords = {
-         left: node.offsetLeft + (icon.offsetWidth / 2),
-         top: node.offsetTop + (icon.offsetHeight / 2)
-      };
-      this.props.measureHandler( coords );
-   },
-
    render() {
       var { label, type, selected, layout } = this.props;
 
@@ -33,6 +23,15 @@ var Edge = React.createClass( {
             <div className="nbe-edge-label">{label}</div>
          </div>
       );
+   },
+
+   componentDidMount() {
+      var icon = React.findDOMNode( this.refs.icon );
+      var container = icon.parentNode;
+      this.props.measureHandler( nbe.Coords( {
+         left: container.offsetLeft + (icon.offsetWidth / 2),
+         top: container.offsetTop + (icon.offsetHeight / 2)
+      } ) );
    }
 
 } );
