@@ -1,22 +1,23 @@
 {
-  "name": "nbe-react",
-  "version": "0.1.0-pre",
-  "authors": [
-    "Michael Kurze <michael@thefoundation.de>"
-  ],
-  "description": "Node based editing for the web (react-based)",
-  "main": "src/nbe.jsx",
-  "license": "MIT",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ],
-  "dependencies": {
-    "react": "~0.13.3",
-    "interact": "~1.2.4",
-    "immutable": "~3.7.4"
-  }
+   "name": "nbe-react",
+   "version": "0.1.0-pre",
+   "authors": [
+      "Michael Kurze <michael@thefoundation.de>"
+   ],
+   "description": "Node based editing for the web (react-based)",
+   "main": "src/nbe.jsx",
+   "license": "MIT",
+   "ignore": [
+      "**/.*",
+      "node_modules",
+      "bower_components",
+      "test",
+      "tests"
+   ],
+   "dependencies": {
+      "requirejs": "~2.1.0",
+      "react": "~0.13.3",
+      "interact": "~1.2.4",
+      "immutable": "~3.7.4"
+   }
 }

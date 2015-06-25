@@ -1,16 +1,26 @@
-var Link = React.createClass( {
+define( [ 'react' ], function( React ) {
+   'use strict';
 
-   render() {
+   var Link = React.createClass( {
 
-      var { type, from, to } = this.props;
+      render() {
 
-      var classes = [ 'nbe-link', 'nbe-type-' + type ].join( ' ' );
+         var { type, from, to } = this.props;
 
-      var r = Math.round;
-      var data = [ 'M', r( from.left ), ',', r( from.top ), ' L', r( to.left ), ',', r( to.top ) ].join( '' );
+         var classes = [ 'nbe-link', 'nbe-type-' + type ].join( ' ' );
 
-      return (
-         <path className={classes} d={data} />
-      );
-   }
+         var r = Math.round;
+         var data = [
+            'M', r( from.left ), ',', r( from.top ), ' ',
+            'L', r( to.left ), ',', r( to.top ) ].join( '' );
+
+         return (
+            <path className={classes} d={data} />
+         );
+      }
+
+   } );
+
+   return Link;
+
 } );
