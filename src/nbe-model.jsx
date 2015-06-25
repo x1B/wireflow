@@ -1,12 +1,6 @@
-var IN = 'inbound', OUT = 'outbound';
+define( [ 'immutable' ], function( Immutable ) {
 
-var { Map, List, Record } = Immutable;
-
-
-/**
- * Create NBE model values from their JSON representation.
- */
-var nbe = (function() {
+   var { Map, List, Record } = Immutable;
 
    var Coords = Record( { left: 0, top: 0 } );
    var Dimensions = Record( { width: 0, height: 0 } );
@@ -20,6 +14,8 @@ var nbe = (function() {
    var Layout = Record( { edges: Map(), vertices: Map() } );
 
    return {
+      IN: 'inbound',
+      OUT: 'outbound',
       Graph,
       Layout,
       Coords,
@@ -30,7 +26,6 @@ var nbe = (function() {
          types: types
       }
    };
-
 
    // basic //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -92,4 +87,4 @@ var nbe = (function() {
       } );
    }
 
-}() );
+} );

@@ -1,27 +1,36 @@
-var Port = React.createClass( {
+define( [ 'react', './nbe-model' ], function( React, nbeModel ) {
+   'use strict';
 
-   componentDidMount() {
-      var node = React.findDOMNode( this.refs.handle );
-      var coords = nbe.Coords( {
-         left: node.offsetLeft + (node.offsetWidth / 2),
-         top: node.offsetTop + (node.offsetHeight / 2)
-      } );
-      this.props.measureHandler( coords );
-   },
+   var { Coords } = nbeModel;
 
-   render() {
+   var Port = React.createClass( {
 
-      var { type, direction, label } = this.props;
+      render() {
 
-      var classes = [ 'nbe-port', 'nbe-type-' + type ].join( ' ' );
+         var { type, direction, label } = this.props;
 
-      return (
-         <div className={classes}>
-            { direction !== 'inbound' ? label : '' }
-            <i className="nbe-port-handle" ref="handle" />
-            { direction === 'inbound' ? label : '' }
-         </div>
-      );
-   }
+         var classes = [ 'nbe-port', 'nbe-type-' + type ].join( ' ' );
+
+         return (
+            <div className={classes}>
+               { direction !== 'inbound' ? label : '' }
+               <i className="nbe-port-handle" ref="handle" />
+               { direction === 'inbound' ? label : '' }
+            </div>
+         );
+      },
+
+      componentDidMount() {
+         var node = React.findDOMNode( this.refs.handle );
+         var coords = new Coords( {
+            left: node.offsetLeft + (node.offsetWidth / 2),
+            top: node.offsetTop + (node.offsetHeight / 2)
+         } );
+         this.props.measureHandler( coords );
+      }
+
+   } );
+
+   return Port;
 
 } );

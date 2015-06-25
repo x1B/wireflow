@@ -1,55 +1,62 @@
-var Vertex = React.createClass( {
+define( [ 'react', './port' ], function( React, Port ) {
+   'use strict';
 
-   render() {
+   var Vertex = React.createClass( {
 
-      var self = this;
+      render() {
 
-      var { label, selected, layout, ports, portMeasureHandler, measureHandler } = self.props;
+         var self = this;
 
-      var style = {
-         position: 'absolute', // :TODO: move to stylesheet
-         visibility: layout ? 'visible' : 'hidden',
-         left: layout.left,
-         top: layout.top
-      };
+         var { label, selected, layout, ports, portMeasureHandler, measureHandler } = self.props;
 
-      var classes = [
-         'nbe-vertex',
-         'nbe-node',
-         selected ? 'nbe-selected' : ''
-      ].join( ' ' );
+         var style = {
+            position: 'absolute', // :TODO: move to stylesheet
+            visibility: layout ? 'visible' : 'hidden',
+            left: layout.left,
+            top: layout.top
+         };
 
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////
+         var classes = [
+            'nbe-vertex',
+            'nbe-node',
+            selected ? 'nbe-selected' : ''
+         ].join( ' ' );
 
-      return (
-         <div style={style} className={classes} ref="handle">
-            <div className="nbe-vertex-header">{label}</div>
-            <div className="nbe-port-group">
-               <div className="nbe-ports nbe-inbound">
-                  {renderPorts('inbound')}
-               </div>
-               <div className="nbe-ports nbe-outbound">
-                  {renderPorts('outbound')}
+         ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+         return (
+            <div style={style} className={classes} ref="handle">
+               <div className="nbe-vertex-header">{label}</div>
+               <div className="nbe-port-group">
+                  <div className="nbe-ports nbe-inbound">
+                     {renderPorts('inbound')}
+                  </div>
+                  <div className="nbe-ports nbe-outbound">
+                     {renderPorts('outbound')}
+                  </div>
                </div>
             </div>
-         </div>
-      );
+         );
 
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////
+         ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-      function renderPorts( direction ) {
+         function renderPorts( direction ) {
 
-         var measureHandler = ( port ) =>
-            ( coords ) => portMeasureHandler( direction, port, coords );
+            var measureHandler = ( port ) =>
+               ( coords ) => portMeasureHandler( direction, port, coords );
 
-         return ports[ direction ].map( port =>
-            <Port type={port.type}
-                  key={port.id}
-                  direction={direction}
-                  label={port.label}
-                  measureHandler={measureHandler( port )} /> ).toJS();
+            return ports[ direction ].map( port =>
+               <Port type={port.type}
+                     key={port.id}
+                     direction={direction}
+                     label={port.label}
+                     measureHandler={measureHandler( port )} /> ).toJS();
+         }
+
       }
 
-   }
+   } );
+
+   return Vertex;
 
 } );
