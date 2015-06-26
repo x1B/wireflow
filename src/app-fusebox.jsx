@@ -1,11 +1,12 @@
 define( [
    'react',
-   './nbe-model',
-   './graph'
-], function( React, nbeModel, Graph ) {
+   './model',
+   './graph',
+   './graph-layout-editor'
+], function( React, model, Graph, GraphLayoutEditor ) {
    'use strict';
 
-   const { components, convert } = nbeModel;
+   const { components, convert } = model;
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -325,10 +326,10 @@ define( [
 
    React.render(
       <div>
-         <Graph types={types}
-                layout={layout}
-                vertices={graph.vertices}
-                edges={graph.edges} />
+         <GraphLayoutEditor types={types}
+                            baseLayout={layout}
+                            vertices={graph.vertices}
+                            edges={graph.edges} />
       </div>,
       document.getElementById( 'root' )
    );

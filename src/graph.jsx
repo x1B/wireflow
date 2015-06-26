@@ -1,15 +1,15 @@
 define( [
    'react',
    'immutable',
-   './nbe-model',
+   './model',
    './vertex',
    './edge',
    './links'
-], function( React, Immutable, nbeModel, Vertex, Edge, Links ) {
+], function( React, Immutable, model, Vertex, Edge, Links ) {
    'use strict';
 
    const { Record, Map } = Immutable;
-   const { Dimensions, Layout } = nbeModel;
+   const { Dimensions, Layout } = model;
 
    const PortsMeasurements = Record( { inbound: Map(), outbound: Map() } );
    const VertexMeasurements = Record( { box: Dimensions(), ports: new PortsMeasurements() } );
@@ -38,7 +38,7 @@ define( [
 
       render() {
          const self = this;
-         const { types, edges, vertices, layout, zoom, hasFocus } = self.props;
+         const { types, edges, vertices, layout, zoom, hasFocus, eventHandler } = self.props;
 
          return (
             <div tabIndex="0" className={classes()}>
@@ -77,6 +77,7 @@ define( [
                            layout={layout.vertices.get( key )}
                            ports={v.ports}
                            label={v.label}
+                           eventHandler={eventHandler}
                            portMeasureHandler={portMeasureHandler( key )}/>
                )
                .toJS();
@@ -89,10 +90,10 @@ define( [
                .filter( ([ edgeId, edge ]) => !types.get( edge.type ).simple )
                .map( ([ edgeId, edge ]) =>
                   <Edge key={edgeId}
-                        type={edge.type}
-                        ports={edge.ports}
-                        label={edge.label || edgeId}
+                        id={edgeId}
+                        edge={edge}
                         layout={layout.edges.get( edgeId )}
+                        eventHandler={eventHandler}
                         measureHandler={edgeMeasureHandler( edgeId )}/>
                )
                .toJS();

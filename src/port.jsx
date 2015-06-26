@@ -1,7 +1,7 @@
-define( [ 'react', './nbe-model' ], function( React, nbeModel ) {
+define( [ 'react', './model' ], function( React, model ) {
    'use strict';
 
-   const { Coords } = nbeModel;
+   const { Coords } = model;
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 

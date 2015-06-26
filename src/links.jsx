@@ -1,13 +1,13 @@
 define( [
    'react',
    'immutable',
-   './nbe-model',
+   './model',
    './link'
-], function( React, Immutable, nbeModel, Link ) {
+], function( React, Immutable, model, Link ) {
    'use strict';
 
    const { List } = Immutable;
-   const { Directions, IN, OUT, Coords } = nbeModel;
+   const { Directions, IN, OUT, Coords } = model;
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -1,4 +1,4 @@
-define( ['./settings'], function( settings ) {
+define( [ './settings' ], function( settings ) {
    'use strict';
 
    var api = {
