@@ -1,7 +1,9 @@
 define( [ 'react', './nbe-model' ], function( React, nbeModel ) {
    'use strict';
 
-   var { Coords } = nbeModel;
+   const { Coords } = nbeModel;
+
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
    var Port = React.createClass( {
 
@@ -19,6 +21,8 @@ define( [ 'react', './nbe-model' ], function( React, nbeModel ) {
             </div>
          );
       },
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       componentDidMount() {
          var node = React.findDOMNode( this.refs.handle );

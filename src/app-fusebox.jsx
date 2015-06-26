@@ -5,9 +5,11 @@ define( [
 ], function( React, nbeModel, Graph ) {
    'use strict';
 
-   var { components, convert } = nbeModel;
+   const { components, convert } = nbeModel;
 
-   var graph = convert.graph( {
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+   const graph = convert.graph( {
       vertices: {
          command: {
             label: 'Command Button',
@@ -247,8 +249,9 @@ define( [
       }
    } );
 
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-   var layout = convert.layout( {
+   const layout = convert.layout( {
       vertices: {
          command: {
             left: 292,
@@ -295,7 +298,9 @@ define( [
       }
    } );
 
-   var types = convert.types( {
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+   const types = convert.types( {
       RESOURCE: {
          hidden: false,
          label: 'Resources'
@@ -316,8 +321,10 @@ define( [
       }
    } );
 
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
    React.render(
-      <div className="">
+      <div>
          <Graph types={types}
                 layout={layout}
                 vertices={graph.vertices}

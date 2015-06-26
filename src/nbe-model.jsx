@@ -1,21 +1,26 @@
 define( [ 'immutable' ], function( Immutable ) {
 
-   var { Map, List, Record } = Immutable;
+   const { Map, List, Record } = Immutable;
 
-   var Coords = Record( { left: 0, top: 0 } );
-   var Dimensions = Record( { width: 0, height: 0 } );
+   const Coords = Record( { left: 0, top: 0 } );
+   const Dimensions = Record( { width: 0, height: 0 } );
 
-   var Graph = Record( { edges: Map(), vertices: Map() } );
-   var Port = Record( { label: '', type: null, id: null, edgeId: null } );
-   var Ports = Record( { inbound: List(), outbound: List() } );
-   var Vertex = Record( { label: '', ports: Ports() } );
-   var Edge = Record( { label: '', type: null } );
-   var Type = Record( { hidden: false, label: '', simple: false, maxSources: null, maxDestinations: null } );
-   var Layout = Record( { edges: Map(), vertices: Map() } );
+   const Graph = Record( { edges: Map(), vertices: Map() } );
+   const Port = Record( { label: '', type: null, id: null, edgeId: null } );
+   const Ports = Record( { inbound: List(), outbound: List() } );
+   const Vertex = Record( { label: '', ports: Ports() } );
+   const Edge = Record( { label: '', type: null } );
+   const Type = Record( { hidden: false, label: '', simple: false, maxSources: null, maxDestinations: null } );
+   const Layout = Record( { edges: Map(), vertices: Map() } );
+
+   const IN = 'inbound';
+   const OUT = 'outbound';
+   const Directions = List.of( IN, OUT );
 
    return {
-      IN: 'inbound',
-      OUT: 'outbound',
+      IN,
+      OUT,
+      Directions,
       Graph,
       Layout,
       Coords,

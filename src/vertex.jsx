@@ -1,22 +1,22 @@
 define( [ 'react', './port' ], function( React, Port ) {
    'use strict';
 
-   var Vertex = React.createClass( {
+   const Vertex = React.createClass( {
 
       render() {
 
-         var self = this;
+         const self = this;
 
-         var { label, selected, layout, ports, portMeasureHandler, measureHandler } = self.props;
+         const { label, selected, layout, ports, portMeasureHandler, measureHandler } = self.props;
 
-         var style = {
+         const style = {
             position: 'absolute', // :TODO: move to stylesheet
             visibility: layout ? 'visible' : 'hidden',
             left: layout.left,
             top: layout.top
          };
 
-         var classes = [
+         const classes = [
             'nbe-vertex',
             'nbe-node',
             selected ? 'nbe-selected' : ''
@@ -42,7 +42,7 @@ define( [ 'react', './port' ], function( React, Port ) {
 
          function renderPorts( direction ) {
 
-            var measureHandler = ( port ) =>
+            const measureHandler = ( port ) =>
                ( coords ) => portMeasureHandler( direction, port, coords );
 
             return ports[ direction ].map( port =>
@@ -54,7 +54,6 @@ define( [ 'react', './port' ], function( React, Port ) {
          }
 
       }
-
    } );
 
    return Vertex;

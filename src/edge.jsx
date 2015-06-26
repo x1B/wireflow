@@ -1,21 +1,23 @@
 define( [ 'react', './nbe-model' ], function( React, nbeModel ) {
    'use strict';
 
-   var { Coords } = nbeModel;
+   const { Coords } = nbeModel;
 
-   var Edge = React.createClass( {
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+   const Edge = React.createClass( {
 
       render() {
-         var { label, type, selected, layout } = this.props;
+         const { label, type, selected, layout } = this.props;
 
-         var style = {
+         const style = {
             position: 'absolute', // :TODO: move to stylesheet
             visibility: layout ? 'visible' : 'hidden',
             left: layout.left,
             top: layout.top
          };
 
-         var classes = [
+         const classes = [
             'nbe-node',
             'nbe-edge',
             'nbe-type-' + type,
@@ -30,9 +32,12 @@ define( [ 'react', './nbe-model' ], function( React, nbeModel ) {
          );
       },
 
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
       componentDidMount() {
-         var icon = React.findDOMNode( this.refs.icon );
-         var container = icon.parentNode;
+         const icon = React.findDOMNode( this.refs.icon );
+         const container = icon.parentNode;
          this.props.measureHandler( new Coords( {
             left: container.offsetLeft + (icon.offsetWidth / 2),
             top: container.offsetTop + (icon.offsetHeight / 2)
@@ -40,6 +45,8 @@ define( [ 'react', './nbe-model' ], function( React, nbeModel ) {
       }
 
    } );
+
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
    return Edge;
 

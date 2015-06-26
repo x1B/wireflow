@@ -1,18 +1,33 @@
-define( [ 'react' ], function( React ) {
+define( [ 'react', './util/pathing' ], function( React, pathing ) {
    'use strict';
 
-   var Link = React.createClass( {
+   const Link = React.createClass( {
 
       render() {
 
-         var { type, from, to } = this.props;
+         const { type, from, to } = this.props;
 
-         var classes = [ 'nbe-link', 'nbe-type-' + type ].join( ' ' );
+         const classes = [ 'nbe-link', 'nbe-type-' + type ].join( ' ' );
 
-         var r = Math.round;
-         var data = [
-            'M', r( from.left ), ',', r( from.top ), ' ',
-            'L', r( to.left ), ',', r( to.top ) ].join( '' );
+         const from_ = [ from.left, from.top ];
+         const to_ = [ to.left, to.top ];
+
+         // TODO: Boxes & Direction
+
+         const fromBox = {
+            left: from.left - 15,
+            top: from.top - 15,
+            right: from.left + 30,
+            bottom: from.top + 30
+         };
+         const toBox = {
+            left: to.left - 15,
+            top: to.top - 15,
+            right: to.left + 30,
+            bottom: to.top + 30
+         };
+
+         const data = pathing.cubic( from_, to_, [ 1, -1 ], 1, [ fromBox, toBox ] );
 
          return (
             <path className={classes} d={data} />
@@ -20,6 +35,8 @@ define( [ 'react' ], function( React ) {
       }
 
    } );
+
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
    return Link;
 
