@@ -50,18 +50,15 @@ define( [
          // console.log( 'Layout Event', event );
          const type = event.type();
          if( type === VertexMoved ) {
-            this.setState( ({ layout }) => layout.setIn( [ 'vertices', event.id ], event.to ) );
+            this.setState( ({ layout }) =>
+               ({ layout: layout.setIn( [ 'vertices', event.id ], event.to ) })
+            );
             return;
          }
          if( type === EdgeMoved ) {
-            this.setState( ({ layout }) => {
-               return {
-                  layout: Layout( {
-                     edges: layout.edges.set( event.id, event.to ),
-                     vertices: layout.vertices
-                  } )
-               };
-            } );
+            this.setState( ({ layout }) =>
+               ({ layout: layout.setIn( [ 'edges', event.id ], event.to ) })
+            );
             return;
          }
          if( this.props.handleEvent ) {

@@ -66,7 +66,7 @@ define( [
                   return <Link key={vertexId + '/' + port.id}
                                type={port.type}
                                from={from}
-                               to={to}/>
+                               to={to} />
                } );
          }
 

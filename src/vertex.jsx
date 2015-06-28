@@ -9,8 +9,8 @@ define( [
    'use strict';
 
    const { Record, Map } = Immutable;
-   const { Dimensions } = model;
-   const { VertexMeasured, PortMeasured } = events;
+   const { Dimensions, Coords } = model;
+   const { VertexMeasured, PortMeasured, VertexMoved } = events;
    const { VertexMeasurements } = events.model;
 
    const Vertex = React.createClass( {
@@ -43,7 +43,7 @@ define( [
          /////////////////////////////////////////////////////////////////////////////////////////////////////
 
          return (
-            <div style={style} className={classes} ref="handle">
+            <div style={style} className={classes} ref="container">
                <div className="nbe-vertex-header">{label}</div>
                <div className="nbe-port-group">
                   <div className="nbe-ports nbe-inbound">
@@ -112,10 +112,17 @@ define( [
 
       componentDidMount() {
          var { port, direction } = this.props;
-         var node = React.findDOMNode( this.refs.handle );
+         var container = React.findDOMNode( this.refs.container );
+         this.measure( container );
+         this.enableDragDrop( container );
+      },
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+      measure( container ) {
          var dimensions = new Dimensions( {
-            width: node.offsetWidth,
-            height: node.offsetHeight
+            width: container.offsetWidth,
+            height: container.offsetHeight
          } );
          this.setState( ({ measurements }) => {
             var newMeasurements = measurements.setIn( [ 'dimensions' ], dimensions );
@@ -126,9 +133,23 @@ define( [
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-      enableDragDrop() {
-         interact( handle ).draggable( {
-
+      enableDragDrop( container ) {
+         const { eventHandler, id } = this.props;
+         var left, top;
+         interact( container ).draggable( {
+            onstart: ( e ) => {
+               left = this.props.layout.left;
+               top = this.props.layout.top;
+            },
+            onmove: ( e ) => {
+               const dX = e.pageX - e.x0;
+               const dY = e.pageY - e.y0;
+               eventHandler( VertexMoved( {
+                  id: id,
+                  to: Coords( { left: left + dX, top: top + dY } )
+               } ) );
+               this.measure( container );
+            }
          } );
       }
 
