@@ -33,7 +33,7 @@ define( [ 'react', './model', './events' ], function( React, model, events ) {
             left: node.offsetLeft + (node.offsetWidth / 2),
             top: node.offsetTop + (node.offsetHeight / 2)
          } );
-         this.props.eventHandler( PortMeasured( { port: port, direction: direction, at: coords } ) );
+         this.props.eventHandler( PortMeasured( { port: port, direction: direction, center: coords } ) );
       }
 
    } );

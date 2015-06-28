@@ -51,13 +51,13 @@ define( [
          const type = event.type();
          if( type === VertexMoved ) {
             this.setState( ({ layout }) =>
-               ({ layout: layout.setIn( [ 'vertices', event.id ], event.to ) })
+               ({ layout: layout.setIn( [ 'vertices', event.vertex.id ], event.to ) })
             );
             return;
          }
          if( type === EdgeMoved ) {
             this.setState( ({ layout }) =>
-               ({ layout: layout.setIn( [ 'edges', event.id ], event.to ) })
+               ({ layout: layout.setIn( [ 'edges', event.edge.id ], event.to ) })
             );
             return;
          }

@@ -2,45 +2,51 @@ define( [ 'immutable', './model' ], function( Immutable, model ) {
 
    const { Map, List, Record } = Immutable;
 
-   const { Coords, Dimensions } = model;
+   const { Coords, Dimensions, Box } = model;
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
    const PortMeasured = Record( {
       port: null,
       direction: null,
-      at: new Coords(),
+      center: Coords(),
       type: () => PortMeasured
    } );
 
    const VertexMeasurements = Record( {
-      dimensions: null, 
+      box: null,
       inbound: Map(),
       outbound: Map()
    } );
+
    const VertexMeasured = Record( {
-      id: null,
+      vertex: null,
       measurements: VertexMeasurements(),
       type: () => VertexMeasured
    } );
 
+   const EdgeMeasurements = Record( {
+      box: null,
+      center: null
+   } );
+
    const EdgeMeasured = Record( {
-      id: null,
-      at: new Coords(),
+      edge: null,
+      measurements: EdgeMeasurements,
       type: () => EdgeMeasured
    } );
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
    const EdgeMoved = Record( {
-      id: null,
-      to: new Coords(),
+      edge: null,
+      to: Coords(),
       type: () => EdgeMoved
    } );
 
    const VertexMoved = Record( {
-      id: null,
-      to: new Coords(),
+      vertex: null,
+      to: Coords(),
       type: () => VertexMoved
    } );
 
@@ -51,6 +57,7 @@ define( [ 'immutable', './model' ], function( Immutable, model ) {
       EdgeMoved,
       VertexMoved,
       model: {
+         EdgeMeasurements,
          VertexMeasurements
       }
    };

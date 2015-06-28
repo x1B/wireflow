@@ -1,8 +1,10 @@
 define( [ 'react', 'interact', './model', './events' ], function( React, interact, model, events ) {
    'use strict';
 
-   const { Coords } = model;
+   const { Coords, convert } = model;
+   const { boxFromNode } = convert;
    const { EdgeMeasured, EdgeMoved } = events;
+   const { EdgeMeasurements } = events.model;
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -46,12 +48,15 @@ define( [ 'react', 'interact', './model', './events' ], function( React, interac
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       measure( container, icon ) {
-         const { eventHandler, id } = this.props;
-         eventHandler( new EdgeMeasured( {
-            id: id,
-            at: new Coords( {
-               left: container.offsetLeft + (icon.offsetWidth / 2),
-               top: container.offsetTop + (icon.offsetHeight / 2)
+         const { eventHandler, edge } = this.props;
+         eventHandler( EdgeMeasured( {
+            edge: edge,
+            measurements: EdgeMeasurements( {
+               box: boxFromNode( container ),
+               center: Coords( {
+                  left: container.offsetLeft + (icon.offsetWidth / 2),
+                  top: container.offsetTop + (icon.offsetHeight / 2)
+               } )
             } )
          } ) );
       },
@@ -59,7 +64,7 @@ define( [ 'react', 'interact', './model', './events' ], function( React, interac
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       enableDragDrop( container, icon ) {
-         const { eventHandler, id } = this.props;
+         const { eventHandler, edge } = this.props;
          var left, top;
          interact( container ).draggable( {
             onstart: ( e ) => {
@@ -70,7 +75,7 @@ define( [ 'react', 'interact', './model', './events' ], function( React, interac
                const dX = e.pageX - e.x0;
                const dY = e.pageY - e.y0;
                eventHandler( EdgeMoved( {
-                  id: id,
+                  edge: edge,
                   to: Coords( { left: left + dX, top: top + dY } )
                } ) );
                this.measure( container, icon );

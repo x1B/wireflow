@@ -26,6 +26,8 @@ define( [
          };
       },
 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
       getDefaultProps() {
          return {
             types: Map(),
@@ -36,6 +38,8 @@ define( [
             hasFocus: false
          }
       },
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       render() {
          const self = this;
@@ -58,7 +62,7 @@ define( [
             </div>
          );
 
-         ////////////////////////////////////////////////////////////////////////////////////////////////////////
+         /////////////////////////////////////////////////////////////////////////////////////////////////////
 
          function classes() {
             return [
@@ -69,31 +73,26 @@ define( [
             ].join( ' ' );
          }
 
-         ////////////////////////////////////////////////////////////////////////////////////////////////////////
+         /////////////////////////////////////////////////////////////////////////////////////////////////////
 
          function renderVertices() {
-            return vertices.entrySeq()
-               .map( ([ key, v ]) =>
-                   <Vertex key={key}
-                           id={key}
-                           layout={layout.vertices.get( key )}
-                           ports={v.ports}
-                           label={v.label}
-                           eventHandler={self.handleEvent} />
-               )
-               .toJS();
+            return vertices.valueSeq().map( vertex =>
+               <Vertex key={vertex.id}
+                       vertex={vertex}
+                       layout={layout.vertices.get( vertex.id )}
+                       eventHandler={self.handleEvent} />
+            ).toJS();
          }
 
-         ////////////////////////////////////////////////////////////////////////////////////////////////////////
+         /////////////////////////////////////////////////////////////////////////////////////////////////////
 
          function renderEdges() {
-            return edges.entrySeq()
-               .filter( ([ edgeId, edge ]) => !types.get( edge.type ).simple )
-               .map( ([ edgeId, edge ]) =>
-                  <Edge key={edgeId}
-                        id={edgeId}
+            return edges.valueSeq()
+               .filter( edge => !types.get( edge.type ).simple )
+               .map( edge =>
+                  <Edge key={edge.id}
                         edge={edge}
-                        layout={layout.edges.get( edgeId )}
+                        layout={layout.edges.get( edge.id )}
                         eventHandler={self.handleEvent} />
                )
                .toJS();
@@ -107,13 +106,13 @@ define( [
          var type = event.type();
          if( type === VertexMeasured ) {
             this.setState( ({measurements}) => ({
-               measurements: measurements.setIn( [ 'vertices', event.id ], event.measurements )
+               measurements: measurements.setIn( [ 'vertices', event.vertex.id ], event.measurements )
             }) );
             return;
          }
          if( type === EdgeMeasured ) {
             this.setState( ({measurements}) => ({
-               measurements: measurements.setIn( [ 'edges', event.id ], event.at )
+               measurements: measurements.setIn( [ 'edges', event.edge.id ], event.measurements )
             }) );
             return;
          }

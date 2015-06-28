@@ -28,22 +28,21 @@ define( [
                return [];
             }
 
-            // console.log( 'MEASUREMENTS', JSON.stringify( measurements.toJS(), null, 3 ) );
             const vertexIds = vertices.keySeq();
 
-            // temporary lookup table mapping simple edges to the coords of their representative ports
-            const fallbackCoords = portCoordsByEdgeId( vertexIds.toJS() );
+            // temporary lookup table for representing simple edges as port-to-port links
+            const portCoords = portCoordsByEdgeId( vertexIds.toJS() );
 
             return vertexIds.flatMap( vertexId =>
                Directions.flatMap( direction =>
-                  links( vertexId, direction, fallbackCoords )
+                  links( vertexId, direction, portCoords )
                )
             );
          }
 
          /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-         function links( vertexId, direction, fallbackCoords ) {
+         function links( vertexId, direction, portCoords ) {
             const vertex = vertices.get( vertexId );
             const edgeMeasurements = measurements.edges;
             const vertexMeasurements = measurements.vertices.get( vertexId );
@@ -57,8 +56,8 @@ define( [
                .filter( port => !!port.edgeId )
                .map( port => {
                   const here = add( vertexMeasurements[ direction ].get( port.id ), vertexCoords );
-                  const there = edgeMeasurements.get( port.edgeId )
-                            || fallbackCoords[ otherDirection ][ port.edgeId ];
+                  const edgeThere = edgeMeasurements.get( port.edgeId );
+                  const there = edgeThere ? edgeThere.center : portCoords[ otherDirection ][ port.edgeId ];
 
                   const from = isOutbound ? here : there;
                   const to = isOutbound ? there : here;
@@ -98,7 +97,7 @@ define( [
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
    function add( a, b ) {
-      return new Coords( {
+      return Coords( {
          left: a.left + b.left,
          top: a.top + b.top
       } );

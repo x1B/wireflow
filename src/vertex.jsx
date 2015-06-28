@@ -9,7 +9,8 @@ define( [
    'use strict';
 
    const { Record, Map } = Immutable;
-   const { Dimensions, Coords } = model;
+   const { Dimensions, Coords, convert } = model;
+   const { boxFromNode} = convert;
    const { VertexMeasured, PortMeasured, VertexMoved } = events;
    const { VertexMeasurements } = events.model;
 
@@ -21,11 +22,14 @@ define( [
          };
       },
 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
       render() {
 
          const self = this;
 
-         const { label, selected, layout, ports } = self.props;
+         const { vertex, selected, layout } = self.props;
+         const { ports, label } = vertex;
 
          const style = {
             position: 'absolute', // :TODO: move to stylesheet
@@ -77,9 +81,9 @@ define( [
       handleEvent( event ) {
          var type = event.type();
          if( type === PortMeasured ) {
-            const { direction, port, at } = event;
+            const { direction, port, center } = event;
             this.setState( ({ measurements }) => {
-               var newMeasurements = measurements.setIn( [ direction, port.id ], at );
+               var newMeasurements = measurements.setIn( [ direction, port.id ], center );
                this.propagate( newMeasurements );
                return { measurements: newMeasurements };
             } );
@@ -92,9 +96,10 @@ define( [
 
       propagate( measurements ) {
          if( this.isComplete( measurements ) ) {
-            this.props.eventHandler( VertexMeasured( {
-               id: this.props.id,
-               measurements: measurements
+            var { vertex, eventHandler } = this.props;
+            eventHandler( VertexMeasured( {
+               vertex,
+               measurements
             } ) );
          }
       },
@@ -102,8 +107,8 @@ define( [
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       isComplete( measurements ) {
-         const { ports } = this.props;
-         return measurements.dimensions &&
+         const { ports } = this.props.vertex;
+         return measurements.box &&
             measurements.inbound.size === ports.inbound.size &&
             measurements.outbound.size === ports.outbound.size;
       },
@@ -120,12 +125,9 @@ define( [
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       measure( container ) {
-         var dimensions = new Dimensions( {
-            width: container.offsetWidth,
-            height: container.offsetHeight
-         } );
          this.setState( ({ measurements }) => {
-            var newMeasurements = measurements.setIn( [ 'dimensions' ], dimensions );
+            var box = boxFromNode( container );
+            var newMeasurements = measurements.setIn( [ 'box' ], box );
             this.propagate( newMeasurements );
             return { measurements: newMeasurements };
          } );
@@ -134,7 +136,7 @@ define( [
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       enableDragDrop( container ) {
-         const { eventHandler, id } = this.props;
+         const { eventHandler, vertex } = this.props;
          var left, top;
          interact( container ).draggable( {
             onstart: ( e ) => {
@@ -145,7 +147,7 @@ define( [
                const dX = e.pageX - e.x0;
                const dY = e.pageY - e.y0;
                eventHandler( VertexMoved( {
-                  id: id,
+                  vertex: vertex,
                   to: Coords( { left: left + dX, top: top + dY } )
                } ) );
                this.measure( container );
