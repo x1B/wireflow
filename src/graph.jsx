@@ -2,17 +2,18 @@ define( [
    'react',
    'immutable',
    './model',
+   './events',
    './vertex',
    './edge',
    './links'
-], function( React, Immutable, model, Vertex, Edge, Links ) {
+], function( React, Immutable, model, events, Vertex, Edge, Links ) {
    'use strict';
 
    const { Record, Map } = Immutable;
    const { Dimensions, Layout } = model;
 
-   const PortsMeasurements = Record( { inbound: Map(), outbound: Map() } );
-   const VertexMeasurements = Record( { box: Dimensions(), ports: new PortsMeasurements() } );
+   const { VertexMeasured, EdgeMeasured } = events;
+
    const Measurements = Record( { vertices: Map(), edges: Map() } );
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -74,11 +75,11 @@ define( [
             return vertices.entrySeq()
                .map( ([ key, v ]) =>
                    <Vertex key={key}
+                           id={key}
                            layout={layout.vertices.get( key )}
                            ports={v.ports}
                            label={v.label}
-                           eventHandler={eventHandler}
-                           portMeasureHandler={portMeasureHandler( key )}/>
+                           eventHandler={self.handleEvent} />
                )
                .toJS();
          }
@@ -93,43 +94,30 @@ define( [
                         id={edgeId}
                         edge={edge}
                         layout={layout.edges.get( edgeId )}
-                        eventHandler={eventHandler}
-                        measureHandler={edgeMeasureHandler( edgeId )}/>
+                        eventHandler={self.handleEvent} />
                )
                .toJS();
          }
 
-         ////////////////////////////////////////////////////////////////////////////////////////////////////////
+      },
 
-         function transformMeasurements( f ) {
-            return self.setState( ({ measurements }) => {
-               const next = f( measurements );
-               return { measurements: next };
-            } );
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+      handleEvent( event ) {
+         var type = event.type();
+         if( type === VertexMeasured ) {
+            this.setState( ({measurements}) => ({
+               measurements: measurements.setIn( [ 'vertices', event.id ], event.measurements )
+            }) );
+            return;
          }
-
-         ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-         function portMeasureHandler( id ) {
-            return ( direction, port, coords ) =>
-               transformMeasurements( measurements => {
-                  const vertexMeasurements = ( measurements.vertices.get( id ) || VertexMeasurements() );
-                  return measurements.setIn(
-                     [ 'vertices', id ],
-                     vertexMeasurements.setIn( [ 'ports', direction, port.id ], coords )
-                  )
-               } );
+         if( type === EdgeMeasured ) {
+            this.setState( ({measurements}) => ({
+               measurements: measurements.setIn( [ 'edges', event.id ], event.at )
+            }) );
+            return;
          }
-
-         ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-         function edgeMeasureHandler( id ) {
-            return ( coords ) =>
-               transformMeasurements( measurements =>
-                  measurements.setIn( [ 'edges', id ], coords )
-               );
-         }
-
+         this.props.eventHandler( event );
       }
 
    } );

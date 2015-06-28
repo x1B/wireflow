@@ -28,11 +28,15 @@ define( [
          };
       },
 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
       getDefaultProps() {
          return {
             baseLayout: new Layout()
          };
       },
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       render() {
          return <Graph {...this.props}
@@ -40,11 +44,14 @@ define( [
                        eventHandler={this.handleEvent} />
       },
 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
       handleEvent( event ) {
          // console.log( 'Layout Event', event );
          const type = event.type();
          if( type === VertexMoved ) {
             this.setState( ({ layout }) => layout.setIn( [ 'vertices', event.id ], event.to ) );
+            return;
          }
          if( type === EdgeMoved ) {
             this.setState( ({ layout }) => {
@@ -55,9 +62,10 @@ define( [
                   } )
                };
             } );
+            return;
          }
          if( this.props.handleEvent ) {
-             this.props.handleEvent( event );
+             return this.props.handleEvent( event );
          }
       }
 

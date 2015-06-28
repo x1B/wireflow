@@ -46,7 +46,7 @@ define( [
          function links( vertexId, direction, fallbackCoords ) {
             const vertex = vertices.get( vertexId );
             const edgeMeasurements = measurements.edges;
-            const portsMeasurements = measurements.vertices.get( vertexId ).ports;
+            const vertexMeasurements = measurements.vertices.get( vertexId );
             const vertexCoords = layout.vertices.get( vertexId );
 
             // Is the link outbound wrt the current vertex?
@@ -56,7 +56,7 @@ define( [
             return vertex.ports[ direction ]
                .filter( port => !!port.edgeId )
                .map( port => {
-                  const here = add( portsMeasurements.getIn( [ direction, port.id ] ), vertexCoords );
+                  const here = add( vertexMeasurements[ direction ].get( port.id ), vertexCoords );
                   const there = edgeMeasurements.get( port.edgeId )
                             || fallbackCoords[ otherDirection ][ port.edgeId ];
 
@@ -77,7 +77,7 @@ define( [
             Directions.forEach( direction => {
                const table = coords[ direction ] = {};
                vertexIds.forEach( id => {
-                  const portsMeasurements = measurements.vertices.get( id ).ports[ direction ];
+                  const portsMeasurements = measurements.vertices.get( id )[ direction ];
                   const vertexCoords = layout.vertices.get( id );
                   vertices.get( id ).ports[ direction ].forEach( port => {
                      if ( port.edgeId ) {

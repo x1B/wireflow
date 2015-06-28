@@ -2,16 +2,13 @@ define( [ 'react', 'interact', './model', './events' ], function( React, interac
    'use strict';
 
    const { Coords } = model;
-
-   const { EdgeMoved } = events;
+   const { EdgeMeasured, EdgeMoved } = events;
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
    const Edge = React.createClass( {
 
       render() {
-         // console.log( 'CLOG', 'RENDER' ); // :TODO: DELETE ME
-
          const { edge, id, selected, layout, eventHandler } = this.props;
          const { type, label } = edge;
 
@@ -40,24 +37,34 @@ define( [ 'react', 'interact', './model', './events' ], function( React, interac
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       componentDidMount() {
-         const { measureHandler, eventHandler, edge, id, layout } = this.props;
-
          const icon = React.findDOMNode( this.refs.icon );
          const container = icon.parentNode;
-         this.props.measureHandler( new Coords( {
-            left: container.offsetLeft + (icon.offsetWidth / 2),
-            top: container.offsetTop + (icon.offsetHeight / 2)
+         this.measure( container, icon );
+         this.enableDragDrop( container, icon );
+      },
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+      measure( container, icon ) {
+         const { eventHandler, id } = this.props;
+         eventHandler( new EdgeMeasured( {
+            id: id,
+            at: new Coords( {
+               left: container.offsetLeft + (icon.offsetWidth / 2),
+               top: container.offsetTop + (icon.offsetHeight / 2)
+            } )
          } ) );
+      },
 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+      enableDragDrop( container, icon ) {
+         const { eventHandler, id } = this.props;
          var left, top;
-         var sX, sY;
-
          interact( container ).draggable( {
             onstart: ( e ) => {
                left = this.props.layout.left;
                top = this.props.layout.top;
-               sX = e.x0;
-               sY = e.y0;
             },
             onmove: ( e ) => {
                const dX = e.pageX - e.x0;
@@ -66,13 +73,7 @@ define( [ 'react', 'interact', './model', './events' ], function( React, interac
                   id: id,
                   to: Coords( { left: left + dX, top: top + dY } )
                } ) );
-
-               // :TODO: is this the best place for re-measuring?
-               this.props.measureHandler( new Coords( {
-                  left: container.offsetLeft + (icon.offsetWidth / 2),
-                  top: container.offsetTop + (icon.offsetHeight / 2)
-               } ) );
-
+               this.measure( container, icon );
             }
          } );
       }
