@@ -54,6 +54,7 @@ define( [
                         {renderEdges()}
                      </div>
                      <Links measurements={self.state.measurements}
+                            types={types}
                             vertices={vertices}
                             edges={edges}
                             layout={layout} />

@@ -15,7 +15,7 @@ define( [
 
       render() {
 
-         const { measurements, vertices, edges, layout } = this.props;
+         const { measurements, vertices, edges, layout, types } = this.props;
 
          return <svg className="nbe-links">
             {renderLinks()}
@@ -24,25 +24,25 @@ define( [
          /////////////////////////////////////////////////////////////////////////////////////////////////////
 
          function renderLinks() {
-            if ( measurements.vertices.isEmpty() ) {
+            if( measurements.vertices.isEmpty() ) {
                return [];
             }
 
             const vertexIds = vertices.keySeq();
 
             // temporary lookup table for representing simple edges as port-to-port links
-            const portCoords = portCoordsByEdgeId( vertexIds.toJS() );
+            const coords = coordsByEdgeId( vertexIds.toJS() );
 
-            return vertexIds.flatMap( vertexId =>
-               Directions.flatMap( direction =>
-                  links( vertexId, direction, portCoords )
+            return Directions.flatMap( direction =>
+               vertexIds.flatMap( vertexId =>
+                  links( vertexId, direction, coords )
                )
             );
          }
 
          /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-         function links( vertexId, direction, portCoords ) {
+         function links( vertexId, direction, coords ) {
             const vertex = vertices.get( vertexId );
             const edgeMeasurements = measurements.edges;
             const vertexMeasurements = measurements.vertices.get( vertexId );
@@ -52,35 +52,53 @@ define( [
             const isOutbound = direction === OUT;
             const otherDirection = isOutbound ? IN : OUT;
 
-            return vertex.ports[ direction ]
-               .filter( port => !!port.edgeId )
-               .map( port => {
-                  const here = add( vertexMeasurements[ direction ].get( port.id ), vertexCoords );
-                  const edgeThere = edgeMeasurements.get( port.edgeId );
-                  const there = edgeThere ? edgeThere.center : portCoords[ otherDirection ][ port.edgeId ];
+            // Make sure each link is drawn from one side only.
+            const hasExactlyOneNeighbor = ( port ) => {
+               if( !port.edgeId ) {
+                  return false;
+               }
+               var type = types.get( port.type );
+               if( !type.simple ) {
+                  return true;
+               }
+               return isOutbound ? (type.maxDestinations === 1) : (type.maxSources === 1)
+            }
 
-                  const from = isOutbound ? here : there;
-                  const to = isOutbound ? there : here;
+            return vertex.ports[ direction ]
+               .filter( hasExactlyOneNeighbor )
+               .map( port => {
+                  const here = {
+                     center: add( vertexMeasurements[ direction ].get( port.id ), vertexCoords ),
+                     box:  vertexMeasurements.box
+                  };
+                  const thereEdge = edgeMeasurements.get( port.edgeId );
+                  const there = ( thereEdge ? thereEdge : coords[ otherDirection ][ port.edgeId ] );
+
+                  const [ a, b ] = isOutbound ? [ here, there ] : [ there, here ];
 
                   return <Link key={vertexId + '/' + port.id}
                                type={port.type}
-                               from={from}
-                               to={to} />
+                               from={a}
+                               to={b}/>
                } );
          }
 
          /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-         function portCoordsByEdgeId( vertexIds ) {
+         function coordsByEdgeId( vertexIds ) {
             const coords = {};
             Directions.forEach( direction => {
-               const table = coords[ direction ] = {};
+               const portsTable = coords[ direction ] = {};
                vertexIds.forEach( id => {
-                  const portsMeasurements = measurements.vertices.get( id )[ direction ];
+                  const vertexMeasurements = measurements.vertices.get( id );
+                  const portsMeasurements = vertexMeasurements[ direction ];
                   const vertexCoords = layout.vertices.get( id );
                   vertices.get( id ).ports[ direction ].forEach( port => {
-                     if ( port.edgeId ) {
-                        table[ port.edgeId ] = add( portsMeasurements.get( port.id ), vertexCoords );
+                     if( port.edgeId ) {
+                        portsTable[ port.edgeId ] = {
+                           box: vertexMeasurements.box,
+                           center: add( portsMeasurements.get( port.id ), vertexCoords )
+                        };
                      }
                   } );
                } );

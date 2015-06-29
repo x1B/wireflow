@@ -317,6 +317,8 @@ define( [
          hidden: false
       },
       ACTION: {
+         maxDestinations: 1,
+         simple: true,
          label: 'Actions',
          hidden: false
       }

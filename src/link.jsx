@@ -9,25 +9,15 @@ define( [ 'react', './util/pathing' ], function( React, pathing ) {
 
          const classes = [ 'nbe-link', 'nbe-type-' + type ].join( ' ' );
 
-         const from_ = [ from.left, from.top ];
-         const to_ = [ to.left, to.top ];
+         const fromCoords = [ from.center.left, from.center.top ];
+         const toCoords = [ to.center.left, to.center.top ];
 
-         // TODO: Boxes & Direction
+         const fromBox = toRect( from.box );
+         const toBox = toRect( to.box );
 
-         const fromBox = {
-            left: from.left - 15,
-            top: from.top - 15,
-            right: from.left + 30,
-            bottom: from.top + 30
-         };
-         const toBox = {
-            left: to.left - 15,
-            top: to.top - 15,
-            right: to.left + 30,
-            bottom: to.top + 30
-         };
 
-         const data = pathing.cubic( from_, to_, [ 1, -1 ], 1, [ fromBox, toBox ] );
+         // :TODO: simplify call:
+         const data = pathing.cubic( fromCoords, toCoords, [ 1, -1 ], 1, [ fromBox, toBox ] );
 
          return (
             <path className={classes} d={data} />
@@ -35,6 +25,17 @@ define( [ 'react', './util/pathing' ], function( React, pathing ) {
       }
 
    } );
+
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+   function toRect( box ) {
+      return {
+         left: box.coords.left,
+         top: box.coords.top,
+         right: box.coords.left + box.dimensions.width,
+         bottom: box.coords.top + box.dimensions.height
+      };
+   }
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
