@@ -5,14 +5,15 @@ define( [
    './events',
    './vertex',
    './edge',
-   './links'
-], function( React, Immutable, model, events, Vertex, Edge, Links ) {
+   './links',
+   './util/shallow-equal'
+], function( React, Immutable, model, events, Vertex, Edge, Links, shallowEqual ) {
    'use strict';
 
    const { Record, Map } = Immutable;
    const { Dimensions, Layout } = model;
 
-   const { VertexMeasured, EdgeMeasured } = events;
+   const { VertexMeasured, EdgeMeasured, Rendered } = events;
 
    const Measurements = Record( { vertices: Map(), edges: Map() } );
 
@@ -44,6 +45,7 @@ define( [
       render() {
          const self = this;
          const { types, edges, vertices, layout, zoom, hasFocus, eventHandler } = self.props;
+         eventHandler( Rendered( { what: Graph.displayName } ) );
 
          return (
             <div tabIndex="0" className={classes()}>
@@ -54,6 +56,7 @@ define( [
                         {renderEdges()}
                      </div>
                      <Links measurements={self.state.measurements}
+                            eventHandler={self.handleEvent}
                             types={types}
                             vertices={vertices}
                             edges={edges}
@@ -118,6 +121,12 @@ define( [
             return;
          }
          this.props.eventHandler( event );
+      },
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+      shouldComponentUpdate( nextProps, nextState ) {
+         return !shallowEqual( nextState, this.state ) || !shallowEqual( nextProps, this.props );
       }
 
    } );

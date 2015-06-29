@@ -2,12 +2,15 @@ define( [
    'react',
    'immutable',
    './model',
-   './link'
-], function( React, Immutable, model, Link ) {
+   './events',
+   './link',
+   './util/shallow-equal'
+], function( React, Immutable, model, events, Link, shallowEqual ) {
    'use strict';
 
    const { List } = Immutable;
    const { Directions, IN, OUT, Coords } = model;
+   const { Rendered } = events;
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -15,7 +18,8 @@ define( [
 
       render() {
 
-         const { measurements, vertices, edges, layout, types } = this.props;
+         const { measurements, vertices, edges, layout, types, eventHandler } = this.props;
+         eventHandler( Rendered( { what: Links.displayName } ) );
 
          return <svg className="nbe-links">
             {renderLinks()}
@@ -79,7 +83,8 @@ define( [
                   return <Link key={vertexId + '/' + port.id}
                                type={port.type}
                                from={a}
-                               to={b}/>
+                               to={b}
+                               eventHandler={eventHandler}/>
                } );
          }
 
@@ -106,6 +111,12 @@ define( [
             return coords;
          }
 
+      },
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+      shouldComponentUpdate( nextProps, nextState ) {
+         return !shallowEqual( nextState, this.state ) || !shallowEqual( nextProps, this.props );
       }
 
    } );

@@ -1,12 +1,15 @@
 define( [
    'react',
    './model',
+   './events',
+   './metrics',
    './graph',
    './graph-layout-editor'
-], function( React, model, Graph, GraphLayoutEditor ) {
+], function( React, model, events, Metrics, Graph, GraphLayoutEditor ) {
    'use strict';
 
    const { components, convert } = model;
+   const { Rendered } = events;
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -326,13 +329,21 @@ define( [
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+   var previousMetrics;
+   var metrics =
+   function handleEvent( event ) {
+      var type = event.type();
+      if( type === Rendered ) {
+      }
+   }
+
    React.render(
-      <div>
+      <Metrics>
          <GraphLayoutEditor types={types}
                             baseLayout={layout}
                             vertices={graph.vertices}
                             edges={graph.edges} />
-      </div>,
+      </Metrics>,
       document.getElementById( 'root' )
    );
 

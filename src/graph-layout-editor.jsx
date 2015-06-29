@@ -61,8 +61,8 @@ define( [
             );
             return;
          }
-         if( this.props.handleEvent ) {
-             return this.props.handleEvent( event );
+         if( this.props.eventHandler ) {
+             return this.props.eventHandler( event );
          }
       }
 

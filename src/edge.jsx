@@ -1,9 +1,15 @@
-define( [ 'react', 'interact', './model', './events' ], function( React, interact, model, events ) {
+define( [
+   'react',
+   'interact',
+   './model',
+   './events',
+   './util/shallow-equal'
+], function( React, interact, model, events, shallowEqual ) {
    'use strict';
 
    const { Coords, convert } = model;
    const { boxFromNode } = convert;
-   const { EdgeMeasured, EdgeMoved } = events;
+   const { EdgeMeasured, EdgeMoved, Rendered } = events;
    const { EdgeMeasurements } = events.model;
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -12,6 +18,7 @@ define( [ 'react', 'interact', './model', './events' ], function( React, interac
 
       render() {
          const { edge, id, selected, layout, eventHandler } = this.props;
+         eventHandler( Rendered( { what: Edge.displayName } ) );
          const { type, label } = edge;
 
          const style = {
@@ -72,6 +79,7 @@ define( [ 'react', 'interact', './model', './events' ], function( React, interac
                top = this.props.layout.top;
             },
             onmove: ( e ) => {
+               eventHandler( Rendered( { what: 'edge-moved' } ) );
                const dX = e.pageX - e.x0;
                const dY = e.pageY - e.y0;
                eventHandler( EdgeMoved( {
@@ -81,6 +89,12 @@ define( [ 'react', 'interact', './model', './events' ], function( React, interac
                this.measure( container, icon );
             }
          } );
+      },
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+      shouldComponentUpdate( nextProps, nextState ) {
+         return !shallowEqual( nextState, this.state ) || !shallowEqual( nextProps, this.props );
       }
 
    } );

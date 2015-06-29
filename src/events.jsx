@@ -6,6 +6,13 @@ define( [ 'immutable', './model' ], function( Immutable, model ) {
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+   const Rendered = Record( {
+      what: null,
+      type: () => Rendered
+   } );
+
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
    const PortMeasured = Record( {
       port: null,
       direction: null,
@@ -51,6 +58,7 @@ define( [ 'immutable', './model' ], function( Immutable, model ) {
    } );
 
    return {
+      Rendered,
       PortMeasured,
       VertexMeasured,
       EdgeMeasured,

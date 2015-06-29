@@ -1,9 +1,14 @@
-define( [ 'react', './model', './events' ], function( React, model, events ) {
+define( [
+   'react',
+   './model',
+   './events',
+   './util/shallow-equal'
+], function( React, model, events, shallowEqual ) {
    'use strict';
 
    const { Coords } = model;
 
-   const { PortMeasured } = events;
+   const { PortMeasured, Rendered } = events;
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -11,7 +16,8 @@ define( [ 'react', './model', './events' ], function( React, model, events ) {
 
       render() {
 
-         var { port, direction } = this.props;
+         var { port, direction, eventHandler } = this.props;
+         eventHandler( Rendered( { what: Port.displayName } ) );
 
          var classes = [ 'nbe-port', 'nbe-type-' + port.type ].join( ' ' );
 
@@ -27,13 +33,19 @@ define( [ 'react', './model', './events' ], function( React, model, events ) {
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       componentDidMount() {
-         var { port, direction } = this.props;
+         var { port, direction, eventHandler } = this.props;
          var node = React.findDOMNode( this.refs.handle );
          var coords = new Coords( {
             left: node.offsetLeft + (node.offsetWidth / 2),
             top: node.offsetTop + (node.offsetHeight / 2)
          } );
-         this.props.eventHandler( PortMeasured( { port: port, direction: direction, center: coords } ) );
+         eventHandler( PortMeasured( { port: port, direction: direction, center: coords } ) );
+      },
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+      shouldComponentUpdate( nextProps, nextState ) {
+         return !shallowEqual( nextState, this.state ) || !shallowEqual( nextProps, this.props );
       }
 
    } );

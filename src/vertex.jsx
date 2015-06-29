@@ -4,14 +4,15 @@ define( [
    'interact',
    './model',
    './events',
-   './port'
-], function( React, Immutable, interact, model, events, Port ) {
+   './port',
+   './util/shallow-equal'
+], function( React, Immutable, interact, model, events, Port, shallowEqual ) {
    'use strict';
 
    const { Record, Map } = Immutable;
    const { Dimensions, Coords, convert } = model;
    const { boxFromNode} = convert;
-   const { VertexMeasured, PortMeasured, VertexMoved } = events;
+   const { VertexMeasured, PortMeasured, VertexMoved, Rendered } = events;
    const { VertexMeasurements } = events.model;
 
    const Vertex = React.createClass( {
@@ -25,10 +26,11 @@ define( [
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       render() {
-
          const self = this;
 
-         const { vertex, selected, layout } = self.props;
+         const { vertex, selected, layout, eventHandler } = self.props;
+         eventHandler( Rendered( { what: Vertex.displayName } ) );
+
          const { ports, label } = vertex;
 
          const style = {
@@ -144,6 +146,7 @@ define( [
                top = this.props.layout.top;
             },
             onmove: ( e ) => {
+               eventHandler( Rendered( { what: 'vertex-moved' } ) );
                const dX = e.pageX - e.x0;
                const dY = e.pageY - e.y0;
                eventHandler( VertexMoved( {
@@ -153,6 +156,12 @@ define( [
                this.measure( container );
             }
          } );
+      },
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+      shouldComponentUpdate( nextProps, nextState ) {
+         return !shallowEqual( nextState, this.state ) || !shallowEqual( nextProps, this.props );
       }
 
    } );
