@@ -1,11 +1,15 @@
 define( [
    'react',
-   './nbe-model',
-   './graph'
-], function( React, nbeModel, Graph ) {
+   './model',
+   './events',
+   './components/metrics',
+   './components/graph',
+   './components/graph-layout-editor'
+], function( React, model, events, Metrics, Graph, GraphLayoutEditor ) {
    'use strict';
 
-   const { components, convert } = nbeModel;
+   const { components, convert } = model;
+   const { Rendered } = events;
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -316,6 +320,8 @@ define( [
          hidden: false
       },
       ACTION: {
+         maxDestinations: 1,
+         simple: true,
          label: 'Actions',
          hidden: false
       }
@@ -323,13 +329,21 @@ define( [
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+   var previousMetrics;
+   var metrics =
+   function handleEvent( event ) {
+      var type = event.type();
+      if( type === Rendered ) {
+      }
+   }
+
    React.render(
-      <div>
-         <Graph types={types}
-                layout={layout}
-                vertices={graph.vertices}
-                edges={graph.edges} />
-      </div>,
+      <Metrics>
+         <GraphLayoutEditor types={types}
+                            baseLayout={layout}
+                            vertices={graph.vertices}
+                            edges={graph.edges} />
+      </Metrics>,
       document.getElementById( 'root' )
    );
 
