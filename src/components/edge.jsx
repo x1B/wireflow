@@ -74,12 +74,18 @@ define( [
          const { eventHandler, edge } = this.props;
          var left, top;
          interact( container ).draggable( {
+            restrict: {
+               restriction: function( x, y, element ) {
+                  // Restrict by the canvas
+                  return element.parentNode.parentNode;
+               }
+            },
             onstart: ( e ) => {
                left = this.props.layout.left;
                top = this.props.layout.top;
             },
             onmove: ( e ) => {
-               eventHandler( Rendered( { what: 'edge-moved' } ) );
+               eventHandler( Rendered( { what: 'events.EdgeMoved' } ) );
                const dX = e.pageX - e.x0;
                const dY = e.pageY - e.y0;
                eventHandler( EdgeMoved( {
@@ -94,7 +100,7 @@ define( [
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       shouldComponentUpdate( nextProps, nextState ) {
-         return !shallowEqual( nextState, this.state ) || !shallowEqual( nextProps, this.props );
+         return !shallowEqual( nextProps, this.props );
       }
 
    } );

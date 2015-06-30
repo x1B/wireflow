@@ -20,8 +20,10 @@ define( [
          const children = React.Children.map( this.props.children, ( child =>
             React.cloneElement( child, props )
          ) );
-         return <div>{ children }</div>;
+         return <div className="nbe-metrics">{ children }</div>;
       },
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       handleEvent( event ) {
          const type = event.type();
@@ -37,6 +39,8 @@ define( [
             this.props.eventHandler( event );
          }
       },
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       report() {
          const pad = n => n > 999 ? '' : ' ' + pad( 10 * n );

@@ -39,9 +39,11 @@ define( [
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       render() {
-         return <Graph {...this.props}
-                       layout={this.state.layout}
-                       eventHandler={this.handleEvent} />
+         const props = { eventHandler: this.handleEvent, layout: this.state.layout };
+         const children = React.Children.map( this.props.children, ( child =>
+            React.cloneElement( child, Object.assign( {}, this.props, props ) )
+         ) );
+         return <div className="nbe-layout-editor">{ children }</div>;
       },
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////

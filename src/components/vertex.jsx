@@ -141,12 +141,18 @@ define( [
          const { eventHandler, vertex } = this.props;
          var left, top;
          interact( container ).draggable( {
+            restrict: {
+               restriction: function( x, y, element ) {
+                  // Restrict by the canvas
+                  return element.parentNode.parentNode;
+               }
+            },
             onstart: ( e ) => {
                left = this.props.layout.left;
                top = this.props.layout.top;
             },
             onmove: ( e ) => {
-               eventHandler( Rendered( { what: 'vertex-moved' } ) );
+               eventHandler( Rendered( { what: 'events.VertexMoved' } ) );
                const dX = e.pageX - e.x0;
                const dY = e.pageY - e.y0;
                eventHandler( VertexMoved( {

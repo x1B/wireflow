@@ -49,7 +49,7 @@ define( [
          return (
             <div tabIndex="0" className={classes()}>
                <div className="nbe-graph-viewport">
-                  <div className="nbe-graph-canvas">
+                  <div className="nbe-graph-canvas" style={self.canvasSize( self.state.measurements )}>
                      <div className="nbe-graph-nodes">
                         {renderVertices()}
                         {renderEdges()}
@@ -126,6 +126,28 @@ define( [
 
       shouldComponentUpdate( nextProps, nextState ) {
          return !shallowEqual( nextState, this.state ) || !shallowEqual( nextProps, this.props );
+      },
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+      canvasSize( measurements ) {
+
+         var w = 0;
+         var h = 0;
+         const padding = 50;
+         const { max } = Math;
+
+         const measure = node => {
+            const { box: { coords: { left, top }, dimensions: { width, height } } } = node;
+            w = max( w, left+width );
+            h = max( h, top+height );
+         };
+
+         measurements.vertices.forEach( measure );
+         measurements.edges.forEach( measure );
+
+         // TODO: 'font-size: 0' is a weird hack, find a better way to make sure that no scrollbar is shown
+         return { 'minWidth': (w+padding) + 'px', 'minHeight': (h+padding) + 'px', 'fontSize': 0 }
       }
 
    } );

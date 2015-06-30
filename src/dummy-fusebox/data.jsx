@@ -1,19 +1,6 @@
-define( [
-   'react',
-   './model',
-   './events',
-   './components/metrics',
-   './components/graph',
-   './components/graph-layout-editor'
-], function( React, model, events, Metrics, Graph, GraphLayoutEditor ) {
-   'use strict';
+define( {
 
-   const { components, convert } = model;
-   const { Rendered } = events;
-
-   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-   const graph = convert.graph( {
+   graph: {
       vertices: {
          command: {
             label: 'Command Button',
@@ -251,11 +238,10 @@ define( [
             type: 'CONTAINER'
          }
       }
-   } );
+   },
 
-   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-   const layout = convert.layout( {
+   layout: {
       vertices: {
          command: {
             left: 292,
@@ -300,11 +286,9 @@ define( [
             top: 106
          }
       }
-   } );
+   },
 
-   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-   const types = convert.types( {
+   types: {
       RESOURCE: {
          hidden: false,
          label: 'Resources'
@@ -325,26 +309,6 @@ define( [
          label: 'Actions',
          hidden: false
       }
-   } );
-
-   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-   var previousMetrics;
-   var metrics =
-   function handleEvent( event ) {
-      var type = event.type();
-      if( type === Rendered ) {
-      }
    }
-
-   React.render(
-      <Metrics>
-         <GraphLayoutEditor types={types}
-                            baseLayout={layout}
-                            vertices={graph.vertices}
-                            edges={graph.edges} />
-      </Metrics>,
-      document.getElementById( 'root' )
-   );
 
 } );
