@@ -1,11 +1,13 @@
 define( [
    'react',
+   '../model',
    '../events',
    '../util/pathing',
    '../util/shallow-equal'
-], function( React, events, pathing, shallowEqual ) {
+], function( React, model, events, pathing, shallowEqual ) {
    'use strict';
 
+   const { IN, OUT } = model;
    const { Rendered } = events;
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -14,17 +16,24 @@ define( [
 
       render() {
 
-         const { type, from, to, eventHandler } = this.props;
-         eventHandler( Rendered( { what: Link.displayName } ) );
+         const {
+            fromPort,
+            toPort,
+            fromMeasurements,
+            toMeasurements,
+            eventHandler
+         } = this.props;
+
+         const type = ( fromPort || toPort ).type;
 
          const classes = [ 'nbe-link', 'nbe-type-' + type ].join( ' ' );
+         eventHandler( Rendered( { what: Link.displayName } ) );
 
-         const fromCoords = [ from.center.left, from.center.top ];
-         const toCoords = [ to.center.left, to.center.top ];
-         const fromBox = toRect( from.box );
-         const toBox = toRect( to.box );
+         const fromCoords = coords( fromMeasurements, fromPort, OUT );
+         const toCoords = coords( toMeasurements, toPort, IN );
 
-         const data = pathing.cubic( fromCoords, toCoords, [ 1, -1 ], 1, [ fromBox, toBox ] );
+         const boxes = [ rect( fromMeasurements ), rect( toMeasurements ) ];
+         const data = pathing.cubic( fromCoords, toCoords, [ 1, -1 ], 1, boxes );
 
          return (
             <path className={classes} d={data} />
@@ -33,21 +42,35 @@ define( [
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-      // :TODO: figure out how to use immutability here
       shouldComponentUpdate( nextProps, nextState ) {
-         return !shallowEqual( nextState, this.state ) || !shallowEqual( nextProps, this.props );
+         return !shallowEqual( nextProps, this.props );
       }
 
    } );
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-   function toRect( box ) {
+   function coords( measurements, port, direction ) {
+      if( port ) {
+         const { box: { coords: { left, top }, coords: { width, height } } } = measurements;
+         const portOffset = measurements[ direction ].get( port.id );
+         return [ left + portOffset.left, top + portOffset.top ];
+      }
+
+      // edge:
+      const { center: { left, top} } = measurements;
+      return [ left, top ];
+   }
+
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+   function rect( measurements ) {
+      const { box: { coords, dimensions } } = measurements;
       return {
-         left: box.coords.left,
-         top: box.coords.top,
-         right: box.coords.left + box.dimensions.width,
-         bottom: box.coords.top + box.dimensions.height
+         left: coords.left,
+         top: coords.top,
+         right: coords.left + dimensions.width,
+         bottom: coords.top + dimensions.height
       };
    }
 
