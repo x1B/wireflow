@@ -1,4 +1,7 @@
-define( [ 'immutable', './model' ], function( Immutable, model ) {
+define( [
+   'immutable',
+   './model'
+], function( Immutable, model ) {
 
    const { Map, List, Record } = Immutable;
 

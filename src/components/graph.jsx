@@ -1,18 +1,17 @@
 define( [
    'react',
    'immutable',
-   './model',
-   './events',
+   '../model',
+   '../events',
+   '../util/shallow-equal',
    './vertex',
    './edge',
-   './links',
-   './util/shallow-equal'
-], function( React, Immutable, model, events, Vertex, Edge, Links, shallowEqual ) {
+   './links'
+], function( React, Immutable, model, events, shallowEqual, Vertex, Edge, Links ) {
    'use strict';
 
    const { Record, Map } = Immutable;
    const { Dimensions, Layout } = model;
-
    const { VertexMeasured, EdgeMeasured, Rendered } = events;
 
    const Measurements = Record( { vertices: Map(), edges: Map() } );

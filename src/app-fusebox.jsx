@@ -2,9 +2,9 @@ define( [
    'react',
    './model',
    './events',
-   './metrics',
-   './graph',
-   './graph-layout-editor'
+   './components/metrics',
+   './components/graph',
+   './components/graph-layout-editor'
 ], function( React, model, events, Metrics, Graph, GraphLayoutEditor ) {
    'use strict';
 

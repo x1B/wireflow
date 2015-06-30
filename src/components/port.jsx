@@ -1,13 +1,12 @@
 define( [
    'react',
-   './model',
-   './events',
-   './util/shallow-equal'
+   '../model',
+   '../events',
+   '../util/shallow-equal'
 ], function( React, model, events, shallowEqual ) {
    'use strict';
 
    const { Coords } = model;
-
    const { PortMeasured, Rendered } = events;
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////

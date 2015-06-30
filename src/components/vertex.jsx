@@ -2,11 +2,11 @@ define( [
    'react',
    'immutable',
    'interact',
-   './model',
-   './events',
+   '../model',
+   '../events',
+   '../util/shallow-equal',
    './port',
-   './util/shallow-equal'
-], function( React, Immutable, interact, model, events, Port, shallowEqual ) {
+], function( React, Immutable, interact, model, events, shallowEqual, Port ) {
    'use strict';
 
    const { Record, Map } = Immutable;

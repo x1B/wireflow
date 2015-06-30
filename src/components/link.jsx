@@ -1,12 +1,14 @@
 define( [
    'react',
-   './util/pathing',
-   './events',
-   './util/shallow-equal'
-], function( React, pathing, events, shallowEqual ) {
+   '../events',
+   '../util/pathing',
+   '../util/shallow-equal'
+], function( React, events, pathing, shallowEqual ) {
    'use strict';
 
    const { Rendered } = events;
+
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
    const Link = React.createClass( {
 
@@ -31,7 +33,7 @@ define( [
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-      // :TODO: figure out how to ensure immutability here
+      // :TODO: figure out how to use immutability here
       shouldComponentUpdate( nextProps, nextState ) {
          return !shallowEqual( nextState, this.state ) || !shallowEqual( nextProps, this.props );
       }

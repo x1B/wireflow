@@ -1,9 +1,9 @@
 define( [
    'react',
    'interact',
-   './model',
-   './events',
-   './util/shallow-equal'
+   '../model',
+   '../events',
+   '../util/shallow-equal'
 ], function( React, interact, model, events, shallowEqual ) {
    'use strict';
 

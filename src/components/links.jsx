@@ -1,10 +1,10 @@
 define( [
    'react',
    'immutable',
-   './model',
-   './events',
+   '../model',
+   '../events',
    './link',
-   './util/shallow-equal'
+   '../util/shallow-equal'
 ], function( React, Immutable, model, events, Link, shallowEqual ) {
    'use strict';
 
@@ -71,6 +71,7 @@ define( [
             return vertex.ports[ direction ]
                .filter( hasExactlyOneNeighbor )
                .map( port => {
+
                   const here = {
                      center: add( vertexMeasurements[ direction ].get( port.id ), vertexCoords ),
                      box:  vertexMeasurements.box
@@ -80,6 +81,8 @@ define( [
 
                   const [ a, b ] = isOutbound ? [ here, there ] : [ there, here ];
 
+                  // :TODO: to take advantage of immutability, only *select* source and dest
+                  //        from layout/measurements and pass them through.
                   return <Link key={vertexId + '/' + port.id}
                                type={port.type}
                                from={a}

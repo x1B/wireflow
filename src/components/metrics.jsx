@@ -1,4 +1,8 @@
-define( [ 'react', 'immutable', './events' ], function( React, Immutable, events ) {
+define( [
+   'react',
+   'immutable',
+   '../events'
+], function( React, Immutable, events ) {
    'use strict';
 
    const { Map } = Immutable;

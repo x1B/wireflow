@@ -1,10 +1,10 @@
 define( [
    'react',
    'immutable',
-   './model',
-   './events',
+   '../model',
+   '../events',
    './graph',
-   './polyfill/object-assign'
+   '../polyfill/object-assign'
 ], function( React, Immutable, model, events, Graph ) {
    'use strict';
 

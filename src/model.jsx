@@ -1,18 +1,22 @@
-define( [ 'immutable' ], function( Immutable ) {
+define( [
+   'immutable'
+], function( Immutable ) {
 
    const { Map, List, Record } = Immutable;
 
+   // Types related to layout/measurements
    const Coords = Record( { left: 0, top: 0 } );
    const Dimensions = Record( { width: 0, height: 0 } );
    const Box = Record( { coords: Coords(), dimensions: Dimensions() } );
+   const Layout = Record( { edges: Map(), vertices: Map() } );
 
+   // Actual model
    const Graph = Record( { edges: Map(), vertices: Map() } );
    const Port = Record( { label: '', type: null, id: null, edgeId: null } );
    const Ports = Record( { inbound: List(), outbound: List() } );
    const Vertex = Record( { id: null, label: '', ports: Ports() } );
    const Edge = Record( { id: null, label: '', type: null } );
    const Type = Record( { hidden: false, label: '', simple: false, maxSources: null, maxDestinations: null } );
-   const Layout = Record( { edges: Map(), vertices: Map() } );
 
    const IN = 'inbound';
    const OUT = 'outbound';
@@ -22,11 +26,11 @@ define( [ 'immutable' ], function( Immutable ) {
       Coords,
       Dimensions,
       Box,
+      Layout,
       IN,
       OUT,
       Directions,
       Graph,
-      Layout,
       convert: {
          graph: graph,
          layout: layout,
