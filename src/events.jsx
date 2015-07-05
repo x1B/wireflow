@@ -15,10 +15,10 @@ define( [
    } );
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+   // Layout Measurements
 
    const PortMeasured = Record( {
       port: null,
-      direction: null,
       center: Coords(),
       type: () => PortMeasured
    } );
@@ -47,6 +47,7 @@ define( [
    } );
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+   // Layout Manipulation
 
    const EdgeMoved = Record( {
       edge: null,
@@ -60,13 +61,43 @@ define( [
       type: () => VertexMoved
    } );
 
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+   // Model Manipulation
+
+   const PortDisconnected = Record( {
+      vertex: null,
+      port: null,
+      type: () => PortDisconnected
+   } );
+
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+   // Communication of internal state changes
+
+   const GraphModified = Record( {
+      graph: null,
+      type: () => GraphModified
+   } );
+
+   const LayoutModified = Record( {
+      layout: null,
+      type: () => LayoutModified
+   } );
+
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
    return {
       Rendered,
+
       PortMeasured,
       VertexMeasured,
       EdgeMeasured,
+
       EdgeMoved,
       VertexMoved,
+
+      PortDisconnected,
+      LayoutModified,
+      GraphModified,
       model: {
          EdgeMeasurements,
          VertexMeasurements

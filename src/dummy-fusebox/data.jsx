@@ -10,20 +10,17 @@ define( {
                      id: 'anchor',
                      label: 'anchor',
                      type: 'CONTAINER',
-                     edgeId: 'c1',
-                     direction: 'in'
+                     edgeId: 'c1'
                   },
                   {
                      id: 'i0',
                      label: 'delete.enableOn',
-                     type: 'FLAG',
-                     direction: 'in'
+                     type: 'FLAG'
                   },
                   {
                      id: 'i1',
                      label: 'buttons[ 0 ].enableOn',
-                     type: 'ACTION',
-                     direction: 'in'
+                     type: 'ACTION'
                   }
                ],
                outbound: [
@@ -49,26 +46,22 @@ define( {
                      id: 'anchor',
                      label: 'anchor',
                      type: 'CONTAINER',
-                     edgeId: 'c1',
-                     direction: 'in'
+                     edgeId: 'c1'
                   },
                   {
                      id: 'i0',
                      label: 'Some Resource (S)',
-                     type: 'RESOURCE',
-                     direction: 'in'
+                     type: 'RESOURCE'
                   },
                   {
                      id: 'i1',
                      label: 'Another Resource (S)',
-                     type: 'RESOURCE',
-                     direction: 'in'
+                     type: 'RESOURCE'
                   },
                   {
                      id: 'i2',
                      label: 'Play Music On',
-                     type: 'FLAG',
-                     direction: 'in'
+                     type: 'FLAG'
                   }
                ],
                outbound: [
@@ -126,35 +119,30 @@ define( {
                      id: 'anchor',
                      label: 'anchor',
                      type: 'CONTAINER',
-                     edgeId: 'c0',
-                     direction: 'in'
+                     edgeId: 'c0'
                   },
                   {
                      id: 'i0',
                      label: 'First Resource (S)',
                      type: 'RESOURCE',
-                     edgeId: 'r0',
-                     direction: 'in'
+                     edgeId: 'r0'
                   },
                   {
                      id: 'i1',
                      label: 'Second Resource (S)',
-                     type: 'RESOURCE',
-                     direction: 'in'
+                     type: 'RESOURCE'
                   },
                   {
                      id: 'i2',
                      label: 'Take a Second',
                      type: 'FLAG',
-                     edgeId: 'f0',
-                     direction: 'in'
+                     edgeId: 'f0'
                   },
                   {
                      id: 'i3',
                      label: 'Save Action',
                      type: 'ACTION',
-                     edgeId: 'a0',
-                     direction: 'in'
+                     edgeId: 'a0'
                   }
                ],
                outbound: [
@@ -184,21 +172,18 @@ define( {
                      id: 'anchor',
                      label: 'anchor',
                      type: 'CONTAINER',
-                     edgeId: 'c1',
-                     direction: 'in'
+                     edgeId: 'c1'
                   },
                   {
                      id: 'i0',
                      label: 'The Resource (S)',
                      type: 'RESOURCE',
-                     edgeId: 'r0',
-                     direction: 'in'
+                     edgeId: 'r0'
                   },
                   {
                      id: 'i1',
                      label: 'Shuffle Action',
-                     type: 'ACTION',
-                     direction: 'in'
+                     type: 'ACTION'
                   }
                ],
                outbound: [

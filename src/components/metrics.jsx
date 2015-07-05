@@ -1,8 +1,10 @@
 define( [
    'react',
    'immutable',
-   '../events'
-], function( React, Immutable, events ) {
+   '../events',
+   '../util/options',
+   '../util/shallow-equal'
+], function( React, Immutable, events, options, shallowEqual ) {
    'use strict';
 
    const { Map } = Immutable;
@@ -27,6 +29,7 @@ define( [
 
       handleEvent( event ) {
          const type = event.type();
+
          if( type === Rendered ) {
             counters = counters.set( event.what, (counters.get( event.what ) || 0) + 1 );
             if( !timeout ) {

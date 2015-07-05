@@ -22,7 +22,7 @@ define( [
 
       getInitialState() {
          return {
-            measurements: new Measurements()
+            measurements: Measurements()
          };
       },
 
@@ -31,8 +31,7 @@ define( [
       getDefaultProps() {
          return {
             types: Map(),
-            edges: Map(),
-            vertices: Map(),
+            model: model.Graph(),
             layout: Layout(),
             zoom: 100,
             hasFocus: false
@@ -43,7 +42,7 @@ define( [
 
       render() {
          const self = this;
-         const { types, edges, vertices, layout, zoom, hasFocus, eventHandler } = self.props;
+         const { model: { vertices, edges }, types, layout, zoom, hasFocus, eventHandler } = self.props;
          eventHandler( Rendered( { what: Graph.displayName } ) );
 
          return (
@@ -119,7 +118,15 @@ define( [
             }) );
             return;
          }
-         this.props.eventHandler( event );
+         this.bubble( event );
+      },
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+      bubble( event ) {
+         if( this.props.eventHandler ) {
+            this.props.eventHandler( event );
+         }
       },
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -147,7 +154,11 @@ define( [
          measurements.edges.forEach( measure );
 
          // TODO: 'font-size: 0' is a weird hack, find a better way to make sure that no scrollbar is shown
-         return { 'minWidth': (w+padding) + 'px', 'minHeight': (h+padding) + 'px', 'fontSize': 0 }
+         return {
+            'fontSize': 0,
+            'minWidth': (w+padding) + 'px',
+            'minHeight': (h+padding) + 'px'
+         };
       }
 
    } );

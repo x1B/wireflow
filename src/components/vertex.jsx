@@ -2,17 +2,18 @@ define( [
    'react',
    'immutable',
    'interact',
+   './port',
    '../model',
    '../events',
    '../util/shallow-equal',
-   './port',
-], function( React, Immutable, interact, model, events, shallowEqual, Port ) {
+   '../util/options',
+], function( React, Immutable, interact, Port, model, events, shallowEqual, options ) {
    'use strict';
 
    const { Record, Map } = Immutable;
-   const { Dimensions, Coords, convert } = model;
+   const { Dimensions, Coords, convert, IN, OUT } = model;
    const { boxFromNode} = convert;
-   const { VertexMeasured, PortMeasured, VertexMoved, Rendered } = events;
+   const { PortDisconnected, VertexMeasured, PortMeasured, VertexMoved, Rendered } = events;
    const { VertexMeasurements } = events.model;
 
    const Vertex = React.createClass( {
@@ -53,10 +54,10 @@ define( [
                <div className="nbe-vertex-header">{label}</div>
                <div className="nbe-port-group">
                   <div className="nbe-ports nbe-inbound">
-                     {renderPorts('inbound')}
+                     {renderPorts( IN )}
                   </div>
                   <div className="nbe-ports nbe-outbound">
-                     {renderPorts('outbound')}
+                     {renderPorts( OUT )}
                   </div>
                </div>
             </div>
@@ -71,7 +72,6 @@ define( [
 
             return ports[ direction ].map( port =>
                <Port key={port.id}
-                     direction={direction}
                      port={port}
                      eventHandler={self.handleEvent} /> ).toJS();
          }
@@ -83,26 +83,37 @@ define( [
       handleEvent( event ) {
          var type = event.type();
          if( type === PortMeasured ) {
-            const { direction, port, center } = event;
+            const { port, center } = event;
             this.setState( ({ measurements }) => {
-               var newMeasurements = measurements.setIn( [ direction, port.id ], center );
-               this.propagate( newMeasurements );
+               var newMeasurements = measurements.setIn( [ port.direction, port.id ], center );
+               this.propagateMeasurements( newMeasurements );
                return { measurements: newMeasurements };
             } );
             return;
          }
-         return this.props.eventHandler( event );
+
+         if( type === PortDisconnected ) {
+            return this.bubble( PortDisconnected( { port: event.port, vertex: this.props.vertex } ) );
+         }
+
+         this.bubble( event );
       },
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-      propagate( measurements ) {
+      bubble( event ) {
+         const { eventHandler } = this.props;
+         if( eventHandler ) {
+            eventHandler( event );
+         }
+      },
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+      propagateMeasurements( measurements ) {
          if( this.isComplete( measurements ) ) {
-            var { vertex, eventHandler } = this.props;
-            eventHandler( VertexMeasured( {
-               vertex,
-               measurements
-            } ) );
+            var { vertex } = this.props;
+            this.bubble( VertexMeasured( { vertex, measurements } ) );
          }
       },
 
@@ -130,7 +141,7 @@ define( [
          this.setState( ({ measurements }) => {
             var box = boxFromNode( container );
             var newMeasurements = measurements.setIn( [ 'box' ], box );
-            this.propagate( newMeasurements );
+            this.propagateMeasurements( newMeasurements );
             return { measurements: newMeasurements };
          } );
       },

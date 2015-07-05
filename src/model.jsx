@@ -1,6 +1,7 @@
 define( [
-   'immutable'
-], function( Immutable ) {
+   'immutable',
+   './util/options'
+], function( Immutable, options ) {
 
    const { Map, List, Record } = Immutable;
 
@@ -12,7 +13,7 @@ define( [
 
    // Actual model
    const Graph = Record( { edges: Map(), vertices: Map() } );
-   const Port = Record( { label: '', type: null, id: null, edgeId: null } );
+   const Port = Record( { label: '', direction: null, type: null, id: null, edgeId: null } );
    const Ports = Record( { inbound: List(), outbound: List() } );
    const Vertex = Record( { id: null, label: '', ports: Ports() } );
    const Edge = Record( { id: null, label: '', type: null } );
@@ -88,13 +89,13 @@ define( [
 
    function ports( jsPorts ) {
       return new Ports( {
-         inbound: List( jsPorts.inbound.map( port ) ),
-         outbound: List( jsPorts.outbound.map( port ) )
+         inbound: List( jsPorts.inbound.map( port( IN ) ) ),
+         outbound: List( jsPorts.outbound.map( port( OUT ) ) )
       } );
    }
 
-   function port( jsPort ) {
-      return new Port( jsPort );
+   function port( direction ) {
+      return jsPort => Port( options( jsPort, { direction: direction } ) );
    }
 
 

@@ -3,16 +3,13 @@ define( [
    'immutable',
    '../model',
    '../events',
-   './graph',
-   '../polyfill/object-assign'
-], function( React, Immutable, model, events, Graph ) {
+   '../util/options'
+], function( React, Immutable, model, events, options ) {
    'use strict';
 
-   const { Dimensions, Layout, Coords } = model;
-
-   const { VertexMoved, EdgeMoved } = events;
-
    const { Record } = Immutable;
+   const { Dimensions, Layout, Coords } = model;
+   const { VertexMoved, EdgeMoved, LayoutModified } = events;
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -20,11 +17,11 @@ define( [
     * Manages the graph layout prop as mutable state.
     * If a new layout is received through props, that layout always overrides the inner state.
     */
-   const GraphLayoutEditor = React.createClass( {
+   const LayoutEditor = React.createClass( {
 
       getInitialState() {
          return {
-            layout: this.props.baseLayout
+            layout: this.props.layout
          };
       },
 
@@ -32,37 +29,46 @@ define( [
 
       getDefaultProps() {
          return {
-            baseLayout: new Layout()
+            layout: Layout()
          };
       },
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       render() {
-         const props = { eventHandler: this.handleEvent, layout: this.state.layout };
-         const children = React.Children.map( this.props.children, ( child =>
-            React.cloneElement( child, Object.assign( {}, this.props, props ) )
-         ) );
+         const props = { eventHandler: this.handleEvent };
+         const children = React.Children.map( this.props.children, child => {
+            return React.cloneElement( child, options( child.props, props ) );
+         } );
          return <div className="nbe-layout-editor">{ children }</div>;
       },
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       handleEvent( event ) {
-         // console.log( 'Layout Event', event );
          const type = event.type();
          if( type === VertexMoved ) {
-            this.setState( ({ layout }) =>
-               ({ layout: layout.setIn( [ 'vertices', event.vertex.id ], event.to ) })
-            );
+            this.setState( ({ layout }) => {
+               const next = layout.setIn( [ 'vertices', event.vertex.id ], event.to );
+               this.bubble( LayoutModified( { layout: next } ) );
+               return { layout: next };
+            } );
             return;
          }
          if( type === EdgeMoved ) {
-            this.setState( ({ layout }) =>
-               ({ layout: layout.setIn( [ 'edges', event.edge.id ], event.to ) })
-            );
+            this.setState( ({ layout }) => {
+               const next = layout.setIn( [ 'edges', event.edge.id ], event.to );
+               this.bubble( LayoutModified( { layout: next } ) );
+               return { layout: next };
+            } );
             return;
          }
+         return this.bubble( event );
+      },
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+      bubble( event ) {
          if( this.props.eventHandler ) {
              return this.props.eventHandler( event );
          }
@@ -70,6 +76,6 @@ define( [
 
    } );
 
-   return GraphLayoutEditor;
+   return LayoutEditor;
 
 } );
