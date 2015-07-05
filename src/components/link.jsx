@@ -28,7 +28,7 @@ const Link = React.createClass( {
       const toCoords = coords( toMeasurements, toPort, IN );
 
       const boxes = [ rect( fromMeasurements ), rect( toMeasurements ) ];
-      const data = pathing.cubic( fromCoords, toCoords, [ 1, -1 ], 1, boxes );
+      const data = pathing.cubic( fromCoords, toCoords, 1, boxes );
 
       return (
          <path className={classes} d={data} />

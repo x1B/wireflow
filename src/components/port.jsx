@@ -9,13 +9,13 @@ const { PortDragInfo } = eventsModel;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-var Port = React.createClass( {
+const Port = React.createClass( {
 
    render() {
 
-      var { port, vertex, eventHandler } = this.props;
+      const { port, vertex, eventHandler } = this.props;
       eventHandler( Rendered( { what: Port.displayName } ) );
-      var classes = [ 'nbe-port', 'nbe-type-' + port.type ].join( ' ' );
+      const classes = [ 'nbe-port', 'nbe-type-' + port.type ].join( ' ' );
 
       return (
          <div className={classes}>
@@ -33,9 +33,9 @@ var Port = React.createClass( {
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
    componentDidMount() {
-      var { port, eventHandler } = this.props;
-      var node = React.findDOMNode( this.refs.handle );
-      var coords = Coords( {
+      const { port, eventHandler } = this.props;
+      const node = React.findDOMNode( this.refs.handle );
+      const coords = Coords( {
          left: node.offsetLeft + (node.offsetWidth / 2),
          top: node.offsetTop + (node.offsetHeight / 2)
       } );
@@ -53,12 +53,14 @@ var Port = React.createClass( {
          restrict: {
             restriction: function( x, y, element ) {
                // Restrict by the canvas
-               return element.parentNode.parentNode.parentNode.parentNode;
+               const v = vertexNode( element );
+               return v.parentNode.parentNode;
             }
          },
          onstart: ( e ) => {
-            left = node.offsetLeft;
-            top = node.offsetTop;
+            const v = vertexNode( e.target );
+            left = v.offsetLeft + node.offsetLeft + (node.offsetWidth / 2),
+            top = v.offsetTop + node.offsetTop + (node.offsetHeight / 2);
             fromCoords = Coords( { left, top } );
          },
          onmove: ( e ) => {
@@ -69,12 +71,21 @@ var Port = React.createClass( {
                info: PortDragInfo( {
                   port: port,
                   vertex: vertex,
-                  from: fromCoords,
-                  to: Coords( { left: left + dX, top: top + dY } )
+                  portCoords: fromCoords,
+                  mouseCoords: Coords( { left: left + dX, top: top + dY } )
                } )
             } ) );
          }
       } );
+
+      function vertexNode( node ) {
+         do {
+            node = node.parentNode;
+            if( /\bnbe-vertex\b/.test( node.className ) ) {
+               return node;
+            }
+         } while ( node );
+      }
    },
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////

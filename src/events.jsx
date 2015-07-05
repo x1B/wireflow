@@ -49,12 +49,12 @@ const EdgeMeasured = Record( {
 const PortDragInfo = Record( {
    vertex: null,
    port: null,
-   fromCoords: null,
-   toCoords: null
+   portCoords: null,
+   mouseCoords: null
 } );
 
 const PortDragged = Record( {
-   dragInfo: PortDragInfo(),
+   info: PortDragInfo(),
    type: () => PortDragged
 } );
 

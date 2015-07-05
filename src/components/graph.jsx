@@ -69,8 +69,8 @@ const Graph = React.createClass( {
          return [
             'nbe-theme-fusebox-app', // :TODO: read from props...
             'nbe-graph',
-            hasFocus ? 'nbe-has-focus' : '',
-            'nbe-zoom-' + zoom
+            'nbe-zoom-' + zoom,
+            hasFocus ? 'nbe-has-focus' : ''
          ].join( ' ' );
       }
 
@@ -142,7 +142,6 @@ const Graph = React.createClass( {
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
    canvasSize( measurements ) {
-
       var w = 0;
       var h = 0;
       const padding = 50;
@@ -153,7 +152,6 @@ const Graph = React.createClass( {
          w = max( w, left+width );
          h = max( h, top+height );
       };
-
       measurements.vertices.forEach( measure );
       measurements.edges.forEach( measure );
 

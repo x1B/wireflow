@@ -41,10 +41,10 @@ function svgLinearLinkPath( from, to, stubs, zoomFactor, boxes, showArrow ) {
  */
 function svgCubicBezierLinkPath( from,
                                  to,
-                                 stubs,
                                  zoomFactor,
                                  boxes,
-                                 showArrow ) {
+                                 showArrow,
+                                 stubs ) {
 
    stubs = stubs || DEFAULT_STUBS;
    var stubLength = baseStubLength * ( zoomFactor || 1 );
