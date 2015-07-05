@@ -19,22 +19,6 @@ define( [
     */
    const LayoutEditor = React.createClass( {
 
-      getInitialState() {
-         return {
-            layout: this.props.layout
-         };
-      },
-
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-      getDefaultProps() {
-         return {
-            layout: Layout()
-         };
-      },
-
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
       render() {
          const props = { eventHandler: this.handleEvent };
          const children = React.Children.map( this.props.children, child => {
@@ -47,31 +31,25 @@ define( [
 
       handleEvent( event ) {
          const type = event.type();
+         const { layout } = this.props;
+
          if( type === VertexMoved ) {
-            this.setState( ({ layout }) => {
-               const next = layout.setIn( [ 'vertices', event.vertex.id ], event.to );
-               this.bubble( LayoutModified( { layout: next } ) );
-               return { layout: next };
-            } );
-            return;
+            const next = layout.setIn( [ 'vertices', event.vertex.id ], event.to );
+            return this.bubble( LayoutModified( { layout: next } ) );
          }
          if( type === EdgeMoved ) {
-            this.setState( ({ layout }) => {
-               const next = layout.setIn( [ 'edges', event.edge.id ], event.to );
-               this.bubble( LayoutModified( { layout: next } ) );
-               return { layout: next };
-            } );
-            return;
+            const next = layout.setIn( [ 'edges', event.edge.id ], event.to );
+            return this.bubble( LayoutModified( { layout: next } ) );
          }
+
          return this.bubble( event );
       },
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       bubble( event ) {
-         if( this.props.eventHandler ) {
-             return this.props.eventHandler( event );
-         }
+         const { eventHandler } = this.props;
+         return eventHandler && eventHandler( event );
       }
 
    } );

@@ -96,16 +96,14 @@ define( [
             return this.bubble( PortDisconnected( { port: event.port, vertex: this.props.vertex } ) );
          }
 
-         this.bubble( event );
+         return this.bubble( event );
       },
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       bubble( event ) {
          const { eventHandler } = this.props;
-         if( eventHandler ) {
-            eventHandler( event );
-         }
+         return eventHandler && eventHandler( event );
       },
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////

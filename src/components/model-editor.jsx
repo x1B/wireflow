@@ -8,7 +8,7 @@ define( [
    'use strict';
 
    const { Record } = Immutable;
-   const { Graph } = model;
+   const { Graph, Directions } = model;
    const { GraphModified, PortDisconnected } = events;
 
 
@@ -39,7 +39,14 @@ define( [
             return this.disconnect( event.vertex, event.port );
          }
 
-         this.bubble( event );
+         return this.bubble( event );
+      },
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+      bubble( event ) {
+         const { eventHandler } = this.props;
+         return eventHandler && eventHandler( event );
       },
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -47,20 +54,20 @@ define( [
       disconnect( vertex, port ) {
          const { model } = this.props;
          const portsPath = [ 'vertices', vertex.id, 'ports', port.direction ];
-         const ports = model.getIn( portsPath );
-         const next = model.setIn( portsPath, ports.map( p =>
+         const next = model.setIn( portsPath, model.getIn( portsPath ).map( p =>
             p.id !== port.id ? p : port.set( 'edgeId', null )
-          ) );
-
-         this.bubble( GraphModified( { graph: next } ) );
+         ) );
+         return this.bubble( GraphModified( { graph: this.withoutEmptyEdges( next ) } ) );
       },
 
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////
+      withoutEmptyEdges( graph ) {
+         const ports = graph.vertices.valueSeq()
+            .flatMap( v => Directions.flatMap( d => v.ports[ d ] ) )
+            .map( p => p.edgeId )
+            .filter( _ => !!_ )
+            .groupBy( _ => _ );
 
-      bubble( event ) {
-         if( this.props.eventHandler ) {
-             return this.props.eventHandler( event );
-         }
+         return graph.set( 'edges', graph.edges.filter( edge => ports.has( edge.id ) ) );
       }
 
    } );

@@ -38,9 +38,14 @@ define( [
             return;
          }
 
-         if( this.props.eventHandler ) {
-            this.props.eventHandler( event );
-         }
+         this.bubble( event );
+      },
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+      bubble( event ) {
+         const { eventHandler } = this.props;
+         return eventHandler && eventHandler( event );
       },
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
