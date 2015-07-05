@@ -1,4 +1,4 @@
-define( {
+export default {
 
    graph: {
       vertices: {
@@ -296,4 +296,4 @@ define( {
       }
    }
 
-} );
+};

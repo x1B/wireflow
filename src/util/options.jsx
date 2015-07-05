@@ -1,10 +1,8 @@
-define( [ '../polyfill/object-assign' ], function() {
+import '../polyfill/object-assign';
 
-   var assign = Object.assign;
+var assign = Object.assign;
 
-   return function( ...maps ) {
-      maps.unshift( {} );
-      return assign.apply( Object, maps );
-   }
-
-} );
+export default function options( ...maps ) {
+   maps.unshift( {} );
+   return assign.apply( Object, maps );
+};

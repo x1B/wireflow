@@ -1,56 +1,56 @@
-define( [
-   'react',
-   './data',
-   '../model',
-   '../events',
-   '../components/metrics',
-   '../components/graph',
-   '../components/layout-editor',
-   '../components/model-editor'
-], function( React, data, model, events, Metrics, Graph, LayoutEditor, ModelEditor ) {
-   'use strict';
-
-   const { components, convert } = model;
-   const { LayoutModified, GraphModified } = events;
-
-   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-   // application state:
-   var graph = convert.graph( data.graph );
-   var layout = convert.layout( data.layout );
-   var types = convert.types( data.types );
-
-   render();
-
-   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+import * as React from 'react';
+import * as data from './data';
+import * as model from '../model';
+import * as events from '../events';
+import * as Metrics from '../components/metrics';
+import * as Graph from '../components/graph';
+import * as LayoutEditor from '../components/layout-editor';
+import * as ModelEditor from '../components/model-editor';
 
 
-   function render() {
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-      React.render(
-         <Metrics eventHandler={handleEvent}>
-            <ModelEditor model={graph} types={types}>
-               <LayoutEditor layout={layout}>
-                  <Graph model={graph} types={types} layout={layout} />
-               </LayoutEditor>
-            </ModelEditor>
-         </Metrics>,
-         document.getElementById( 'root' )
-      );
+const { components, convert } = model;
+const { LayoutModified, GraphModified } = events;
 
+// application state:
+var graph = convert.graph( data.graph );
+var layout = convert.layout( data.layout );
+var types = convert.types( data.types );
+
+render();
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function render() {
+
+   React.render(
+      <Metrics eventHandler={handleEvent}>
+         <ModelEditor model={graph} types={types}>
+            <LayoutEditor layout={layout}>
+               <Graph model={graph} types={types} layout={layout} />
+            </LayoutEditor>
+         </ModelEditor>
+      </Metrics>,
+      document.getElementById( 'root' )
+   );
+
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function handleEvent( event ) {
+   const type = event.type();
+   if( type === LayoutModified ) {
+      layout = event.layout;
+      return render();
    }
-
-   function handleEvent( event ) {
-      const type = event.type();
-      if( type === LayoutModified ) {
-         layout = event.layout;
-         return render();
-      }
-      if( type === GraphModified ) {
-         graph = event.graph;
-         return render();
-      }
-      console.log( 'Unhandled event: ', type ); // :TODO: DELETE ME
+   if( type === GraphModified ) {
+      graph = event.graph;
+      return render();
    }
+   console.log( 'Unhandled event: ', type ); // :TODO: DELETE ME
+}
 
-} );
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////

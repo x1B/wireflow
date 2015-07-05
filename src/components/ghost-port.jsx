@@ -1,27 +1,20 @@
-define( [
-   'react',
-   '../model',
-   '../events',
-   '../util/pathing',
-   '../util/shallow-equal'
-], function( React, model, events, pathing, shallowEqual ) {
-   'use strict';
+import * as React from 'react';
 
-   const { IN, OUT } = model;
-   const { Rendered } = events;
+import { IN, OUT }  from '../model';
+import { Rendered }  from '../events';
+import * as shallowEqual from '../util/shallow-equal';
+import * as pathing from '../util/pathing';
 
-   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-   const GhostPort = React.createClass( {
+const GhostPort = React.createClass( {
 
-      render() {
+   render() {
 
-         return <path />
+      return <path />
 
-      }
-
-   } );
-
-   return GhostPort;
+   }
 
 } );
+
+export default GhostPort;

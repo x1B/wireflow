@@ -1,4 +1,4 @@
-define( {
+export default {
 
    layout: {
       /** When dragging a port, how much to set it off left and top. */
@@ -25,4 +25,4 @@ define( {
       uiThrottleDelay: 3
    }
 
-} );
+};
