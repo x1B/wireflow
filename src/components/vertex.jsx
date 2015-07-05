@@ -50,7 +50,7 @@ define( [
          /////////////////////////////////////////////////////////////////////////////////////////////////////
 
          return (
-            <div style={style} className={classes} ref="container">
+            <div style={style} className={classes} ref="vertex">
                <div className="nbe-vertex-header">{label}</div>
                <div className="nbe-port-group">
                   <div className="nbe-ports nbe-inbound">
@@ -73,6 +73,7 @@ define( [
             return ports[ direction ].map( port =>
                <Port key={port.id}
                      port={port}
+                     vertex={vertex}
                      eventHandler={self.handleEvent} /> ).toJS();
          }
 
@@ -90,10 +91,6 @@ define( [
                return { measurements: newMeasurements };
             } );
             return;
-         }
-
-         if( type === PortDisconnected ) {
-            return this.bubble( PortDisconnected( { port: event.port, vertex: this.props.vertex } ) );
          }
 
          return this.bubble( event );
@@ -127,18 +124,18 @@ define( [
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       componentDidMount() {
-         var { port, direction } = this.props;
-         var container = React.findDOMNode( this.refs.container );
-         this.measure( container );
-         this.enableDragDrop( container );
+         const { port, direction } = this.props;
+         const domVertex = React.findDOMNode( this.refs.vertex );
+         this.measure( domVertex );
+         this.enableDragDrop( domVertex );
       },
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-      measure( container ) {
+      measure( domVertex ) {
          this.setState( ({ measurements }) => {
-            var box = boxFromNode( container );
-            var newMeasurements = measurements.setIn( [ 'box' ], box );
+            const box = boxFromNode( domVertex );
+            const newMeasurements = measurements.setIn( [ 'box' ], box );
             this.propagateMeasurements( newMeasurements );
             return { measurements: newMeasurements };
          } );
@@ -146,10 +143,10 @@ define( [
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-      enableDragDrop( container ) {
+      enableDragDrop( domVertex ) {
          const { eventHandler, vertex } = this.props;
          var left, top;
-         interact( container ).draggable( {
+         interact( domVertex ).draggable( {
             restrict: {
                restriction: function( x, y, element ) {
                   // Restrict by the canvas
@@ -168,7 +165,7 @@ define( [
                   vertex: vertex,
                   to: Coords( { left: left + dX, top: top + dY } )
                } ) );
-               this.measure( container );
+               this.measure( domVertex );
             }
          } );
       },

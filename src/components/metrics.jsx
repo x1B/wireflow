@@ -66,7 +66,7 @@ define( [
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       shouldComponentUpdate( nextProps, nextState ) {
-         return !shallowEqual( nextState, this.state ) || !shallowEqual( nextProps, this.props );
+         return !shallowEqual( nextProps, this.props );
       }
 
    } );

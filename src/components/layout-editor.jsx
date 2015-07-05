@@ -14,8 +14,7 @@ define( [
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
    /**
-    * Manages the graph layout prop as mutable state.
-    * If a new layout is received through props, that layout always overrides the inner state.
+    * Manages the graph layout prop.
     */
    const LayoutEditor = React.createClass( {
 

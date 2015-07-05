@@ -42,8 +42,20 @@ define( [
 
    const EdgeMeasured = Record( {
       edge: null,
-      measurements: EdgeMeasurements,
+      measurements: EdgeMeasurements(),
       type: () => EdgeMeasured
+   } );
+
+   const PortDragInfo = Record( {
+      vertex: null,
+      port: null,
+      fromCoords: null,
+      toCoords: null
+   } );
+
+   const PortDragged = Record( {
+      dragInfo: PortDragInfo(),
+      type: () => PortDragged
    } );
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -88,9 +100,11 @@ define( [
    return {
       Rendered,
 
+      // Graph-Internal
       PortMeasured,
       VertexMeasured,
       EdgeMeasured,
+      PortDragged,
 
       EdgeMoved,
       VertexMoved,
@@ -99,6 +113,7 @@ define( [
       LayoutModified,
       GraphModified,
       model: {
+         PortDragInfo,
          EdgeMeasurements,
          VertexMeasurements
       }

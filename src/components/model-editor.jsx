@@ -15,8 +15,7 @@ define( [
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
    /**
-    * Manages the graph model prop as mutable state.
-    * If a new Model is received through props, that model always overrides the inner state.
+    * Manages the graph model prop.
     */
    const ModelEditor = React.createClass( {
 
@@ -60,12 +59,14 @@ define( [
          return this.bubble( GraphModified( { graph: this.withoutEmptyEdges( next ) } ) );
       },
 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
       withoutEmptyEdges( graph ) {
          const ports = graph.vertices.valueSeq()
             .flatMap( v => Directions.flatMap( d => v.ports[ d ] ) )
             .map( p => p.edgeId )
-            .filter( _ => !!_ )
-            .groupBy( _ => _ );
+            .filter( id => !!id )
+            .groupBy( id => id );
 
          return graph.set( 'edges', graph.edges.filter( edge => ports.has( edge.id ) ) );
       }

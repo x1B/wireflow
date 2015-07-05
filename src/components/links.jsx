@@ -21,9 +21,7 @@ define( [
          const { measurements, vertices, edges, layout, types, eventHandler } = this.props;
          eventHandler( Rendered( { what: Links.displayName } ) );
 
-         return <svg className="nbe-links">
-            {renderLinks()}
-         </svg>;
+         return <svg>{renderLinks()}</svg>;
 
          /////////////////////////////////////////////////////////////////////////////////////////////////////
 

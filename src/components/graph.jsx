@@ -6,13 +6,14 @@ define( [
    '../util/shallow-equal',
    './vertex',
    './edge',
-   './links'
-], function( React, Immutable, model, events, shallowEqual, Vertex, Edge, Links ) {
+   './links',
+   './ghost-port'
+], function( React, Immutable, model, events, shallowEqual, Vertex, Edge, Links, GhostPort ) {
    'use strict';
 
    const { Record, Map } = Immutable;
    const { Dimensions, Layout } = model;
-   const { VertexMeasured, EdgeMeasured, Rendered } = events;
+   const { VertexMeasured, EdgeMeasured, PortDragged, Rendered } = events;
 
    const Measurements = Record( { vertices: Map(), edges: Map() } );
 
@@ -22,6 +23,7 @@ define( [
 
       getInitialState() {
          return {
+            portDragInfo: null,
             measurements: Measurements()
          };
       },
@@ -53,12 +55,15 @@ define( [
                         {renderVertices()}
                         {renderEdges()}
                      </div>
-                     <Links measurements={self.state.measurements}
-                            eventHandler={self.handleEvent}
-                            types={types}
-                            vertices={vertices}
-                            edges={edges}
-                            layout={layout} />
+                     <svg className="nbe-links">
+                        <Links measurements={self.state.measurements}
+                               eventHandler={self.handleEvent}
+                               types={types}
+                               vertices={vertices}
+                               edges={edges}
+                               layout={layout} />
+                        <GhostPort dragInfo={this.state.portDragInfo} />
+                     </svg>
                   </div>
                </div>
             </div>
@@ -105,20 +110,26 @@ define( [
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       handleEvent( event ) {
-         var type = event.type();
-         if( type === VertexMeasured ) {
-            this.setState( ({measurements}) => ({
-               measurements: measurements.setIn( [ 'vertices', event.vertex.id ], event.measurements )
-            }) );
-            return;
+         switch( event.type() ) {
+
+            case VertexMeasured:
+               return this.setState( ({measurements}) => ({
+                  measurements: measurements.setIn( [ 'vertices', event.vertex.id ], event.measurements )
+               }) );
+
+            case EdgeMeasured:
+               return this.setState( ({measurements}) => ({
+                  measurements: measurements.setIn( [ 'edges', event.edge.id ], event.measurements )
+               }) );
+
+            case PortDragged:
+               return this.setState( ({portDragInfo}) => ({
+                  portDragInfo: event.info
+               }) );
+
+            default:
+               this.bubble( event );
          }
-         if( type === EdgeMeasured ) {
-            this.setState( ({measurements}) => ({
-               measurements: measurements.setIn( [ 'edges', event.edge.id ], event.measurements )
-            }) );
-            return;
-         }
-         this.bubble( event );
       },
 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////
