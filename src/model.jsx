@@ -17,7 +17,7 @@ const Port = Record( { label: '', direction: null, type: null, id: null, edgeId:
 const Ports = Record( { inbound: List(), outbound: List() } );
 const Vertex = Record( { id: null, label: '', ports: Ports() } );
 const Edge = Record( { id: null, label: '', type: null } );
-const Type = Record( { hidden: false, label: '', simple: false, maxSources: null, maxDestinations: null } );
+const Type = Record( { hidden: false, label: '', owningPort: null } );
 
 const IN = 'inbound';
 const OUT = 'outbound';
@@ -39,6 +39,7 @@ export {
    OUT,
    Directions,
    Graph,
+   Ports,
 
    convert
 };
@@ -46,7 +47,7 @@ export {
 // basic //////////////////////////////////////////////////////////////////////////////////////////////////
 
 function coords( jsCoords ) {
-   return new Coords( jsCoords );
+   return Coords( jsCoords );
 }
 
 
@@ -57,7 +58,7 @@ function types( jsTypes ) {
 }
 
 function type( jsType ) {
-   return new Type( jsType );
+   return Type( jsType );
 }
 
 
@@ -71,7 +72,7 @@ function boxFromNode( domNode ) {
 }
 
 function graph( jsGraph ) {
-   return new Graph( {
+   return Graph( {
       edges: Map( jsGraph.edges ).mapEntries( ([ k, v ]) => [k, edge(v, k)] ),
       vertices:  Map( jsGraph.vertices ).mapEntries( ([ k, v ]) => [k, vertex(v, k)] )
    } );
@@ -87,11 +88,11 @@ function vertex( jsVertex, id ) {
 }
 
 function edge( jsEdge, id ) {
-   return new Edge( id ? Object.assign( { id: id }, jsEdge ) : jsEdge );
+   return Edge( id ? Object.assign( { id: id }, jsEdge ) : jsEdge );
 }
 
 function ports( jsPorts ) {
-   return new Ports( {
+   return Ports( {
       inbound: List( jsPorts.inbound.map( port( IN ) ) ),
       outbound: List( jsPorts.outbound.map( port( OUT ) ) )
    } );
@@ -105,7 +106,7 @@ function port( direction ) {
 // layout /////////////////////////////////////////////////////////////////////////////////////////////////
 
 function layout( jsLayout ) {
-   return new Layout( {
+   return Layout( {
       edges: Map( jsLayout.edges ).map( coords ),
       vertices: Map( jsLayout.vertices ).map( coords )
    } );

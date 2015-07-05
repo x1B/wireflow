@@ -26,7 +26,7 @@ const Links = React.createClass( {
 
          const vertexIds = vertices.keySeq();
 
-         // temporary lookup table for representing simple edges as port-to-port links
+         // temporary lookup table for representing 1:n/n:1 edges as port-to-port links
          const neighborTable = createNeighborLookupByEdgeId( vertexIds.toJS() );
 
          return Directions.flatMap( direction =>
@@ -56,8 +56,8 @@ const Links = React.createClass( {
                const hereMeasurements = vertexMeasurements;
                const herePort = port;
 
-               const isSimple = types.get( port.type ).simple;
-               const [ thereMeasurements, therePort ] = isSimple ?
+               const owningPort = types.get( port.type ).owningPort;
+               const [ thereMeasurements, therePort ] = owningPort ?
                   neighborTable[ otherDirection ][ edgeId ] :
                   [ edgeMeasurements.get( edgeId ), '' ];
 
@@ -87,10 +87,10 @@ const Links = React.createClass( {
                return false;
             }
             const type = types.get( port.type );
-            if( !type.simple ) {
+            if( !type.owningPort ) {
                return true;
             }
-            return isOutbound ? (type.maxDestinations === 1) : (type.maxSources === 1)
+            return type.owningPort === ( isOutbound ? IN : OUT );
          }
       }
 

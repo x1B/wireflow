@@ -7,7 +7,6 @@ import * as Vertex from './vertex';
 import * as GhostPort from './ghost-port';
 import { Dimensions, Layout, Graph as GraphModel }  from '../model';
 import { VertexMeasured, EdgeMeasured, PortDragged, Rendered }  from '../events';
-
 import * as shallowEqual from '../util/shallow-equal';
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -90,7 +89,7 @@ const Graph = React.createClass( {
 
       function renderEdges() {
          return edges.valueSeq()
-            .filter( edge => !types.get( edge.type ).simple )
+            .filter( edge => !types.get( edge.type ).owningPort )
             .map( edge =>
                <Edge key={edge.id}
                      edge={edge}

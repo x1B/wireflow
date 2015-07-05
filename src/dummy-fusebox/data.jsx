@@ -279,8 +279,7 @@ export default {
          label: 'Resources'
       },
       CONTAINER: {
-         maxSources: 1,
-         simple: true,
+         owningPort: 'outbound',
          hidden: false,
          label: 'Nesting'
       },
@@ -289,8 +288,7 @@ export default {
          hidden: false
       },
       ACTION: {
-         maxDestinations: 1,
-         simple: true,
+         owningPort: 'inbound',
          label: 'Actions',
          hidden: false
       }
