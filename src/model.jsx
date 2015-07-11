@@ -62,12 +62,12 @@ function type( jsType ) {
 }
 
 
-// model //////////////////////////////////////////////////////////////////////////////////////////////////
+// model ///////////////////////////////////////////////////////////////////////
 
 function boxFromNode( domNode ) {
    return Box( {
       coords: Coords( { left: domNode.offsetLeft, top: domNode.offsetTop } ),
-      dimensions: Dimensions( { width: domNode.offsetWidth, height: domNode.offsetHeight } ),
+      dimensions: Dimensions( { width: domNode.offsetWidth, height: domNode.offsetHeight } )
    } );
 }
 

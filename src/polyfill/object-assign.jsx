@@ -1,7 +1,8 @@
+/*eslint complexity:0 */
 /**
-* SOURCE:
-* https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
-*/
+ * SOURCE:
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+ */
 if (!Object.assign) {
    Object.defineProperty(Object, 'assign', {
       enumerable: false,
@@ -14,7 +15,7 @@ if (!Object.assign) {
 
          var to = Object(target);
          for (var i = 1; i < arguments.length; i++) {
-            var nextSource = arguments[i];
+            var nextSource = arguments[ i ];
             if (nextSource === undefined || nextSource === null) {
                continue;
             }
@@ -22,10 +23,10 @@ if (!Object.assign) {
 
             var keysArray = Object.keys(Object(nextSource));
             for (var nextIndex = 0, len = keysArray.length; nextIndex < len; nextIndex++) {
-               var nextKey = keysArray[nextIndex];
+               var nextKey = keysArray[ nextIndex ];
                var desc = Object.getOwnPropertyDescriptor(nextSource, nextKey);
                if (desc !== undefined && desc.enumerable) {
-                  to[nextKey] = nextSource[nextKey];
+                  to[ nextKey ] = nextSource[ nextKey ];
                }
             }
          }

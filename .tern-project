@@ -1,0 +1,21 @@
+{
+  "libs": [
+    "browser",
+    "ecma5",
+    "ecma6"
+  ],
+  "loadEagerly": [
+    "./src/**/*.jsx"
+  ],
+  "dontLoad": [
+    "./build/**/*.*"
+  ],
+  "plugins": {
+    "complete_strings": {},
+    "node": {},
+    "requirejs": {},
+    "doc_comment": {
+      "fullDocs": true
+    }
+  }
+}

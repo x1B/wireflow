@@ -1,9 +1,10 @@
-/**
-* Source is based on React v0.13.3 shallowEqual
-*
-* Copyright 2013-2015, Facebook, Inc.
-* Licensed under the BSD-license (contained in this directory).
-*/
+/*
+ * Source is based on React v0.13.3 shallowEqual
+ *
+ * Copyright 2013-2015, Facebook, Inc.
+ * Licensed under the BSD-license (contained in this directory).
+ */
+/*eslint complexity:0, computed-property-spacing: 0 */
 export default function shallowEqual( objA, objB ) {
    if (objA === objB) {
       return true;
@@ -26,4 +27,4 @@ export default function shallowEqual( objA, objB ) {
    }
 
    return true;
-};
+}

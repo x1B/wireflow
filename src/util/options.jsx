@@ -1,8 +1,8 @@
 import '../polyfill/object-assign';
 
-var assign = Object.assign;
+const assign = Object.assign;
 
 export default function options( ...maps ) {
-   maps.unshift( {} );
-   return assign.apply( Object, maps );
-};
+  maps.unshift( {} );
+  return assign.apply( Object, maps );
+}
