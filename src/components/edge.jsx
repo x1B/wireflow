@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as interact from 'interact';
+import * as dragdrop from '../util/dragdrop';
 
 import { Coords, convert } from '../model';
 import * as events from '../events';
@@ -27,9 +27,28 @@ const Edge = React.createClass( {
     const selectedClass = selected ? 'nbe-selected' : '';
     const className = `nbe-node nbe-edge nbe-type-${type} ${selectedClass}`;
 
+    const dd = dragdrop( {
+      onMove: ( ev, { dragPayload, dragX, dragY, dragNode } ) => {
+        const { left, top } = dragPayload;
+        eventHandler( Rendered( { what: 'events.EdgeMoved' } ) );
+        eventHandler( EdgeMoved( {
+          edge: edge,
+          to: Coords( { left: left + dragX, top: top + dragY } )
+        } ) );
+
+        const icon = dragNode;
+        const container = icon.parentNode;
+        this.measure( container, icon );
+      }
+    } );
+
+    const startDrag = ( ev ) => {
+      dd.start( ev, { left: layout.left, top: layout.top } );
+    };
+
     return (
       <div style={style} className={className}>
-        <div className="nbe-edge-icon" ref="icon" />
+        <div className="nbe-edge-icon" ref="icon" onMouseDown={startDrag} />
         <div className="nbe-edge-label">{label || id}</div>
       </div>
     );
@@ -40,7 +59,6 @@ const Edge = React.createClass( {
     const icon = React.findDOMNode( this.refs.icon );
     const container = icon.parentNode;
     this.measure( container, icon );
-    this.enableDragDrop( container, icon );
   },
 
 
@@ -57,35 +75,6 @@ const Edge = React.createClass( {
       })
     }) );
   },
-
-
-  enableDragDrop( container, icon ) {
-    const { eventHandler, edge } = this.props;
-    var left, top;
-    interact( container ).draggable( {
-      restrict: {
-        restriction: function( x, y, domElement ) {
-          const domCanvas = domElement.parentNode.parentNode;
-          return domCanvas;
-        }
-      },
-      onstart: ( e ) => {
-        left = this.props.layout.left;
-        top = this.props.layout.top;
-      },
-      onmove: ( e ) => {
-        eventHandler( Rendered( { what: 'events.EdgeMoved' } ) );
-        const dX = e.pageX - e.x0;
-        const dY = e.pageY - e.y0;
-        eventHandler( EdgeMoved( {
-          edge: edge,
-          to: Coords( { left: left + dX, top: top + dY } )
-        } ) );
-        this.measure( container, icon );
-      }
-    } );
-  },
-
 
   shouldComponentUpdate( nextProps, nextState ) {
     return !shallowEqual( nextProps, this.props );
