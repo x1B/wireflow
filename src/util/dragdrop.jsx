@@ -74,18 +74,18 @@ export default function dragdrop( options ) {
     const { node, result } = anyDropResult( clientX, clientY );
     dropNode = node;
     dropResult = result;
-    onMove( ev, state() );
+    onMove( state(), ev );
   }
 
 
   function cancel( ev ) {
-    onCancel( ev, state() );
+    onCancel( state(), ev );
     end( ev );
   }
 
 
   function tryDrop( ev ) {
-    ( dropResult ? onDrop : onCancel )( ev, state() );
+    ( dropResult ? onDrop : onCancel )( state(), ev );
     end( ev );
   }
 
@@ -98,7 +98,7 @@ export default function dragdrop( options ) {
     doc.removeEventListener( 'touchcancel', cancel );
     dragPayload = dropNode = dropResult = null;
     dragStarted = false;
-    onEnd( ev, state() );
+    onEnd( state(), ev );
   }
 
 

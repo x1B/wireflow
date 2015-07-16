@@ -20,7 +20,7 @@
   "rules": {
     "array-bracket-spacing": [ 1, "always" ],
     "space-in-parens": [ 0, "always" ],
-    "complexity": [1, 5],
+    "complexity": [1, 7],
     "default-case": 2,
     "guard-for-in": 1,
     "valid-jsdoc": [ 2, { "prefer": { "return": "return" } } ],

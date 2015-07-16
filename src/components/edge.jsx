@@ -27,24 +27,18 @@ const Edge = React.createClass( {
     const selectedClass = selected ? 'nbe-selected' : '';
     const className = `nbe-node nbe-edge nbe-type-${type} ${selectedClass}`;
 
-    const dd = dragdrop( {
-      onMove: ( ev, { dragPayload, dragX, dragY, dragNode } ) => {
-        const { left, top } = dragPayload;
-        eventHandler( Rendered( { what: 'events.EdgeMoved' } ) );
-        eventHandler( EdgeMoved( {
+    const dd = () => dragdrop({
+      onMove: ({ dragPayload: { left, top }, dragX, dragY, dragNode }) => {
+        eventHandler( Rendered({ what: 'events.EdgeMoved' }) );
+        eventHandler( EdgeMoved({
           edge: edge,
           to: Coords( { left: left + dragX, top: top + dragY } )
-        } ) );
-
-        const icon = dragNode;
-        const container = icon.parentNode;
-        this.measure( container, icon );
+        }) );
+        this.measure();
       }
-    } );
+    });
 
-    const startDrag = ( ev ) => {
-      dd.start( ev, { left: layout.left, top: layout.top } );
-    };
+    const startDrag = ( ev ) => dd().start( ev, layout );
 
     return (
       <div style={style} className={className}>
@@ -56,13 +50,13 @@ const Edge = React.createClass( {
 
 
   componentDidMount() {
-    const icon = React.findDOMNode( this.refs.icon );
-    const container = icon.parentNode;
-    this.measure( container, icon );
+    this.measure();
   },
 
 
-  measure( container, icon ) {
+  measure() {
+    const icon = React.findDOMNode( this.refs.icon );
+    const container = icon.parentNode;
     const { eventHandler, edge } = this.props;
     eventHandler( EdgeMeasured({
       edge: edge,

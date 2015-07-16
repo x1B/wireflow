@@ -15,9 +15,7 @@
       "tests"
    ],
    "dependencies": {
-      "requirejs": "~2.1.0",
-      "react": "~0.13.3",
-      "interact": "~1.2.4",
-      "immutable": "~3.7.4"
+      "requirejs": "~2.1.18",
+      "react": "~0.13.3"
    }
 }

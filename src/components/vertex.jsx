@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as interact from 'interact';
+import * as dragdrop from '../util/dragdrop';
 
 import * as Port from './port';
 import { Coords, convert, IN, OUT } from '../model';
@@ -35,8 +35,22 @@ const Vertex = React.createClass( {
     const selectedClass = selected ? 'nbe-selected' : '';
     const classes = `nbe-vertex nbe-node ${selectedClass}`;
 
+    const dd = () => dragdrop({
+      onMove: ({ dragPayload: { left, top }, dragX, dragY, dragNode }) => {
+        eventHandler( Rendered({ what: 'events.VertexMoved' }) );
+        eventHandler( VertexMoved({
+          vertex: vertex,
+          to: Coords( { left: left + dragX, top: top + dragY } )
+        }) );
+        this.measure();
+      }
+    });
+
+    const startDrag = ( ev ) => dd().start( ev, layout );
+
     return (
-      <div style={style} className={classes} ref="vertex">
+      <div style={style} className={classes}
+           ref="vertex" onMouseDown={startDrag}>
         <div className="nbe-vertex-header">{label}</div>
         <div className="nbe-port-group">
           <div className="nbe-ports nbe-inbound">
@@ -73,14 +87,12 @@ const Vertex = React.createClass( {
     this.bubble( event );
   },
 
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   bubble( event ) {
     const { eventHandler } = this.props;
     return eventHandler && eventHandler( event );
   },
 
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   propagateMeasurements( measurements ) {
     if( this.isComplete( measurements ) ) {
@@ -89,7 +101,6 @@ const Vertex = React.createClass( {
     }
   },
 
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   isComplete( measurements ) {
     const { ports } = this.props.vertex;
@@ -98,17 +109,9 @@ const Vertex = React.createClass( {
     measurements.outbound.size === ports.outbound.size;
   },
 
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  componentDidMount() {
+  measure() {
     const domVertex = React.findDOMNode( this.refs.vertex );
-    this.measure( domVertex );
-    this.enableDragDrop( domVertex );
-  },
-
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  measure( domVertex ) {
     this.setState( ({ measurements }) => {
       const box = boxFromNode( domVertex );
       const newMeasurements = measurements.setIn( [ 'box' ], box );
@@ -117,36 +120,11 @@ const Vertex = React.createClass( {
     } );
   },
 
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  enableDragDrop( domVertex ) {
-    const { eventHandler, vertex } = this.props;
-    var left, top;
-    interact( domVertex ).draggable( {
-      restrict: {
-        restriction: function( x, y, element ) {
-          // Restrict by the canvas
-          return element.parentNode.parentNode;
-        }
-      },
-      onstart: ( e ) => {
-        left = this.props.layout.left;
-        top = this.props.layout.top;
-      },
-      onmove: ( e ) => {
-        eventHandler( Rendered( { what: 'events.VertexMoved' } ) );
-        const dX = e.pageX - e.x0;
-        const dY = e.pageY - e.y0;
-        eventHandler( VertexMoved( {
-          vertex: vertex,
-          to: Coords( { left: left + dX, top: top + dY } )
-        } ) );
-        this.measure( domVertex );
-      }
-    } );
+  componentDidMount() {
+    this.measure();
   },
 
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   shouldComponentUpdate( nextProps, nextState ) {
     return !shallowEqual( nextState, this.state )

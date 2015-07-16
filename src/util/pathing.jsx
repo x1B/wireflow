@@ -5,9 +5,6 @@ export default {
   linear: svgLinearLinkPath
 };
 
-// TODO: tidy up
-/*eslint complexity:[2,6] */
-
 const [ X, Y ] = [ 0, 1 ];
 const [ FROM, TO ] = [ 0, 1 ];
 const DEFAULT_STUBS = [ 1, -1 ];
