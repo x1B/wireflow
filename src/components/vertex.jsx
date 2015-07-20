@@ -2,13 +2,18 @@ import * as React from 'react';
 import * as dragdrop from '../util/dragdrop';
 
 import * as Port from './port';
-import { Coords, convert, IN, OUT } from '../model';
-import * as events from '../events';
 import * as shallowEqual from '../util/shallow-equal';
+import { Coords, convert, IN, OUT } from '../model';
+import {
+  VertexMeasured,
+  VertexMeasurements,
+  PortMeasured,
+  VertexMoved
+} from '../events/layout';
+import { Rendered } from '../events/metrics';
 
-const { VertexMeasured, PortMeasured, VertexMoved, Rendered } = events;
-const { VertexMeasurements } = events.model;
 const { boxFromNode } = convert;
+
 
 const Vertex = React.createClass( {
 

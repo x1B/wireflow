@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { VertexMoved, EdgeMoved, LayoutModified } from '../events';
+import { VertexMoved, EdgeMoved, LayoutModified } from '../events/layout';
 import * as options from '../util/options';
 
 

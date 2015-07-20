@@ -5,12 +5,12 @@ import * as Links from './links';
 import * as Edge from './edge';
 import * as Vertex from './vertex';
 import * as GhostPort from './ghost-port';
-
-import { Layout, Graph as GraphModel } from '../model';
-import * as events from '../events';
 import * as shallowEqual from '../util/shallow-equal';
 
-const { VertexMeasured, EdgeMeasured, PortDragged, Rendered } = events;
+import { Layout, Graph as GraphModel } from '../model';
+import { VertexMeasured, EdgeMeasured, PortDragged } from '../events/layout';
+import { Rendered } from '../events/metrics';
+
 
 const Measurements = Record( { vertices: Map(), edges: Map() } );
 

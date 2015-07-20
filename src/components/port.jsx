@@ -1,12 +1,13 @@
 import * as React from 'react';
 
-import { Coords, IN, OUT } from '../model';
 import * as dragdrop from '../util/dragdrop';
-import * as events from '../events';
 import * as shallowEqual from '../util/shallow-equal';
 
-const { PortMeasured, PortDragged, PortDisconnected, Rendered } = events;
-const { PortDragInfo } = events.model;
+import { Coords, IN, OUT } from '../model';
+import { PortMeasured, PortDragged, PortDragInfo } from '../events/layout';
+import { PortConnected, PortDisconnected, Connectable } from '../events/graph';
+import { Rendered } from '../events/metrics';
+
 
 
 const Port = React.createClass( {
@@ -27,6 +28,24 @@ const Port = React.createClass( {
             mouseCoords: Coords({ left: left + dragX, top: top + dragY })
           })
         }) );
+      },
+      getDropResult: ( hoverNode ) => {
+        const data = hoverNode.dataset;
+        const matches =
+            data.nbeConnectable &&
+            data.nbeType === port.type &&
+            data.nbeDirection !== port.direction;
+        return matches ? Connectable({
+          portId: data.nbePort,
+          edgeId: data.nbeEdge,
+          vertexId: data.nbeVertex
+         }) : null;
+      },
+      onDrop: ({ dropResult }) => {
+        eventHandler( PortConnected({ port: port, to: dropResult }) );
+      },
+      onEnd: () => {
+        eventHandler( PortDragged({ info: null }) );
       }
     });
 
@@ -40,7 +59,12 @@ const Port = React.createClass( {
     };
 
     return (
-      <div className={classes}>
+      <div className={classes}
+           data-nbe-connectable={true}
+           data-nbe-type={port.type}
+           data-nbe-direction={port.direction}
+           data-nbe-port={port.id}
+           data-nbe-vertex={vertex.id}>
         { port.direction === OUT ? port.label : '' }
         <i className="nbe-port-handle"
            ref="handle"

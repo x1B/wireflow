@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Map } from 'immutable';
 
-import { Rendered } from '../events';
+import { Rendered } from '../events/metrics';
 import * as shallowEqual from '../util/shallow-equal';
 
 

@@ -23,7 +23,7 @@ export default function dragdrop( options ) {
     onDrop: noOp,
     onEnd: noOp,
     containerNode: doc.documentElement,
-    dropResult: null
+    getDropResult: null
    }, options );
 
   // drag state:
@@ -56,6 +56,7 @@ export default function dragdrop( options ) {
       doc.addEventListener( 'touchend', tryDrop );
       doc.addEventListener( 'touchcancel', cancel );
     }
+    ev.preventDefault();
   }
 
 

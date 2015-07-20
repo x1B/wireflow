@@ -24,90 +24,90 @@ const OUT = 'outbound';
 const Directions = List.of( IN, OUT );
 
 const convert = {
-   graph: graph,
-   layout: layout,
-   types: types,
-   boxFromNode: boxFromNode
+  graph: graph,
+  layout: layout,
+  types: types,
+  boxFromNode: boxFromNode
 };
 
 export {
-   Coords,
-   Dimensions,
-   Box,
-   Layout,
-   IN,
-   OUT,
-   Directions,
-   Graph,
-   Ports,
+  Coords,
+  Dimensions,
+  Box,
+  Layout,
+  IN,
+  OUT,
+  Directions,
+  Graph,
+  Ports,
 
-   convert
+  convert
 };
 
 // basic //////////////////////////////////////////////////////////////////////////////////////////////////
 
 function coords( jsCoords ) {
-   return Coords( jsCoords );
+  return Coords( jsCoords );
 }
 
 
 // edge types /////////////////////////////////////////////////////////////////////////////////////////////
 
 function types( jsTypes ) {
-   return Map( jsTypes ).map( type );
+  return Map( jsTypes ).map( type );
 }
 
 function type( jsType ) {
-   return Type( jsType );
+  return Type( jsType );
 }
 
 
 // model ///////////////////////////////////////////////////////////////////////
 
 function boxFromNode( domNode ) {
-   return Box( {
-      coords: Coords( { left: domNode.offsetLeft, top: domNode.offsetTop } ),
-      dimensions: Dimensions( { width: domNode.offsetWidth, height: domNode.offsetHeight } )
-   } );
+  return Box( {
+    coords: Coords( { left: domNode.offsetLeft, top: domNode.offsetTop } ),
+    dimensions: Dimensions( { width: domNode.offsetWidth, height: domNode.offsetHeight } )
+  } );
 }
 
 function graph( jsGraph ) {
-   return Graph( {
-      edges: Map( jsGraph.edges ).mapEntries( ([ k, v ]) => [k, edge(v, k)] ),
-      vertices:  Map( jsGraph.vertices ).mapEntries( ([ k, v ]) => [k, vertex(v, k)] )
-   } );
+  return Graph({
+    edges: Map( jsGraph.edges ).mapEntries( ([ k, v ]) => [ k, edge(v, k) ] ),
+    vertices: Map( jsGraph.vertices ).mapEntries( ([ k, v ]) => [ k, vertex(v, k) ] )
+  });
 }
 
 function vertex( jsVertex, id ) {
-   return new Vertex(
-      Object.assign(
-         Object.assign( { id: id }, jsVertex ),
-         { ports: ports( jsVertex.ports ) }
-      )
-   );
+  return new Vertex(
+    Object.assign(
+      Object.assign( { id: id }, jsVertex ),
+      { ports: ports( jsVertex.ports ) }
+    )
+  );
 }
 
 function edge( jsEdge, id ) {
-   return Edge( id ? Object.assign( { id: id }, jsEdge ) : jsEdge );
+  return Edge( id ? Object.assign( { id: id }, jsEdge ) : jsEdge );
 }
 
 function ports( jsPorts ) {
-   return Ports( {
-      inbound: List( jsPorts.inbound.map( port( IN ) ) ),
-      outbound: List( jsPorts.outbound.map( port( OUT ) ) )
-   } );
+  return Ports( {
+    inbound: List( jsPorts.inbound.map( port( IN ) ) ),
+    outbound: List( jsPorts.outbound.map( port( OUT ) ) )
+  } );
 }
 
 function port( direction ) {
-   return jsPort => Port( options( jsPort, { direction: direction } ) );
+  return jsPort => Port( options( jsPort, { direction: direction } ) );
 }
 
 
 // layout /////////////////////////////////////////////////////////////////////////////////////////////////
 
 function layout( jsLayout ) {
-   return Layout( {
-      edges: Map( jsLayout.edges ).map( coords ),
-      vertices: Map( jsLayout.vertices ).map( coords )
-   } );
+  return Layout( {
+    edges: Map( jsLayout.edges ).map( coords ),
+    vertices: Map( jsLayout.vertices ).map( coords )
+  } );
 }

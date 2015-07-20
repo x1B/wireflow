@@ -2,11 +2,10 @@ import * as React from 'react';
 import * as dragdrop from '../util/dragdrop';
 
 import { Coords, convert } from '../model';
-import * as events from '../events';
+import { EdgeMeasured, EdgeMeasurements, EdgeMoved } from '../events/layout';
+import { Rendered } from '../events/metrics';
 import * as shallowEqual from '../util/shallow-equal';
 
-const { EdgeMeasured, EdgeMoved, Rendered } = events;
-const { EdgeMeasurements } = events.model;
 const { boxFromNode } = convert;
 
 
@@ -14,7 +13,7 @@ const Edge = React.createClass( {
 
   render() {
     const { edge, id, selected, layout, eventHandler } = this.props;
-    eventHandler( Rendered( { what: Edge.displayName } ) );
+    eventHandler( Rendered({ what: Edge.displayName }) );
     const { type, label } = edge;
 
     const style = {
@@ -32,7 +31,7 @@ const Edge = React.createClass( {
         eventHandler( Rendered({ what: 'events.EdgeMoved' }) );
         eventHandler( EdgeMoved({
           edge: edge,
-          to: Coords( { left: left + dragX, top: top + dragY } )
+          to: Coords({ left: left + dragX, top: top + dragY })
         }) );
         this.measure();
       }
@@ -42,7 +41,8 @@ const Edge = React.createClass( {
 
     return (
       <div style={style} className={className}>
-        <div className="nbe-edge-icon" ref="icon" onMouseDown={startDrag} />
+        <div className="nbe-edge-icon" ref="icon"
+             onMouseDown={startDrag} data-nbe-connectable={true} />
         <div className="nbe-edge-label">{label || id}</div>
       </div>
     );

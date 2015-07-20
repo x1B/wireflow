@@ -1,14 +1,13 @@
 import * as React from 'react';
 import * as data from './data';
-import * as model from '../model';
-import * as events from '../events';
 import * as Metrics from '../components/metrics';
 import * as Graph from '../components/graph';
 import * as LayoutEditor from '../components/layout-editor';
 import * as ModelEditor from '../components/model-editor';
 
-const { convert } = model;
-const { LayoutModified, GraphModified } = events;
+import { convert } from '../model';
+import { LayoutModified } from '../events/layout';
+import { GraphModified } from '../events/graph';
 
 // application state:
 var graph = convert.graph( data.graph );
@@ -44,5 +43,5 @@ function handleEvent( event ) {
     graph = event.graph;
     return render();
   }
-  window.console.log( 'Unhandled event: ', type ); // :TODO: DELETE ME
+  window.console.log( 'Unhandled event: (type: %o): %o', event.type(), event.toJS() ); // :TODO: DELETE ME
 }

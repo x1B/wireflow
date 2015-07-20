@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { Directions, Ports } from '../model';
-import { GraphModified, PortDisconnected } from '../events';
+import { GraphModified, PortDisconnected, PortConnected } from '../events/graph';
 import * as options from '../util/options';
 
 
@@ -24,6 +24,11 @@ const ModelEditor = React.createClass( {
 
     if( type === PortDisconnected ) {
       return this.disconnect( event.vertex, event.port );
+    }
+
+    if( type === PortConnected ) {
+      // return this.connect( event.port, event.to );
+      // console.log( 'connect: ', event.port.toJS(), event.to.toJS() ); // :TODO: DELETE ME
     }
 
     return this.bubble( event );
