@@ -27,8 +27,7 @@ const ModelEditor = React.createClass( {
     }
 
     if( type === PortConnected ) {
-      // return this.connect( event.port, event.to );
-      // console.log( 'connect: ', event.port.toJS(), event.to.toJS() ); // :TODO: DELETE ME
+      return this.connect( event.vertex, event.port, event.to );
     }
 
     return this.bubble( event );
@@ -38,6 +37,23 @@ const ModelEditor = React.createClass( {
   bubble( event ) {
     const { eventHandler } = this.props;
     return eventHandler && eventHandler( event );
+  },
+
+
+  connect( vertex, port, connectable ) {
+    const { model } = this.props;
+    if( connectable.edgeId ) {
+      const portsPath = [ 'vertices', vertex.id, 'ports', port.direction ];
+      const newGraph = model.updateIn( portsPath, ports =>
+        ports.map( p =>
+          p.id === port.id ? p.set( 'edgeId', connectable.edgeId ) : p
+        )
+      );
+      const ev = GraphModified({
+        graph: newGraph
+      });
+      return this.bubble( ev );
+    }
   },
 
 
@@ -62,14 +78,17 @@ const ModelEditor = React.createClass( {
 
 
   withoutEdge( graph, edgeId ) {
-    const mapVertices = f => graph.set( 'vertices', graph.vertices.map( f ) );
+    const mapVertices = f =>
+      graph.set( 'vertices', graph.vertices.map( f ) );
+
     const mapVertexPorts = ( v, f ) => v.set( 'ports', Ports( {
       inbound: v.ports.inbound.map( f ),
       outbound: v.ports.outbound.map( f )
     } ) );
-    const mapPorts = f => mapVertices( v => mapVertexPorts( v, f ) );
 
-    const graphWithoutEdge = mapPorts( p => p.set( 'edgeId',
+    const mapGraphPorts = f => mapVertices( v => mapVertexPorts( v, f ) );
+
+    const graphWithoutEdge = mapGraphPorts( graph )( p => p.set( 'edgeId',
       p.edgeId === edgeId ? null : p.edgeId
     ) );
     return this.withoutEmptyEdges( graphWithoutEdge );

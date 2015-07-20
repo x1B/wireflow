@@ -36,13 +36,17 @@ const Port = React.createClass( {
             data.nbeType === port.type &&
             data.nbeDirection !== port.direction;
         return matches ? Connectable({
-          portId: data.nbePort,
           edgeId: data.nbeEdge,
+          portId: data.nbePort,
           vertexId: data.nbeVertex
          }) : null;
       },
       onDrop: ({ dropResult }) => {
-        eventHandler( PortConnected({ port: port, to: dropResult }) );
+        eventHandler( PortConnected({
+          port: port,
+          vertex: vertex,
+          to: dropResult
+        }) );
       },
       onEnd: () => {
         eventHandler( PortDragged({ info: null }) );

@@ -12,9 +12,9 @@ const { boxFromNode } = convert;
 const Edge = React.createClass( {
 
   render() {
-    const { edge, id, selected, layout, eventHandler } = this.props;
+    const { edge, selected, layout, eventHandler } = this.props;
+    const { id, type, label } = edge;
     eventHandler( Rendered({ what: Edge.displayName }) );
-    const { type, label } = edge;
 
     const style = {
       position: 'absolute', // :TODO: move to stylesheet
@@ -41,8 +41,12 @@ const Edge = React.createClass( {
 
     return (
       <div style={style} className={className}>
-        <div className="nbe-edge-icon" ref="icon"
-             onMouseDown={startDrag} data-nbe-connectable={true} />
+        <div className="nbe-edge-icon"
+             ref="icon"
+             onMouseDown={startDrag}
+             data-nbe-connectable={true}
+             data-nbe-edge={id}
+             data-nbe-type={type} />
         <div className="nbe-edge-label">{label || id}</div>
       </div>
     );

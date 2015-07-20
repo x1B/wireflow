@@ -13,8 +13,8 @@ const GhostPort = React.createClass( {
     }
 
     const { port, portCoords, mouseCoords } = dragInfo;
-    const portBox = rect( portCoords, Dimensions({width: 10, height: 10}) );
-    const mouseBox = rect( mouseCoords, Dimensions({width: 1, height: 1}) );
+    const portBox = rect( portCoords, Dimensions({ width: 10, height: 10 }) );
+    const mouseBox = rect( mouseCoords, Dimensions({ width: 1, height: 1 }) );
 
     const [ fromCoords, toCoords ] = port.direction === OUT ?
       [ portCoords, mouseCoords ] :

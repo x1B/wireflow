@@ -40,7 +40,7 @@ const Graph = React.createClass( {
     const self = this;
     const {
       model: { vertices, edges }, types, layout, zoom, hasFocus, eventHandler
-    } = self.props;
+    } = this.props;
 
     eventHandler( Rendered( { what: Graph.displayName } ) );
 
@@ -75,9 +75,9 @@ const Graph = React.createClass( {
     function renderVertices() {
       return vertices.valueSeq().map( vertex =>
         <Vertex key={vertex.id}
-        vertex={vertex}
-        layout={layout.vertices.get( vertex.id )}
-        eventHandler={self.handleEvent} />
+                vertex={vertex}
+                layout={layout.vertices.get( vertex.id )}
+                eventHandler={self.handleEvent} />
       ).toJS();
     }
 
@@ -86,9 +86,9 @@ const Graph = React.createClass( {
       .filter( edge => !types.get( edge.type ).owningPort )
       .map( edge =>
         <Edge key={edge.id}
-        edge={edge}
-        layout={layout.edges.get( edge.id )}
-        eventHandler={self.handleEvent} />
+              edge={edge}
+              layout={layout.edges.get( edge.id )}
+              eventHandler={self.handleEvent} />
       )
       .toJS();
     }
@@ -131,7 +131,7 @@ const Graph = React.createClass( {
 
   shouldComponentUpdate( nextProps, nextState ) {
     return !shallowEqual( nextState, this.state )
-    || !shallowEqual( nextProps, this.props );
+      || !shallowEqual( nextProps, this.props );
   },
 
 

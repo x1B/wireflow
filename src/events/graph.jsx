@@ -14,6 +14,7 @@ const PortDisconnected = Record({
 });
 
 const PortConnected = Record({
+  vertex: null,
   port: null,
   to: Connectable(),
   type: () => PortConnected
@@ -23,7 +24,6 @@ const GraphModified = Record({
   graph: null,
   type: () => GraphModified
 });
-
 
 
 export default {
