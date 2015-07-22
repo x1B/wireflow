@@ -24,7 +24,7 @@ export default function dragdrop( options ) {
     onEnd: noOp,
     containerNode: doc.documentElement,
     getDropResult: null
-   }, options );
+  }, options );
 
   // drag state:
   let dragStarted = false;

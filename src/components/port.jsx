@@ -9,12 +9,11 @@ import { PortConnected, PortDisconnected, Connectable } from '../events/graph';
 import { Rendered } from '../events/metrics';
 
 
-
-const Port = React.createClass( {
+const Port = React.createClass({
 
   render() {
     const { port, vertex, eventHandler } = this.props;
-    eventHandler( Rendered( { what: Port.displayName } ) );
+    eventHandler( Rendered({ what: Port.displayName }) );
     const classes = `nbe-port nbe-type-${port.type}`;
 
     const dd = () => dragdrop({
@@ -79,7 +78,7 @@ const Port = React.createClass( {
     );
 
     function disconnect() {
-      eventHandler( PortDisconnected( { vertex: vertex, port: port } ) );
+      eventHandler( PortDisconnected({ vertex: vertex, port: port }) );
     }
   },
 
@@ -87,11 +86,11 @@ const Port = React.createClass( {
   componentDidMount() {
     const { port, eventHandler } = this.props;
     const node = React.findDOMNode( this.refs.handle );
-    const coords = Coords( {
+    const coords = Coords({
       left: node.offsetLeft + (node.offsetWidth / 2),
       top: node.offsetTop + (node.offsetHeight / 2)
-    } );
-    eventHandler( PortMeasured( { port: port, center: coords } ) );
+    });
+    eventHandler( PortMeasured({ port: port, center: coords }) );
   },
 
 
@@ -99,7 +98,7 @@ const Port = React.createClass( {
     return !shallowEqual( nextProps, this.props );
   }
 
-} );
+});
 
 function vertexNode( port ) {
   let result = port.parentNode;

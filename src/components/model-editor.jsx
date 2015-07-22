@@ -8,7 +8,7 @@ import * as options from '../util/options';
 /**
  * Manages the graph model prop.
  */
-const ModelEditor = React.createClass( {
+const ModelEditor = React.createClass({
 
   render() {
     const props = { eventHandler: this.handleEvent };
@@ -21,16 +21,14 @@ const ModelEditor = React.createClass( {
 
   handleEvent( event ) {
     const type = event.type();
-
-    if( type === PortDisconnected ) {
-      return this.disconnect( event.vertex, event.port );
+    switch( type ) {
+      case PortDisconnected:
+        return this.disconnect( event.vertex, event.port );
+      case PortConnected:
+        return this.connect( event.vertex, event.port, event.to );
+      default:
+        return this.bubble( event );
     }
-
-    if( type === PortConnected ) {
-      return this.connect( event.vertex, event.port, event.to );
-    }
-
-    return this.bubble( event );
   },
 
 
@@ -81,10 +79,10 @@ const ModelEditor = React.createClass( {
     const mapVertices = f =>
       graph.set( 'vertices', graph.vertices.map( f ) );
 
-    const mapVertexPorts = ( v, f ) => v.set( 'ports', Ports( {
+    const mapVertexPorts = ( v, f ) => v.set( 'ports', Ports({
       inbound: v.ports.inbound.map( f ),
       outbound: v.ports.outbound.map( f )
-    } ) );
+    }) );
 
     const mapGraphPorts = f => mapVertices( v => mapVertexPorts( v, f ) );
 
@@ -107,6 +105,6 @@ const ModelEditor = React.createClass( {
     );
   }
 
-} );
+});
 
 export default ModelEditor;

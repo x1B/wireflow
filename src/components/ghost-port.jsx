@@ -4,7 +4,7 @@ import { OUT, Dimensions } from '../model';
 import * as pathing from '../util/pathing';
 
 
-const GhostPort = React.createClass( {
+const GhostPort = React.createClass({
 
   render() {
     const { dragInfo } = this.props;
@@ -32,7 +32,7 @@ const GhostPort = React.createClass( {
     return <path className={classes} d={data} />;
   }
 
-} );
+});
 
 
 function xy( coord ) {

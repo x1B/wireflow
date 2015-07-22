@@ -12,10 +12,10 @@ import { VertexMeasured, EdgeMeasured, PortDragged } from '../events/layout';
 import { Rendered } from '../events/metrics';
 
 
-const Measurements = Record( { vertices: Map(), edges: Map() } );
+const Measurements = Record({ vertices: Map(), edges: Map() });
 
 
-const Graph = React.createClass( {
+const Graph = React.createClass({
 
   getInitialState() {
     return {
@@ -42,7 +42,7 @@ const Graph = React.createClass( {
       model: { vertices, edges }, types, layout, zoom, hasFocus, eventHandler
     } = this.props;
 
-    eventHandler( Rendered( { what: Graph.displayName } ) );
+    eventHandler( Rendered({ what: Graph.displayName }) );
 
     const canvasSize = self.canvasSize( self.state.measurements );
     // :TODO: get theme class from props
@@ -161,6 +161,6 @@ const Graph = React.createClass( {
     };
   }
 
-} );
+});
 
 export default Graph;

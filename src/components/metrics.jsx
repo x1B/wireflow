@@ -10,7 +10,7 @@ const durationMs = 1000;
 var counters = Map();
 var timeout;
 
-const Metrics = React.createClass( {
+const Metrics = React.createClass({
 
   render() {
     const props = { eventHandler: this.handleEvent };
@@ -56,6 +56,6 @@ const Metrics = React.createClass( {
     return !shallowEqual( nextProps, this.props );
   }
 
-} );
+});
 
 export default Metrics;

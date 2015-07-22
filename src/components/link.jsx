@@ -6,7 +6,7 @@ import * as pathing from '../util/pathing';
 import * as shallowEqual from '../util/shallow-equal';
 
 
-const Link = React.createClass( {
+const Link = React.createClass({
 
   render() {
 
@@ -39,7 +39,7 @@ const Link = React.createClass( {
     return !shallowEqual( nextProps, this.props );
   }
 
-} );
+});
 
 export default Link;
 

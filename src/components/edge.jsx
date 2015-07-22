@@ -9,7 +9,7 @@ import * as shallowEqual from '../util/shallow-equal';
 const { boxFromNode } = convert;
 
 
-const Edge = React.createClass( {
+const Edge = React.createClass({
 
   render() {
     const { edge, selected, layout, eventHandler } = this.props;
@@ -78,6 +78,6 @@ const Edge = React.createClass( {
     return !shallowEqual( nextProps, this.props );
   }
 
-} );
+});
 
 export default Edge;

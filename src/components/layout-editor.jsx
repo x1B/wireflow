@@ -7,7 +7,7 @@ import * as options from '../util/options';
 /**
  * Manages the graph layout prop.
  */
-const LayoutEditor = React.createClass( {
+const LayoutEditor = React.createClass({
 
   render() {
     const props = { eventHandler: this.handleEvent };
@@ -24,11 +24,11 @@ const LayoutEditor = React.createClass( {
 
     if( type === VertexMoved ) {
       const next = layout.setIn( [ 'vertices', event.vertex.id ], event.to );
-      return this.bubble( LayoutModified( { layout: next } ) );
+      return this.bubble( LayoutModified({ layout: next }) );
     }
     if( type === EdgeMoved ) {
       const next = layout.setIn( [ 'edges', event.edge.id ], event.to );
-      return this.bubble( LayoutModified( { layout: next } ) );
+      return this.bubble( LayoutModified({ layout: next }) );
     }
 
     return this.bubble( event );
@@ -40,6 +40,6 @@ const LayoutEditor = React.createClass( {
     return eventHandler && eventHandler( event );
   }
 
-} );
+});
 
 export default LayoutEditor;

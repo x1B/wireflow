@@ -15,7 +15,7 @@ import { Rendered } from '../events/metrics';
 const { boxFromNode } = convert;
 
 
-const Vertex = React.createClass( {
+const Vertex = React.createClass({
 
   getInitialState() {
     return {
@@ -109,9 +109,9 @@ const Vertex = React.createClass( {
 
   isComplete( measurements ) {
     const { ports } = this.props.vertex;
-    return measurements.box &&
-    measurements.inbound.size === ports.inbound.size &&
-    measurements.outbound.size === ports.outbound.size;
+    return measurements.box
+      && measurements.inbound.size === ports.inbound.size
+      && measurements.outbound.size === ports.outbound.size;
   },
 
 
@@ -136,6 +136,6 @@ const Vertex = React.createClass( {
         || !shallowEqual( nextProps, this.props );
   }
 
-} );
+});
 
 export default Vertex;

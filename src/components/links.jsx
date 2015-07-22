@@ -6,7 +6,7 @@ import { Rendered } from '../events/metrics';
 import * as shallowEqual from '../util/shallow-equal';
 
 
-const Links = React.createClass( {
+const Links = React.createClass({
 
   render() {
 
@@ -14,7 +14,7 @@ const Links = React.createClass( {
       measurements, vertices, types, eventHandler
     } = this.props;
 
-    eventHandler( Rendered( { what: Links.displayName } ) );
+    eventHandler( Rendered({ what: Links.displayName }) );
 
     return <svg>{renderLinks()}</svg>;
 
@@ -108,6 +108,6 @@ const Links = React.createClass( {
     return !shallowEqual( nextProps, this.props );
   }
 
-} );
+});
 
 export default Links;
