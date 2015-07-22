@@ -1,47 +1,32 @@
 import * as React from 'react';
 import * as data from './data';
-import * as Metrics from '../components/metrics';
 import * as Graph from '../components/graph';
-import * as LayoutEditor from '../components/layout-editor';
-import * as ModelEditor from '../components/model-editor';
+import * as Dispatcher from '../dispatcher';
+import * as LayoutStore from '../stores/layout-store';
+import * as GraphStore from '../stores/graph-store';
+import * as MetricsStore from '../stores/metrics-store';
 
 import { convert } from '../model';
-import { LayoutModified } from '../events/layout';
-import { GraphModified } from '../events/graph';
 
 // application state:
-var graph = convert.graph( data.graph );
-var layout = convert.layout( data.layout );
-var types = convert.types( data.types );
+const graph = convert.graph( data.graph );
+const layout = convert.layout( data.layout );
+const types = convert.types( data.types );
+
+const dispatcher = new Dispatcher( render );
+new MetricsStore( dispatcher );
+const graphStore = new GraphStore( dispatcher, graph, types );
+const layoutStore = new LayoutStore( dispatcher, layout, types );
 
 render();
 
 
 function render() {
-
   React.render(
-    <Metrics eventHandler={handleEvent}>
-      <ModelEditor model={graph} types={types}>
-        <LayoutEditor layout={layout}>
-          <Graph model={graph} types={types} layout={layout} />
-        </LayoutEditor>
-      </ModelEditor>
-    </Metrics>,
+    <Graph model={graphStore.graph}
+           types={types}
+           layout={layoutStore.layout}
+           eventHandler={dispatcher.dispatch} />,
     document.getElementById( 'root' )
   );
-
-}
-
-
-function handleEvent( event ) {
-  const type = event.type();
-  if( type === LayoutModified ) {
-    layout = event.layout;
-    return render();
-  }
-  if( type === GraphModified ) {
-    graph = event.graph;
-    return render();
-  }
-  window.console.log( 'Unhandled event: (type: %o): %o', event.type(), event.toJS() ); // :TODO: DELETE ME
 }

@@ -4,6 +4,7 @@ import * as dragdrop from '../util/dragdrop';
 import { Coords, convert } from '../model';
 import { EdgeMeasured, EdgeMeasurements, EdgeMoved } from '../events/layout';
 import { Rendered } from '../events/metrics';
+import count from '../util/metrics';
 import * as shallowEqual from '../util/shallow-equal';
 
 const { boxFromNode } = convert;
@@ -14,13 +15,13 @@ const Edge = React.createClass({
   render() {
     const { edge, selected, layout, eventHandler } = this.props;
     const { id, type, label } = edge;
-    eventHandler( Rendered({ what: Edge.displayName }) );
+    count( Rendered({ what: Edge.displayName }) );
 
     const style = {
       position: 'absolute', // :TODO: move to stylesheet
       visibility: layout ? 'visible' : 'hidden',
-      left: layout.left,
-      top: layout.top
+      left: layout ? layout.left : 50,
+      top: layout ? layout.top : 50
     };
 
     const selectedClass = selected ? 'nbe-selected' : '';

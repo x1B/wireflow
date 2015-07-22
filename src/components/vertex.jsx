@@ -10,7 +10,10 @@ import {
   PortMeasured,
   VertexMoved
 } from '../events/layout';
+
 import { Rendered } from '../events/metrics';
+import count from '../util/metrics';
+
 
 const { boxFromNode } = convert;
 
@@ -27,7 +30,7 @@ const Vertex = React.createClass({
   render() {
     const self = this;
     const { vertex, selected, layout, eventHandler } = self.props;
-    eventHandler( Rendered({ what: Vertex.displayName }) );
+    count( Rendered({ what: Vertex.displayName }) );
     const { ports, label } = vertex;
 
     const style = {

@@ -3,6 +3,7 @@ import * as React from 'react';
 import * as Link from './link';
 import { Directions, IN, OUT } from '../model';
 import { Rendered } from '../events/metrics';
+import count from '../util/metrics';
 import * as shallowEqual from '../util/shallow-equal';
 
 
@@ -14,7 +15,7 @@ const Links = React.createClass({
       measurements, vertices, types, eventHandler
     } = this.props;
 
-    eventHandler( Rendered({ what: Links.displayName }) );
+    count( Rendered({ what: Links.displayName }) );
 
     return <svg>{renderLinks()}</svg>;
 

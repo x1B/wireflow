@@ -70,8 +70,6 @@ export default {
   VertexMoved,
   PortDragged,
 
-  LayoutModified,
-
   PortDragInfo,
   EdgeMeasurements,
   VertexMeasurements

@@ -10,6 +10,7 @@ import * as shallowEqual from '../util/shallow-equal';
 import { Layout, Graph as GraphModel } from '../model';
 import { VertexMeasured, EdgeMeasured, PortDragged } from '../events/layout';
 import { Rendered } from '../events/metrics';
+import count from '../util/metrics';
 
 
 const Measurements = Record({ vertices: Map(), edges: Map() });
@@ -41,8 +42,7 @@ const Graph = React.createClass({
     const {
       model: { vertices, edges }, types, layout, zoom, hasFocus, eventHandler
     } = this.props;
-
-    eventHandler( Rendered({ what: Graph.displayName }) );
+    count( Rendered({ what: Graph.displayName }) );
 
     const canvasSize = self.canvasSize( self.state.measurements );
     // :TODO: get theme class from props
@@ -60,7 +60,6 @@ const Graph = React.createClass({
             </div>
             <svg className="nbe-links">
               <Links measurements={self.state.measurements}
-                     eventHandler={self.handleEvent}
                      types={types}
                      vertices={vertices}
                      edges={edges}

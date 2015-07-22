@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { IN, OUT } from '../model';
 import { Rendered } from '../events/metrics';
+import count from '../util/metrics';
 import * as pathing from '../util/pathing';
 import * as shallowEqual from '../util/shallow-equal';
 
@@ -14,14 +15,13 @@ const Link = React.createClass({
       fromPort,
       toPort,
       fromMeasurements,
-      toMeasurements,
-      eventHandler
+      toMeasurements
     } = this.props;
 
     const type = ( fromPort || toPort ).type;
 
     const classes = [ 'nbe-link', 'nbe-type-' + type ].join( ' ' );
-    eventHandler( Rendered( { what: Link.displayName } ) );
+    count( Rendered( { what: Link.displayName } ) );
 
     const fromCoords = xy( fromMeasurements, fromPort, OUT );
     const toCoords = xy( toMeasurements, toPort, IN );

@@ -11,7 +11,7 @@
     "objectLiteralShorthandProperties": true,
     "restParams": true,
     "templateStrings": true,
-    "classes": false,
+    "classes": true,
     "forOf": false,
     "generators": false,
     "templateStrings": true,

@@ -29,7 +29,6 @@ const GraphModified = Record({
 export default {
   PortDisconnected,
   PortConnected,
-  GraphModified,
 
   Connectable
 };

@@ -6,14 +6,16 @@ import * as shallowEqual from '../util/shallow-equal';
 import { Coords, IN, OUT } from '../model';
 import { PortMeasured, PortDragged, PortDragInfo } from '../events/layout';
 import { PortConnected, PortDisconnected, Connectable } from '../events/graph';
+
 import { Rendered } from '../events/metrics';
+import count from '../util/metrics';
 
 
 const Port = React.createClass({
 
   render() {
     const { port, vertex, eventHandler } = this.props;
-    eventHandler( Rendered({ what: Port.displayName }) );
+    count( Rendered({ what: Port.displayName }) );
     const classes = `nbe-port nbe-type-${port.type}`;
 
     const dd = () => dragdrop({

@@ -39,6 +39,7 @@ export {
   OUT,
   Directions,
   Graph,
+  Edge,
   Ports,
 
   convert
