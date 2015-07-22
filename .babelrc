@@ -1,6 +1,6 @@
 {
   "sourceMaps": "inline",
   "modules": "amd",
-  "retainLines": true,
+  "retainLines": false,
   "sourceRoot": "src"
 }

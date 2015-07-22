@@ -86,7 +86,7 @@ const ModelEditor = React.createClass({
 
     const mapGraphPorts = f => mapVertices( v => mapVertexPorts( v, f ) );
 
-    const graphWithoutEdge = mapGraphPorts( graph )( p => p.set( 'edgeId',
+    const graphWithoutEdge = mapGraphPorts( p => p.set( 'edgeId',
       p.edgeId === edgeId ? null : p.edgeId
     ) );
     return this.withoutEmptyEdges( graphWithoutEdge );
