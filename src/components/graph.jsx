@@ -34,18 +34,26 @@ const Graph = React.createClass({
   render() {
     const self = this;
     const {
-      model: { vertices, edges }, types, layout, zoom, hasFocus, measurements
+      model: { vertices, edges },
+      types, layout, measurements, zoom, hasFocus,
+      className
     } = this.props;
+
+    const { portDragInfo } = this.state;
+
     count( Rendered({ what: Graph.displayName }) );
 
     const canvasSize = self.canvasSize( measurements );
-    // :TODO: get theme class from props
-    const themeClass = 'nbe-theme-fusebox-app';
-    const focusClass = hasFocus ? 'nbe-has-focus' : '';
-    const className = `nbe-graph nbe-zoom-${zoom} ${focusClass} ${themeClass}`;
+
+    const focusClass =
+      hasFocus ? 'nbe-has-focus' : '';
+    const highlightClass =
+      portDragInfo ? `nbe-highlight-type-${portDragInfo.port.type}` : '';
+    const classes =
+      `nbe-graph nbe-zoom-${zoom} ${focusClass} ${highlightClass} ${className}`;
 
     return (
-      <div tabIndex="0" className={className}>
+      <div tabIndex="0" className={classes}>
         <div className="nbe-graph-viewport">
           <div className="nbe-graph-canvas" style={canvasSize}>
             <div className="nbe-graph-nodes">
@@ -58,7 +66,7 @@ const Graph = React.createClass({
                      vertices={vertices}
                      edges={edges}
                      layout={layout} />
-              <GhostPort dragInfo={this.state.portDragInfo} />
+              <GhostPort dragInfo={portDragInfo} />
             </svg>
           </div>
         </div>

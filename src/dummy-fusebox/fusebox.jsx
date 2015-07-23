@@ -25,6 +25,7 @@ function render() {
   React.render(
     <Graph model={graphStore.graph}
            types={types}
+           className={'nbe-theme-fusebox-app'}
            layout={layoutStore.layout}
            measurements={layoutStore.measurements}
            eventHandler={dispatcher.dispatch} />,
