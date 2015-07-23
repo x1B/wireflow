@@ -39,7 +39,11 @@ class Dispatcher {
         anyDispatched = true;
       }
       else {
-        window.console.log( 'Unhandled event: (type: %o)', event.toJS() ); // :TODO: DELETE ME
+        window.console.log(
+          'Unhandled event: (type: %s): %o',
+          event[ '_name' ],
+          event.toJS()
+        );
       }
     }
     return anyDispatched;

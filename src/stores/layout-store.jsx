@@ -6,6 +6,8 @@ import { Record, Map } from 'immutable';
 
 const Measurements = Record({ vertices: Map(), edges: Map() });
 
+// TODO determine dynamically?
+const edgeSize = 20;
 
 /**
  * Manages the graph layout prop.
@@ -46,13 +48,23 @@ class LayoutStore {
   }
 
   placeEdge( edge, from, to ) {
-    const { vertices } = this.layout;
-    const fromCoords = vertices.get( from.vertexId );
-    const toCoords = vertices.get( to.vertexId );
+    const fromMeasurements = this.measurements.vertices.get( from.vertexId );
+    const toMeasurements = this.measurements.vertices.get( to.vertexId );
+
+    const { coords, dimensions } = fromMeasurements.box;
+    const toBox = toMeasurements.box;
+    const left = (coords.left + dimensions.width + toBox.coords.left) / 2;
+
+    const fromPortBox = fromMeasurements.getIn([ from.direction, from.portId ]);
+    const toPortBox = toMeasurements.getIn([ to.direction, to.portId ]);
+    const top = (
+      coords.top + fromPortBox.top + toBox.coords.top + toPortBox.top
+      - edgeSize
+    ) / 2;
 
     return this.layout.setIn( [ 'edges', edge.id ], Coords({
-      left: (fromCoords.left + toCoords.left) / 2,
-      top: (fromCoords.top + toCoords.top) / 2
+      left: left,
+      top: top
     }) );
   }
 

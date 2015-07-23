@@ -22,6 +22,7 @@
     "space-in-parens": [ 0, "always" ],
     "complexity": [1, 7],
     "default-case": 2,
+    "dot-notation": 0,
     "guard-for-in": 1,
     "valid-jsdoc": [ 2, { "prefer": { "return": "return" } } ],
     "new-cap": [1, {"capIsNew": false, "newIsCap": true}],

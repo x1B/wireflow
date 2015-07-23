@@ -32,6 +32,7 @@ class ModelStore {
     this.graph = this.graph.setIn( [ 'edges', newEdgeId ], newEdge );
     this.setPortEdge( from, newEdgeId );
     this.setPortEdge( to, newEdgeId );
+    this.pruneEmptyEdges();
 
     this.dispatcher.dispatch( EdgeInserted({
       edge: newEdge,
@@ -73,7 +74,8 @@ class ModelStore {
       p.id !== port.id ? p : port.set( 'edgeId', null )
     ) );
 
-    this.graph = this.withoutEmptyEdges( next );
+    this.graph = next;
+    this.pruneEmptyEdges();
   }
 
 
@@ -88,22 +90,22 @@ class ModelStore {
 
     const mapGraphPorts = f => mapVertices( v => mapVertexPorts( v, f ) );
 
-    const graphWithoutEdge = mapGraphPorts( p => p.set( 'edgeId',
+    this.graph = mapGraphPorts( p => p.set( 'edgeId',
       p.edgeId === edgeId ? null : p.edgeId
     ) );
-    return this.withoutEmptyEdges( graphWithoutEdge );
+    this.pruneEmptyEdges();
   }
 
 
-  withoutEmptyEdges( graph ) {
-    const ports = graph.vertices.valueSeq()
+  pruneEmptyEdges() {
+    const ports = this.graph.vertices.valueSeq()
       .flatMap( v => Directions.flatMap( d => v.ports[ d ] ) )
       .map( p => p.edgeId )
       .filter( id => !!id )
       .groupBy( id => id );
 
-    return graph.set( 'edges',
-      graph.edges.filter( edge => ports.has( edge.id ) )
+    this.graph = this.graph.set( 'edges',
+      this.graph.edges.filter( edge => ports.has( edge.id ) )
     );
   }
 
