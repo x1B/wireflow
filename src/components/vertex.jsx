@@ -45,7 +45,7 @@ const Vertex = React.createClass({
 
     const dd = () => dragdrop({
       onMove: ({ dragPayload: { left, top }, dragX, dragY, dragNode }) => {
-        eventHandler( Rendered({ what: 'events.VertexMoved' }) );
+        count( Rendered({ what: 'events.VertexMoved' }) );
         eventHandler( VertexMoved({
           vertex: vertex,
           to: Coords( { left: left + dragX, top: top + dragY } )

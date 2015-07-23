@@ -26,6 +26,7 @@ function render() {
     <Graph model={graphStore.graph}
            types={types}
            layout={layoutStore.layout}
+           measurements={layoutStore.measurements}
            eventHandler={dispatcher.dispatch} />,
     document.getElementById( 'root' )
   );

@@ -20,7 +20,7 @@ const Port = React.createClass({
 
     const dd = () => dragdrop({
       onMove: ({ dragPayload: { left, top }, dragX, dragY, dragNode }) => {
-        eventHandler( Rendered({ what: 'events.PortDragged' }) );
+        count( Rendered({ what: 'events.PortDragged' }) );
         eventHandler( PortDragged({
           info: PortDragInfo({
             port: port,
@@ -38,12 +38,20 @@ const Port = React.createClass({
             data.nbeDirection !== port.direction;
         return matches ? Connectable({
           edgeId: data.nbeEdge,
+          type: data.nbeType,
+          vertexId: data.nbeVertex,
           portId: data.nbePort,
-          vertexId: data.nbeVertex
-         }) : null;
+          direction: data.nbeDirection
+        }) : null;
       },
       onDrop: ({ dropResult }) => {
         eventHandler( PortConnected({
+          from: Connectable({
+            type: port.type,
+            vertexId: vertex.id,
+            portId: port.id,
+            direction: port.direction
+          }),
           port: port,
           vertex: vertex,
           to: dropResult

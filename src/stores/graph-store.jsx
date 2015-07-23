@@ -1,5 +1,6 @@
 import { Directions, Ports, Edge } from '../model';
 import { PortDisconnected, PortConnected } from '../events/graph';
+import { EdgeInserted } from '../events/layout';
 
 
 /**
@@ -16,24 +17,27 @@ class ModelStore {
     dispatcher.register( PortDisconnected, ev =>
       this.disconnect( ev.vertex, ev.port ) );
     dispatcher.register( PortConnected, ev =>
-      this.connect( ev.vertex, ev.port, ev.to ) );
+      this.connect( ev.from, ev.to ) );
   }
 
 
-  connect( vertex, port, connectable ) {
-    if( connectable.edgeId ) {
-      this.graph = setPortEdge( this.graph, vertex.id, port.direction, port.id, connectable.edgeId );
+  connect( from, to ) {
+    if( to.edgeId ) {
+      this.setPortEdge( from, to.edgeId );
       return;
     }
 
-    const model = this.graph;
-    const newEdgeId = nextId( model.edges );
-    const newEdge = Edge({ id: newEdgeId, label: 'aaaa', type: port.type });
-    const graphWithEdge = model.setIn( [ 'edges', newEdgeId ], newEdge );
-    // TODO:
-    // - connect the ports
-    // - dispatch adding the new edge
-    this.graph = graphWithEdge;
+    const newEdgeId = nextId( this.graph.edges );
+    const newEdge = Edge({ id: newEdgeId, label: 'aaaa', type: from.type });
+    this.graph = this.graph.setIn( [ 'edges', newEdgeId ], newEdge );
+    this.setPortEdge( from, newEdgeId );
+    this.setPortEdge( to, newEdgeId );
+
+    this.dispatcher.dispatch( EdgeInserted({
+      edge: newEdge,
+      from: from,
+      to: to
+    }) );
 
     function nextId( someMap ) {
       const prefix = '#' + someMap.size;
@@ -42,13 +46,14 @@ class ModelStore {
       while( someMap.has( qualified( counter ) ) ) { ++counter; }
       return qualified( counter );
     }
+  }
 
-    function setPortEdge( graph, vertexId, direction, portId, edgeId ) {
-      const portsPath = [ 'vertices', vertexId, 'ports', direction ];
-      return graph.updateIn( portsPath, ports => ports.map( p =>
-        p.id === portId ? p.set( 'edgeId', connectable.edgeId ) : p
-      ) );
-    }
+
+  setPortEdge( from, edgeId ) {
+    const portsPath = [ 'vertices', from.vertexId, 'ports', from.direction ];
+    this.graph = this.graph.updateIn( portsPath, ports => ports.map( p =>
+      p.id === from.portId ? p.set( 'edgeId', edgeId ) : p
+    ) );
   }
 
 

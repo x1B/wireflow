@@ -29,7 +29,7 @@ const Edge = React.createClass({
 
     const dd = () => dragdrop({
       onMove: ({ dragPayload: { left, top }, dragX, dragY, dragNode }) => {
-        eventHandler( Rendered({ what: 'events.EdgeMoved' }) );
+        count( Rendered({ what: 'events.EdgeMoved' }) );
         eventHandler( EdgeMoved({
           edge: edge,
           to: Coords({ left: left + dragX, top: top + dragY })

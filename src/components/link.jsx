@@ -23,6 +23,11 @@ const Link = React.createClass({
     const classes = [ 'nbe-link', 'nbe-type-' + type ].join( ' ' );
     count( Rendered( { what: Link.displayName } ) );
 
+    if( !fromMeasurements || !toMeasurements ) {
+      // not measured (yet), e.g. just created
+      return <path />;
+    }
+
     const fromCoords = xy( fromMeasurements, fromPort, OUT );
     const toCoords = xy( toMeasurements, toPort, IN );
 

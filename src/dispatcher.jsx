@@ -4,10 +4,10 @@ import { Map, List } from 'immutable';
 class Dispatcher {
 
   constructor( onAfterDispatch ) {
-    this.dispatching = false;
     this.queue = [];
     this.registry = Map();
     this.dispatch = this.dispatch.bind( this );
+    this.frameRequested = false;
     this.onAfterDispatch = onAfterDispatch;
   }
 
@@ -18,16 +18,18 @@ class Dispatcher {
 
   dispatch( event ) {
     this.queue.push( event );
-    if( !this.dispatching ) {
-      this.dispatching = true;
-      this.processQueue();
-      this.dispatching = false;
+    const anyDispatched = this.processQueue();
+    if( anyDispatched && !this.frameRequested ) {
+      window.requestAnimationFrame( () => {
+        this.frameRequested = false;
+        this.onAfterDispatch();
+      } );
+      this.frameRequested = true;
     }
   }
 
   processQueue() {
     const run = event => cb => cb( event );
-
     var anyDispatched = false;
     while( this.queue.length ) {
       const event = this.queue.shift();
@@ -40,9 +42,7 @@ class Dispatcher {
         window.console.log( 'Unhandled event: (type: %o)', event.toJS() ); // :TODO: DELETE ME
       }
     }
-    if( anyDispatched ) {
-      this.onAfterDispatch();
-    }
+    return anyDispatched;
   }
 
 }

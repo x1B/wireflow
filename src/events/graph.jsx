@@ -2,28 +2,25 @@ import { Record } from 'immutable';
 
 
 const Connectable = Record({
+  edgeId: null,
+  type: null,
   vertexId: null,
   portId: null,
-  edgeId: null
-});
+  direction: null
+}, 'Connectable');
 
 const PortDisconnected = Record({
   vertex: null,
   port: null,
   type: () => PortDisconnected
-});
+}, 'PortDisconnected');
+
 
 const PortConnected = Record({
-  vertex: null,
-  port: null,
+  from: Connectable(),
   to: Connectable(),
   type: () => PortConnected
-});
-
-const GraphModified = Record({
-  graph: null,
-  type: () => GraphModified
-});
+}, 'PortConnected');
 
 
 export default {
