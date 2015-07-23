@@ -35,7 +35,12 @@ const Graph = React.createClass({
     const self = this;
     const {
       model: { vertices, edges },
-      types, layout, measurements, zoom, hasFocus,
+      types,
+      layout,
+      measurements,
+      selection,
+      zoom,
+      hasFocus,
       className
     } = this.props;
 
@@ -77,6 +82,7 @@ const Graph = React.createClass({
       return vertices.valueSeq().map( vertex =>
         <Vertex key={vertex.id}
                 vertex={vertex}
+                selected={selection.vertices.has(vertex.id)}
                 layout={layout.vertices.get( vertex.id )}
                 eventHandler={self.handleEvent} />
       ).toJS();
@@ -88,6 +94,7 @@ const Graph = React.createClass({
       .map( edge =>
         <Edge key={edge.id}
               edge={edge}
+              selected={selection.edges.has(edge.id)}
               layout={layout.edges.get( edge.id )}
               eventHandler={self.handleEvent} />
       )

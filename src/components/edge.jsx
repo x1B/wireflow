@@ -7,13 +7,18 @@ import { Rendered } from '../events/metrics';
 import count from '../util/metrics';
 import * as shallowEqual from '../util/shallow-equal';
 
+import {
+  EdgeSelected,
+  EdgeDeselected
+} from '../events/selection';
+
 const { boxFromNode } = convert;
 
 
 const Edge = React.createClass({
 
   render() {
-    const { edge, selected, layout, eventHandler } = this.props;
+    const { edge, selected, layout } = this.props;
     const { id, type, label } = edge;
     count( Rendered({ what: Edge.displayName }) );
 
@@ -26,11 +31,14 @@ const Edge = React.createClass({
 
     const selectedClass = selected ? 'nbe-selected' : '';
     const className = `nbe-node nbe-edge nbe-type-${type} ${selectedClass}`;
+    const toggleSelected = () => this.bubble(
+      (selected ? EdgeDeselected : EdgeSelected)({ edge })
+    );
 
     const dd = () => dragdrop({
       onMove: ({ dragPayload: { left, top }, dragX, dragY, dragNode }) => {
         count( Rendered({ what: 'events.EdgeMoved' }) );
-        eventHandler( EdgeMoved({
+        this.bubble( EdgeMoved({
           edge: edge,
           to: Coords({ left: left + dragX, top: top + dragY })
         }) );
@@ -45,6 +53,7 @@ const Edge = React.createClass({
         <div className="nbe-edge-icon"
              ref="icon"
              onMouseDown={startDrag}
+             onClick={toggleSelected}
              data-nbe-connectable={true}
              data-nbe-edge={id}
              data-nbe-type={type} />
@@ -59,11 +68,17 @@ const Edge = React.createClass({
   },
 
 
+  bubble( event ) {
+    const { eventHandler } = this.props;
+    return eventHandler && eventHandler( event );
+  },
+
+
   measure() {
     const icon = React.findDOMNode( this.refs.icon );
     const container = icon.parentNode;
-    const { eventHandler, edge } = this.props;
-    eventHandler( EdgeMeasured({
+    const { edge } = this.props;
+    this.bubble( EdgeMeasured({
       edge: edge,
       measurements: EdgeMeasurements({
         box: boxFromNode( container ),

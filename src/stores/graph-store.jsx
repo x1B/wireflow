@@ -6,7 +6,7 @@ import { EdgeInserted } from '../events/layout';
 /**
  * Manages the graph model prop.
  */
-class ModelStore {
+class GraphStore {
 
 
   constructor( dispatcher, graph, types ) {
@@ -16,6 +16,7 @@ class ModelStore {
 
     dispatcher.register( PortDisconnected, ev =>
       this.disconnect( ev.vertex, ev.port ) );
+
     dispatcher.register( PortConnected, ev =>
       this.connect( ev.from, ev.to ) );
   }
@@ -111,4 +112,4 @@ class ModelStore {
 
 }
 
-export default ModelStore;
+export default GraphStore;

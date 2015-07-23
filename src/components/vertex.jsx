@@ -4,12 +4,18 @@ import * as dragdrop from '../util/dragdrop';
 import * as Port from './port';
 import * as shallowEqual from '../util/shallow-equal';
 import { Coords, convert, IN, OUT } from '../model';
+
 import {
   VertexMeasured,
   VertexMeasurements,
   PortMeasured,
   VertexMoved
 } from '../events/layout';
+
+import {
+  VertexSelected,
+  VertexDeselected
+} from '../events/selection';
 
 import { Rendered } from '../events/metrics';
 import count from '../util/metrics';
@@ -55,10 +61,13 @@ const Vertex = React.createClass({
     });
 
     const startDrag = ( ev ) => dd().start( ev, layout );
+    const toggleSelected = () => this.bubble(
+      (selected ? VertexDeselected : VertexSelected)({ vertex })
+    );
 
     return (
-      <div style={style} className={classes}
-           ref="vertex" onMouseDown={startDrag}>
+      <div style={style} className={classes} ref="vertex"
+           onMouseDown={startDrag} onClick={toggleSelected}>
         <div className="nbe-vertex-header">{label}</div>
         <div className="nbe-port-group">
           <div className="nbe-ports nbe-inbound">
