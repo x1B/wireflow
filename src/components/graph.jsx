@@ -10,7 +10,7 @@ import * as shallowEqual from '../util/shallow-equal';
 
 import { Layout, Box, Coords, Dimensions, Graph as GraphModel } from '../model';
 import { PortDragged } from '../events/layout';
-import { SelectionDragged } from '../events/selection';
+import { SelectionDragged, SelectionCleared } from '../events/selection';
 import { Rendered } from '../events/metrics';
 import count from '../util/metrics';
 import dragdrop from '../util/dragdrop';
@@ -70,7 +70,8 @@ const Graph = React.createClass({
           })
         }) );
       },
-      onEnd: () => this.bubble( SelectionDragged({ box: null }) )
+      onEnd: () => this.bubble( SelectionDragged({ box: null }) ),
+      onClick: () => this.bubble( SelectionCleared() )
     });
 
     const startSelect = ( ev ) => {

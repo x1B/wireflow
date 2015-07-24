@@ -29,13 +29,8 @@ const SelectionCleared = Record({
   type: () => SelectionCleared
 }, 'SelectionCleared');
 
-const SelectionCancelled = Record({
-  type: () => SelectionCancelled
-}, 'SelectionCleared');
-
 export default {
   SelectionDragged,
-  SelectionCancelled,
   SelectionCleared,
   VertexDeselected,
   VertexSelected,
