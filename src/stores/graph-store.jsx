@@ -67,7 +67,7 @@ class GraphStore {
 
     const type = types.get( port.type );
     if( type.owningPort === port.direction ) {
-      this.graph = this.withoutEdge( model, port.edgeId );
+      this.removeEdge( model, port.edgeId );
       return;
     }
 
@@ -80,7 +80,7 @@ class GraphStore {
   }
 
 
-  withoutEdge( graph, edgeId ) {
+  removeEdge( graph, edgeId ) {
     const mapVertices = f =>
       graph.set( 'vertices', graph.vertices.map( f ) );
 
