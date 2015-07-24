@@ -32,18 +32,16 @@ class SelectionStore {
     } );
 
     dispatcher.register( VertexSelected, ev => {
-      console.log( 'CLOG', ev.toJS() ); // :TODO: DELETE ME
       this.selection =
         this.selection.update( 'vertices', _ => _.add( ev.vertex.id ) );
     } );
+
     dispatcher.register( VertexDeselected, ev => {
       this.selection =
         this.selection.update( 'vertices', _ => _.remove( ev.vertex.id ) );
     } );
 
   }
-
-
 
 }
 

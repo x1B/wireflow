@@ -57,17 +57,19 @@ const Vertex = React.createClass({
           to: Coords( { left: left + dragX, top: top + dragY } )
         }) );
         this.measure();
+      },
+      onClick: ( ev ) => {
+        this.bubble(
+          (selected ? VertexDeselected : VertexSelected)({ vertex })
+        );
       }
     });
 
     const startDrag = ( ev ) => dd().start( ev, layout );
-    const toggleSelected = () => this.bubble(
-      (selected ? VertexDeselected : VertexSelected)({ vertex })
-    );
 
     return (
       <div style={style} className={classes} ref="vertex"
-           onMouseDown={startDrag} onClick={toggleSelected}>
+           onMouseDown={startDrag}>
         <div className="nbe-vertex-header">{label}</div>
         <div className="nbe-port-group">
           <div className="nbe-ports nbe-inbound">

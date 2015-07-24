@@ -31,9 +31,6 @@ const Edge = React.createClass({
 
     const selectedClass = selected ? 'nbe-selected' : '';
     const className = `nbe-node nbe-edge nbe-type-${type} ${selectedClass}`;
-    const toggleSelected = () => this.bubble(
-      (selected ? EdgeDeselected : EdgeSelected)({ edge })
-    );
 
     const dd = () => dragdrop({
       onMove: ({ dragPayload: { left, top }, dragX, dragY, dragNode }) => {
@@ -43,7 +40,10 @@ const Edge = React.createClass({
           to: Coords({ left: left + dragX, top: top + dragY })
         }) );
         this.measure();
-      }
+      },
+      onClick: () => this.bubble(
+        (selected ? EdgeDeselected : EdgeSelected)({ edge })
+      )
     });
 
     const startDrag = ( ev ) => dd().start( ev, layout );
@@ -53,7 +53,6 @@ const Edge = React.createClass({
         <div className="nbe-edge-icon"
              ref="icon"
              onMouseDown={startDrag}
-             onClick={toggleSelected}
              data-nbe-connectable={true}
              data-nbe-edge={id}
              data-nbe-type={type} />

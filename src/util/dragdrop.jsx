@@ -14,6 +14,7 @@ export default function dragdrop( options ) {
     onCancel,
     onDrop,
     onEnd,
+    onClick,
     containerNode,
     getDropResult
   } = Object.assign( {
@@ -22,6 +23,7 @@ export default function dragdrop( options ) {
     onCancel: noOp,
     onDrop: noOp,
     onEnd: noOp,
+    onClick: noOp,
     containerNode: doc.documentElement,
     getDropResult: null
   }, options );
@@ -42,6 +44,8 @@ export default function dragdrop( options ) {
 
 
   function start( ev, payload, node ) {
+    // we still need a minimum distance for actual drag
+    dragStarted = false;
     const isLeftButton = ev.button === 0;
     const isTouch = ( ev.targetTouches || [] ).length;
     if( (isLeftButton || isTouch) && onStart( ev ) ) {
@@ -50,6 +54,7 @@ export default function dragdrop( options ) {
       const { clientX, clientY } = isTouch ? ev.targetTouches[ 0 ] : ev;
       [ startClientX, startClientY ] = [ clientX, clientY ];
 
+      doc.addEventListener( 'click', maybeClick );
       doc.addEventListener( 'mousemove', move );
       doc.addEventListener( 'touchmove', move );
       doc.addEventListener( 'mouseup', tryDrop );
@@ -98,8 +103,15 @@ export default function dragdrop( options ) {
     doc.removeEventListener( 'touchend', tryDrop );
     doc.removeEventListener( 'touchcancel', cancel );
     dragPayload = dropNode = dropResult = null;
-    dragStarted = false;
     onEnd( state(), ev );
+  }
+
+
+  function maybeClick( ev ) {
+    doc.removeEventListener( 'click', onClick );
+    if( !dragStarted ) {
+      onClick( ev );
+    }
   }
 
 
