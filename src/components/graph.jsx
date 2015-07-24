@@ -3,14 +3,17 @@ import { Map } from 'immutable';
 
 import * as Links from './links';
 import * as Edge from './edge';
+import * as SelectionBox from './selection-box';
 import * as Vertex from './vertex';
 import * as GhostPort from './ghost-port';
 import * as shallowEqual from '../util/shallow-equal';
 
-import { Layout, Graph as GraphModel } from '../model';
+import { Layout, Box, Coords, Dimensions, Graph as GraphModel } from '../model';
 import { PortDragged } from '../events/layout';
+import { SelectionDragged } from '../events/selection';
 import { Rendered } from '../events/metrics';
 import count from '../util/metrics';
+import dragdrop from '../util/dragdrop';
 
 
 const Graph = React.createClass({
@@ -57,15 +60,36 @@ const Graph = React.createClass({
     const classes =
       `nbe-graph nbe-zoom-${zoom} ${focusClass} ${highlightClass} ${className}`;
 
+    const dd = () => dragdrop({
+      onMove: ({ dragPayload: { left, top }, dragX, dragY, dragNode }) => {
+        count( Rendered({ what: 'events.SelectionDragged' }) );
+        this.bubble( SelectionDragged({
+          box: Box({
+            coords: Coords({ left: left, top: top }),
+            dimensions: Dimensions({ width: dragX, height: dragY })
+          })
+        }) );
+      },
+      onEnd: () => this.bubble( SelectionDragged({ box: null }) )
+    });
+
+    const startSelect = ( ev ) => {
+      const rect = ev.currentTarget.getBoundingClientRect();
+      const left = ev.clientX - rect.left;
+      const top = ev.clientY - rect.top;
+      dd().start( ev, { left, top } );
+    };
+
     return (
       <div tabIndex="0" className={classes}>
         <div className="nbe-graph-viewport">
           <div className="nbe-graph-canvas" style={canvasSize}>
+            <SelectionBox box={selection.box} />
             <div className="nbe-graph-nodes">
               {renderVertices()}
               {renderEdges()}
             </div>
-            <svg className="nbe-links">
+            <svg className="nbe-links" onMouseDown={startSelect}>
               <Links measurements={measurements}
                      types={types}
                      vertices={vertices}

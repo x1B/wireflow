@@ -1,10 +1,7 @@
 import { Record, Set } from 'immutable';
 
-import { Coords } from '../model';
-
 import {
-  // SelectionDragged,
-  // SelectionCancelled,
+  SelectionDragged,
   // SelectionCleared,
   VertexDeselected,
   VertexSelected,
@@ -20,6 +17,11 @@ class SelectionStore {
   constructor( dispatcher, layoutStore ) {
     this.selection = Selection();
     this.layoutStore = layoutStore;
+
+    dispatcher.register( SelectionDragged, ev => {
+      this.selection =
+        this.selection.set( 'box', ev.box );
+    } );
 
     dispatcher.register( EdgeSelected, ev => {
       this.selection =
