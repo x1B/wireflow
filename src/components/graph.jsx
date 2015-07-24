@@ -15,6 +15,7 @@ import { Rendered } from '../events/metrics';
 import count from '../util/metrics';
 import dragdrop from '../util/dragdrop';
 
+const { abs, min } = Math;
 
 const Graph = React.createClass({
 
@@ -63,10 +64,15 @@ const Graph = React.createClass({
     const dd = () => dragdrop({
       onMove: ({ dragPayload: { left, top }, dragX, dragY, dragNode }) => {
         count( Rendered({ what: 'events.SelectionDragged' }) );
+
+        const x = left + min( 0, dragX );
+        const y = top + min( 0, dragY );
+        const w = abs( dragX );
+        const h = abs( dragY );
         this.bubble( SelectionDragged({
           box: Box({
-            coords: Coords({ left: left, top: top }),
-            dimensions: Dimensions({ width: dragX, height: dragY })
+            coords: Coords({ left: x, top: y }),
+            dimensions: Dimensions({ width: w, height: h })
           })
         }) );
       },
