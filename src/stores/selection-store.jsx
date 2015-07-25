@@ -55,7 +55,6 @@ class SelectionStore {
 
   updateRectangleContents() {
     if( !this.selection.box ) {
-      this.clear();
       return;
     }
 

@@ -108,7 +108,7 @@ export default function dragdrop( options ) {
 
 
   function maybeClick( ev ) {
-    doc.removeEventListener( 'click', onClick );
+    doc.removeEventListener( 'click', maybeClick );
     if( !dragStarted ) {
       onClick( ev );
     }
