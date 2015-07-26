@@ -89,7 +89,8 @@ const Graph = React.createClass({
       <div tabIndex="0" className={classes}>
         <div className="nbe-graph-viewport">
           <div className="nbe-graph-canvas" style={canvasSize}>
-            <SelectionBox box={selection.box} />
+            <SelectionBox coords={selection.coords}
+                          dimensions={selection.dimensions} />
             <div className="nbe-graph-nodes">
               {renderVertices()}
               {renderEdges()}

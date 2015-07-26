@@ -4,13 +4,12 @@ import * as React from 'react';
 const SelectionBox = React.createClass({
 
   render() {
-    const { box } = this.props;
-    if( !box ) {
+    const { coords, dimensions } = this.props;
+    if( !dimensions ) {
       const style = { display: 'none' };
       return <div style={style} />;
     }
 
-    const { coords, dimensions } = box;
     const style = {
       left: coords.left,
       top: coords.top,
