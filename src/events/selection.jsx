@@ -28,6 +28,7 @@ const SelectionDragged = Record({
 }, 'SelectionDragged');
 
 const SelectionMoved = Record({
+  by: null,
   type: () => SelectionMoved
 }, 'EdgeMoved');
 

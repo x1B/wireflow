@@ -92,8 +92,8 @@ const Graph = React.createClass({
             <SelectionBox coords={selection.coords}
                           dimensions={selection.dimensions} />
             <div className="nbe-graph-nodes">
-              {renderVertices()}
               {renderEdges()}
+              {renderVertices()}
             </div>
             <svg className="nbe-links" onMouseDown={startSelect}>
               <Links measurements={measurements}

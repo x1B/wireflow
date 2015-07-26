@@ -3,6 +3,7 @@ import * as dragdrop from '../util/dragdrop';
 
 import { Coords, Dimensions } from '../model';
 import { EdgeMeasured, EdgeMeasurements, EdgeMoved } from '../events/layout';
+import { SelectionMoved } from '../events/selection';
 import { Rendered } from '../events/metrics';
 import count from '../util/metrics';
 import * as shallowEqual from '../util/shallow-equal';
@@ -32,11 +33,22 @@ const Edge = React.createClass({
 
     const dd = () => dragdrop({
       onMove: ({ dragPayload: { left, top }, dragX, dragY, dragNode }) => {
-        count( Rendered({ what: 'events.EdgeMoved' }) );
-        this.bubble( EdgeMoved({
-          edge: edge,
-          to: Coords({ left: left + dragX, top: top + dragY })
-        }) );
+        if( selected ) {
+          const currentLayout = this.props.layout;
+          this.bubble( SelectionMoved({
+            by: Coords({
+              left: dragX - ( currentLayout.left - left ),
+              top: dragY - ( currentLayout.top - top )
+            })
+          }) );
+        }
+        else {
+          this.bubble( EdgeMoved({
+            edge: edge,
+            to: Coords({ left: left + dragX, top: top + dragY })
+          }) );
+        }
+        // :TODO
         this.measure();
       },
       onClick: () => this.bubble(

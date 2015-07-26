@@ -49,20 +49,21 @@ const Vertex = React.createClass({
 
     const dd = () => dragdrop({
       onMove: ({ dragPayload: { left, top }, dragX, dragY, dragNode }) => {
-        count( Rendered({ what: 'events.VertexMoved' }) );
         if( selected ) {
+          const currentLayout = this.props.layout;
           eventHandler( SelectionMoved({
             by: Coords({
-              left: (left + dragX) - layout.left,
-              top: (top + dragY) - layout.top
+              left: dragX - ( currentLayout.left - left ),
+              top: dragY - ( currentLayout.top - top )
             })
           }) );
         }
-        eventHandler( VertexMoved({
-          vertex: vertex,
-          to: Coords({ left: left + dragX, top: top + dragY })
-        }) );
-        this.measure();
+        else {
+          eventHandler( VertexMoved({
+            vertex: vertex,
+            to: Coords({ left: left + dragX, top: top + dragY })
+          }) );
+        }
       },
       onClick: ( ev ) => {
         this.bubble(
@@ -161,9 +162,5 @@ const Vertex = React.createClass({
 
 });
 
-
-function dimensionsFromNode( domNode ) {
-  return ;
-}
 
 export default Vertex;

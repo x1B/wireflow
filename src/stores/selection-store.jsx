@@ -1,5 +1,7 @@
 import { Record, Set } from 'immutable';
 
+import { Coords} from '../model';
+
 import {
   SelectionDragged,
   SelectionCleared,
@@ -51,7 +53,14 @@ class SelectionStore {
     } );
 
     dispatcher.register( SelectionMoved, ev => {
-      console.log( 'Selection Moved' ); // :TODO: DELETE ME
+      const { left, top } = ev.by;
+      this.selection.vertices.forEach( vertexId =>
+        this.layoutStore.layout = this.layoutStore.layout.updateIn( [ 'vertices', vertexId ], layout =>
+          Coords({
+            left: layout.left + left,
+            top: layout.top + top
+          }) )
+      );
     } );
 
   }
