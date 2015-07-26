@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as dragdrop from '../util/dragdrop';
 
-import { Coords, convert } from '../model';
+import { Coords, Dimensions } from '../model';
 import { EdgeMeasured, EdgeMeasurements, EdgeMoved } from '../events/layout';
 import { Rendered } from '../events/metrics';
 import count from '../util/metrics';
@@ -11,8 +11,6 @@ import {
   EdgeSelected,
   EdgeDeselected
 } from '../events/selection';
-
-const { boxFromNode } = convert;
 
 
 const Edge = React.createClass({
@@ -74,16 +72,19 @@ const Edge = React.createClass({
 
 
   measure() {
-    const icon = React.findDOMNode( this.refs.icon );
-    const container = icon.parentNode;
+    const domIcon = React.findDOMNode( this.refs.icon );
+    const domContainer = domIcon.parentNode;
     const { edge } = this.props;
     this.bubble( EdgeMeasured({
       edge: edge,
       measurements: EdgeMeasurements({
-        box: boxFromNode( container ),
+        dimensions: Dimensions({
+          width: domContainer.offsetWidth,
+          height: domContainer.offsetHEight
+        }),
         center: Coords({
-          left: container.offsetLeft + (icon.offsetWidth / 2),
-          top: container.offsetTop + (icon.offsetHeight / 2)
+          left: domContainer.offsetLeft + (domIcon.offsetWidth / 2),
+          top: domContainer.offsetTop + (domIcon.offsetHeight / 2)
         })
       })
     }) );

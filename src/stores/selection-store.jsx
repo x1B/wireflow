@@ -3,6 +3,7 @@ import { Record, Set } from 'immutable';
 import {
   SelectionDragged,
   SelectionCleared,
+  SelectionMoved,
   VertexDeselected,
   VertexSelected,
   EdgeDeselected,
@@ -14,9 +15,10 @@ const Selection = Record({ vertices: Set(), edges: Set(), box: null });
 
 class SelectionStore {
 
-  constructor( dispatcher, layoutStore ) {
+  constructor( dispatcher, layoutStore, graphStore ) {
     this.selection = Selection();
     this.layoutStore = layoutStore;
+    this.graphStore = graphStore;
 
     dispatcher.register( SelectionCleared, ev => { this.clear(); } );
 
@@ -46,6 +48,10 @@ class SelectionStore {
         this.selection.update( 'vertices', _ => _.remove( ev.vertex.id ) );
     } );
 
+    dispatcher.register( SelectionMoved, ev => {
+      console.log( 'Selection Moved' ); // :TODO: DELETE ME
+    } );
+
   }
 
   clear() {
@@ -53,27 +59,32 @@ class SelectionStore {
       this.selection.set( 'edges', Set() ).set( 'vertices', Set() );
   }
 
+
+  isEmpty() {
+    return this.selection.vertices.isEmpty()
+      && this.selection.edges.isEmpty();
+  }
+
+
   updateRectangleContents() {
     if( !this.selection.box ) {
       return;
     }
 
     const { box: { coords, dimensions } } = this.selection;
-    const { measurements: { edges, vertices } } = this.layoutStore;
+    const { measurements, layout } = this.layoutStore;
     this.selection = Selection({
       box: this.selection.box,
-      edges: nodeSet( edges ),
-      vertices: nodeSet( vertices )
+      edges: nodeSet( measurements.edges.toJS(), layout.edges.toJS() ),
+      vertices: nodeSet( measurements.vertices.toJS(), layout.vertices.toJS() )
     });
 
-    function nodeSet( measurements ) {
+    function nodeSet( nodeMeasurements, nodeCoords ) {
       var matches = Set();
-      const boxes = measurements.toJS();
-      for( const id in boxes ) {
-        if( !boxes.hasOwnProperty( id ) ) { continue; }
-        const nodeBox = boxes[ id ].box;
-        const { left, top } = nodeBox.coords;
-        const { width, height } = nodeBox.dimensions;
+      for( const id in nodeMeasurements ) {
+        if( !nodeMeasurements.hasOwnProperty( id ) ) { continue; }
+        const { left, top } = nodeCoords[ id ];
+        const { width, height } = nodeMeasurements[ id ].dimensions;
         if( left + width < coords.left
             || left > coords.left + dimensions.width ) {
           continue;

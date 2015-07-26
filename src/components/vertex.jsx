@@ -3,7 +3,8 @@ import * as dragdrop from '../util/dragdrop';
 
 import * as Port from './port';
 import * as shallowEqual from '../util/shallow-equal';
-import { Coords, convert, IN, OUT } from '../model';
+import { Coords, Dimensions, IN, OUT } from '../model';
+import { SelectionMoved } from '../events/selection';
 
 import {
   VertexMeasured,
@@ -19,9 +20,6 @@ import {
 
 import { Rendered } from '../events/metrics';
 import count from '../util/metrics';
-
-
-const { boxFromNode } = convert;
 
 
 const Vertex = React.createClass({
@@ -52,9 +50,17 @@ const Vertex = React.createClass({
     const dd = () => dragdrop({
       onMove: ({ dragPayload: { left, top }, dragX, dragY, dragNode }) => {
         count( Rendered({ what: 'events.VertexMoved' }) );
+        if( selected ) {
+          eventHandler( SelectionMoved({
+            by: Coords({
+              left: (left + dragX) - layout.left,
+              top: (top + dragY) - layout.top
+            })
+          }) );
+        }
         eventHandler( VertexMoved({
           vertex: vertex,
-          to: Coords( { left: left + dragX, top: top + dragY } )
+          to: Coords({ left: left + dragX, top: top + dragY })
         }) );
         this.measure();
       },
@@ -123,7 +129,7 @@ const Vertex = React.createClass({
 
   isComplete( measurements ) {
     const { ports } = this.props.vertex;
-    return measurements.box
+    return measurements.dimensions
       && measurements.inbound.size === ports.inbound.size
       && measurements.outbound.size === ports.outbound.size;
   },
@@ -132,8 +138,11 @@ const Vertex = React.createClass({
   measure() {
     const domVertex = React.findDOMNode( this.refs.vertex );
     this.setState( ({ measurements }) => {
-      const box = boxFromNode( domVertex );
-      const newMeasurements = measurements.setIn( [ 'box' ], box );
+      const newMeasurements =
+        measurements.set( 'dimensions', Dimensions({
+          width: domVertex.offsetWidth,
+          height: domVertex.offsetHeight
+        }) );
       this.propagateMeasurements( newMeasurements );
       return { measurements: newMeasurements };
     } );
@@ -151,5 +160,10 @@ const Vertex = React.createClass({
   }
 
 });
+
+
+function dimensionsFromNode( domNode ) {
+  return ;
+}
 
 export default Vertex;

@@ -1,5 +1,5 @@
 import { Map, Record } from 'immutable';
-import { Coords } from '../model';
+import { Coords, VertexMeasurements, EdgeMeasurements } from '../model';
 import { Connectable } from './graph';
 
 
@@ -21,22 +21,11 @@ const PortMeasured = Record({
   type: () => PortMeasured
 }, 'PortMeasured');
 
-const VertexMeasurements = Record({
-  box: null,
-  inbound: Map(),
-  outbound: Map()
-}, 'VertexMeasurements');
-
 const VertexMeasured = Record({
   vertex: null,
   measurements: VertexMeasurements(),
   type: () => VertexMeasured
 }, 'VertexMeasured');
-
-const EdgeMeasurements = Record({
-  box: null,
-  center: null
-}, 'EdgeMeasurements');
 
 const EdgeMeasured = Record({
   edge: null,

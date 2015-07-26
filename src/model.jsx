@@ -5,11 +5,25 @@ import * as options from './util/options';
 
 const { Map, List, Record } = Immutable;
 
+// dimensions for each node, plus node-internal positions of vertex-ports
+const Measurements = Record({ vertices: Map(), edges: Map() });
+
 // Types related to layout/measurements
 const Coords = Record({ left: 0, top: 0 });
 const Dimensions = Record({ width: 0, height: 0 });
-const Box = Record({ coords: Coords(), dimensions: Dimensions() });
 const Layout = Record({ edges: Map(), vertices: Map() });
+
+const VertexMeasurements = Record({
+  dimensions: null,
+  inbound: Map(),
+  outbound: Map()
+}, 'VertexMeasurements');
+
+const EdgeMeasurements = Record({
+  box: null,
+  center: null
+}, 'EdgeMeasurements');
+
 
 // Actual model
 const Graph = Record({ edges: Map(), vertices: Map() });
@@ -26,15 +40,16 @@ const Directions = List.of( IN, OUT );
 const convert = {
   graph: graph,
   layout: layout,
-  types: types,
-  boxFromNode: boxFromNode
+  types: types
 };
 
 export {
   Coords,
   Dimensions,
-  Box,
   Layout,
+  Measurements,
+  VertexMeasurements,
+  EdgeMeasurements,
   IN,
   OUT,
   Directions,
@@ -64,19 +79,6 @@ function type( jsType ) {
 
 
 // model ///////////////////////////////////////////////////////////////////////
-
-function boxFromNode( domNode ) {
-  return Box({
-    coords: Coords({
-      left: domNode.offsetLeft,
-      top: domNode.offsetTop
-    }),
-    dimensions: Dimensions({
-      width: domNode.offsetWidth,
-      height: domNode.offsetHeight
-    })
-  });
-}
 
 function graph( jsGraph ) {
   return Graph({

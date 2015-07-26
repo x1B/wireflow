@@ -52,7 +52,7 @@ const Graph = React.createClass({
 
     count( Rendered({ what: Graph.displayName }) );
 
-    const canvasSize = self.canvasSize( measurements );
+    const canvasSize = self.canvasSize( measurements, layout );
 
     const focusClass =
       hasFocus ? 'nbe-has-focus' : '';
@@ -70,13 +70,11 @@ const Graph = React.createClass({
         const w = abs( dragX );
         const h = abs( dragY );
         this.bubble( SelectionDragged({
-          box: Box({
-            coords: Coords({ left: x, top: y }),
-            dimensions: Dimensions({ width: w, height: h })
-          })
+          coords: Coords({ left: x, top: y }),
+          dimensions: Dimensions({ width: w, height: h })
         }) );
       },
-      onEnd: () => this.bubble( SelectionDragged({ box: null }) ),
+      onEnd: () => this.bubble( SelectionDragged({ coords: null, dimensions: null }) ),
       onClick: () => this.bubble( SelectionCleared() )
     });
 
@@ -159,22 +157,21 @@ const Graph = React.createClass({
   },
 
 
-  canvasSize( measurements ) {
+  canvasSize( measurements, layout ) {
     var w = 0;
     var h = 0;
     const padding = 50;
     const { max } = Math;
 
-    const measure = node => {
-      const { box: {
-        coords: { left, top },
-        dimensions: { width, height }
-      } } = node;
+    const measure = ( nodeCoords ) => (nodeMeasurements, id) => {
+      console.log( 'CLOG', nodeMeasurements.toJS(), id ); // :TODO: DELETE ME
+      const { dimensions: { width, height } } = nodeMeasurements;
+      const { left, top } = nodeCoords;
       w = max( w, left + width );
       h = max( h, top + height );
     };
-    measurements.vertices.forEach( measure );
-    measurements.edges.forEach( measure );
+    measurements.vertices.forEach( measure( layout.vertices ) );
+    measurements.edges.forEach( measure( layout.edges ) );
 
     // TODO: 'font-size: 0' is a weird hack.
     // find a better way to make sure that no scrollbar is shown

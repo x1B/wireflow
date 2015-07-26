@@ -1,4 +1,5 @@
 import { Record } from 'immutable';
+import { Coords } from '../model';
 
 const EdgeSelected = Record({
   edge: null,
@@ -25,12 +26,18 @@ const SelectionDragged = Record({
   type: () => SelectionDragged
 }, 'SelectionDragged');
 
+const SelectionMoved = Record({
+  by: Coords(),
+  type: () => SelectionMoved
+}, 'EdgeMoved');
+
 const SelectionCleared = Record({
   type: () => SelectionCleared
 }, 'SelectionCleared');
 
 export default {
   SelectionDragged,
+  SelectionMoved,
   SelectionCleared,
   VertexDeselected,
   VertexSelected,

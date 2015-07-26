@@ -1,10 +1,8 @@
-import { Coords } from '../model';
+import { Coords, Measurements } from '../model';
 import {
   VertexMoved, EdgeMoved, EdgeInserted, EdgeMeasured, VertexMeasured
 } from '../events/layout';
-import { Record, Map } from 'immutable';
 
-const Measurements = Record({ vertices: Map(), edges: Map() });
 
 // TODO determine dynamically?
 const edgeSize = 20;
@@ -48,17 +46,18 @@ class LayoutStore {
   }
 
   placeEdge( edge, from, to ) {
-    const fromMeasurements = this.measurements.vertices.get( from.vertexId );
-    const toMeasurements = this.measurements.vertices.get( to.vertexId );
+    const { measurements, layout } = this;
+    const fromMeasurements = measurements.vertices.get( from.vertexId );
+    const toMeasurements = measurements.vertices.get( to.vertexId );
+    const fromCoords = layout.vertices.get( from.vertexId );
+    const toCoords = layout.vertices.get( to.vertexId );
 
-    const { coords, dimensions } = fromMeasurements.box;
-    const toBox = toMeasurements.box;
-    const left = (coords.left + dimensions.width + toBox.coords.left) / 2;
+    const left = (fromCoords.left + fromMeasurements.dimensions.width + toCoords.left) / 2;
 
     const fromPortBox = fromMeasurements.getIn([ from.direction, from.portId ]);
     const toPortBox = toMeasurements.getIn([ to.direction, to.portId ]);
     const top = (
-      coords.top + fromPortBox.top + toBox.coords.top + toPortBox.top
+      fromCoords.top + fromPortBox.top + toCoords.top + toPortBox.top
       - edgeSize
     ) / 2;
 
