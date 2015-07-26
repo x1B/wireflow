@@ -11,7 +11,9 @@ import {
 } from '../events/selection';
 
 
-const Selection = Record({ vertices: Set(), edges: Set(), box: null });
+const Selection = Record({
+  vertices: Set(), edges: Set(), coords: null, dimensions: null
+});
 
 class SelectionStore {
 
@@ -24,7 +26,7 @@ class SelectionStore {
 
     dispatcher.register( SelectionDragged, ev => {
       this.selection =
-        this.selection.set( 'box', ev.box );
+        this.selection.set( 'coords', ev.coords ).set( 'dimensions', ev.dimensions );
       this.updateRectangleContents();
     } );
 
@@ -67,14 +69,15 @@ class SelectionStore {
 
 
   updateRectangleContents() {
-    if( !this.selection.box ) {
+    if( !this.selection.dimensions ) {
       return;
     }
 
-    const { box: { coords, dimensions } } = this.selection;
+    const { coords, dimensions } = this.selection;
     const { measurements, layout } = this.layoutStore;
     this.selection = Selection({
-      box: this.selection.box,
+      coords: this.selection.coords,
+      dimensions: this.selection.dimensions,
       edges: nodeSet( measurements.edges.toJS(), layout.edges.toJS() ),
       vertices: nodeSet( measurements.vertices.toJS(), layout.vertices.toJS() )
     });

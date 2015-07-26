@@ -80,7 +80,7 @@ const Edge = React.createClass({
       measurements: EdgeMeasurements({
         dimensions: Dimensions({
           width: domContainer.offsetWidth,
-          height: domContainer.offsetHEight
+          height: domContainer.offsetHeight
         }),
         center: Coords({
           left: domContainer.offsetLeft + (domIcon.offsetWidth / 2),

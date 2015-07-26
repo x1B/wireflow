@@ -8,14 +8,14 @@ import * as Vertex from './vertex';
 import * as GhostPort from './ghost-port';
 import * as shallowEqual from '../util/shallow-equal';
 
-import { Layout, Box, Coords, Dimensions, Graph as GraphModel } from '../model';
+import { Layout, Coords, Dimensions, Graph as GraphModel } from '../model';
 import { PortDragged } from '../events/layout';
 import { SelectionDragged, SelectionCleared } from '../events/selection';
 import { Rendered } from '../events/metrics';
 import count from '../util/metrics';
 import dragdrop from '../util/dragdrop';
 
-const { abs, min } = Math;
+const { abs, min, max } = Math;
 
 const Graph = React.createClass({
 
@@ -161,10 +161,8 @@ const Graph = React.createClass({
     var w = 0;
     var h = 0;
     const padding = 50;
-    const { max } = Math;
 
     const measure = ( nodeCoords ) => (nodeMeasurements, id) => {
-      console.log( 'CLOG', nodeMeasurements.toJS(), id ); // :TODO: DELETE ME
       const { dimensions: { width, height } } = nodeMeasurements;
       const { left, top } = nodeCoords;
       w = max( w, left + width );

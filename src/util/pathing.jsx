@@ -45,7 +45,7 @@ function svgCubicBezierLinkPath(
   const arrowHeadLength = baseArrowHeadLength * ( zoomFactor || 1 );
   const stubLength = baseStubLength * ( zoomFactor || 1 );
   const safeDistanceX = 2 * stubLength;
-  const safeDistanceY = 2.5 * stubLength;
+  const safeDistanceY = 3 * stubLength;
 
   const distanceX = abs( from[ X ] - to[ X ] );
   const distanceY = abs( from[ Y ] - to[ Y ] );

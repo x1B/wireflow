@@ -1,5 +1,5 @@
 import { Record } from 'immutable';
-import { Coords } from '../model';
+
 
 const EdgeSelected = Record({
   edge: null,
@@ -22,12 +22,12 @@ const VertexDeselected = Record({
 }, 'VertexDeselected');
 
 const SelectionDragged = Record({
-  box: null,
+  coords: null,
+  dimensions: null,
   type: () => SelectionDragged
 }, 'SelectionDragged');
 
 const SelectionMoved = Record({
-  by: Coords(),
   type: () => SelectionMoved
 }, 'EdgeMoved');
 
