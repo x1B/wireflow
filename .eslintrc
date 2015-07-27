@@ -20,7 +20,6 @@
   "rules": {
     "array-bracket-spacing": [ 1, "always" ],
     "space-in-parens": [ 0, "always" ],
-    "complexity": [1, 7],
     "default-case": 2,
     "dot-notation": 0,
     "guard-for-in": 1,

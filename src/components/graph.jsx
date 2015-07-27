@@ -6,16 +6,19 @@ import * as Edge from './edge';
 import * as SelectionBox from './selection-box';
 import * as Vertex from './vertex';
 import * as GhostPort from './ghost-port';
-import * as shallowEqual from '../util/shallow-equal';
 
 import { Layout, Coords, Dimensions, Graph as GraphModel } from '../model';
 import { PortDragged } from '../events/layout';
 import { SelectionDragged, SelectionCleared } from '../events/selection';
 import { Rendered } from '../events/metrics';
+
+import * as shallowEqual from '../util/shallow-equal';
 import count from '../util/metrics';
 import dragdrop from '../util/dragdrop';
+import keyboard from '../util/keyboard';
 
 const { abs, min, max } = Math;
+
 
 const Graph = React.createClass({
 
@@ -86,7 +89,7 @@ const Graph = React.createClass({
     };
 
     return (
-      <div tabIndex="0" className={classes}>
+      <div tabIndex="0" className={classes} ref="graph">
         <div className="nbe-graph-viewport">
           <div className="nbe-graph-canvas" style={canvasSize}>
             <SelectionBox coords={selection.coords}
@@ -179,6 +182,11 @@ const Graph = React.createClass({
       'minWidth': (w + padding) + 'px',
       'minHeight': (h + padding) + 'px'
     };
+  },
+
+  componentDidMount() {
+    const domGraph = React.findDOMNode( this.refs.graph );
+    keyboard( domGraph, this.bubble );
   }
 
 });
