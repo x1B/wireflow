@@ -31,8 +31,12 @@ const Port = React.createClass({
         }) );
       },
       getDropResult: ( hoverNode ) => {
+        if( hoverNode.nodeName === 'svg' ) {
+          // Background or outside of drop-zone
+          return false;
+        }
         const data = hoverNode.dataset;
-        const matches =
+        const matches = data &&
             data.nbeConnectable &&
             data.nbeType === port.type &&
             data.nbeDirection !== port.direction;

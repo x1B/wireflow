@@ -28,7 +28,8 @@ const SelectionDragged = Record({
 }, 'SelectionDragged');
 
 const SelectionMoved = Record({
-  by: null,
+  reference: null,
+  offset: null,
   type: () => SelectionMoved
 }, 'EdgeMoved');
 

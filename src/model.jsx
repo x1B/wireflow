@@ -20,8 +20,7 @@ const VertexMeasurements = Record({
 }, 'VertexMeasurements');
 
 const EdgeMeasurements = Record({
-  dimensions: null,
-  center: null
+  dimensions: null
 }, 'EdgeMeasurements');
 
 

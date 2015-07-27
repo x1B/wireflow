@@ -1,5 +1,9 @@
 import { Map, List } from 'immutable';
 
+import { Rendered } from './events/metrics';
+import count from './util/metrics';
+
+const now = () => window.performance.now();
 
 class Dispatcher {
 
@@ -18,11 +22,17 @@ class Dispatcher {
 
   dispatch( event ) {
     this.queue.push( event );
+
+    const markA = now();
     const anyDispatched = this.processQueue();
+    count( Rendered({ what: 'dispatch', duration: now() - markA }) );
+
     if( anyDispatched && !this.frameRequested ) {
       window.requestAnimationFrame( () => {
         this.frameRequested = false;
+        const markB = window.performance.now();
         this.onAfterDispatch();
+        count( Rendered({ what: 'render', duration: now() - markB }) );
       } );
       this.frameRequested = true;
     }

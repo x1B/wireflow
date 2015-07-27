@@ -1,6 +1,6 @@
 import { Record, Set } from 'immutable';
+import { Coords } from '../model';
 
-import { Coords} from '../model';
 
 import {
   SelectionDragged,
@@ -21,6 +21,7 @@ class SelectionStore {
 
   constructor( dispatcher, layoutStore, graphStore ) {
     this.selection = Selection();
+    this.moveReference = { id: null };
     this.layoutStore = layoutStore;
     this.graphStore = graphStore;
 
@@ -53,14 +54,27 @@ class SelectionStore {
     } );
 
     dispatcher.register( SelectionMoved, ev => {
-      const { left, top } = ev.by;
-      this.selection.vertices.forEach( vertexId =>
-        this.layoutStore.layout = this.layoutStore.layout.updateIn( [ 'vertices', vertexId ], layout =>
-          Coords({
-            left: layout.left + left,
-            top: layout.top + top
-          }) )
+      if( ev.reference.id !== this.moveReference.id ) {
+        this.moveReference = {
+          id: ev.reference.id,
+          coords: ev.reference.coords,
+          layout: this.layoutStore.layout
+        };
+      }
+
+      const { left, top } = ev.offset;
+      var targetLayout = this.moveReference.layout;
+      [ 'vertices', 'edges' ].forEach( kind =>
+        this.selection[ kind ].forEach( id => {
+          targetLayout = targetLayout.updateIn( [ kind, id ], coords =>
+            Coords({
+              left: coords.left + left,
+              top: coords.top + top
+            })
+          );
+        } )
       );
+      this.layoutStore.layout = targetLayout;
     } );
 
   }

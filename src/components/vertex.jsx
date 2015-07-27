@@ -48,17 +48,15 @@ const Vertex = React.createClass({
     const classes = `nbe-vertex nbe-node ${selectedClass}`;
 
     const dd = () => dragdrop({
-      onMove: ({ dragPayload: { left, top }, dragX, dragY, dragNode }) => {
+      onMove: ({ dragPayload, dragX, dragY, dragNode }) => {
         if( selected ) {
-          const currentLayout = this.props.layout;
           eventHandler( SelectionMoved({
-            by: Coords({
-              left: dragX - ( currentLayout.left - left ),
-              top: dragY - ( currentLayout.top - top )
-            })
+            reference: dragPayload,
+            offset: Coords({ left: dragX, top: dragY })
           }) );
         }
         else {
+          const { left, top } = dragPayload.coords;
           eventHandler( VertexMoved({
             vertex: vertex,
             to: Coords({ left: left + dragX, top: top + dragY })
@@ -72,7 +70,7 @@ const Vertex = React.createClass({
       }
     });
 
-    const startDrag = ( ev ) => dd().start( ev, layout );
+    const startDrag = ( ev ) => dd().start( ev, { coords: layout, id: {} } );
 
     return (
       <div style={style} className={classes} ref="vertex"

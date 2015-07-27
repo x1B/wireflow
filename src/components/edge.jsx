@@ -32,31 +32,27 @@ const Edge = React.createClass({
     const className = `nbe-node nbe-edge nbe-type-${type} ${selectedClass}`;
 
     const dd = () => dragdrop({
-      onMove: ({ dragPayload: { left, top }, dragX, dragY, dragNode }) => {
+      onMove: ({ dragPayload, dragX, dragY, dragNode }) => {
         if( selected ) {
-          const currentLayout = this.props.layout;
           this.bubble( SelectionMoved({
-            by: Coords({
-              left: dragX - ( currentLayout.left - left ),
-              top: dragY - ( currentLayout.top - top )
-            })
+            reference: dragPayload,
+            offset: Coords({ left: dragX, top: dragY })
           }) );
         }
         else {
+          const { left, top } = dragPayload.coords;
           this.bubble( EdgeMoved({
             edge: edge,
             to: Coords({ left: left + dragX, top: top + dragY })
           }) );
         }
-        // :TODO
-        this.measure();
       },
       onClick: () => this.bubble(
         (selected ? EdgeDeselected : EdgeSelected)({ edge })
       )
     });
 
-    const startDrag = ( ev ) => dd().start( ev, layout );
+    const startDrag = ( ev ) => dd().start( ev, { coords: layout, id: {} } );
 
     return (
       <div style={style} className={className}>
@@ -93,10 +89,6 @@ const Edge = React.createClass({
         dimensions: Dimensions({
           width: domContainer.offsetWidth,
           height: domContainer.offsetHeight
-        }),
-        center: Coords({
-          left: domContainer.offsetLeft + (domIcon.offsetWidth / 2),
-          top: domContainer.offsetTop + (domIcon.offsetHeight / 2)
         })
       })
     }) );

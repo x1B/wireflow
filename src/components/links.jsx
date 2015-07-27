@@ -105,7 +105,9 @@ const Links = React.createClass({
           vertices.get( id ).ports[ direction ].forEach( port => {
             const edgeId = port.edgeId;
             if( edgeId ) {
-              matchingMeasurements[ edgeId ] = [ vertexLayout, vertexMeasurements, port ];
+              matchingMeasurements[ edgeId ] = [
+                vertexLayout, vertexMeasurements, port
+              ];
             }
           } );
         } );
