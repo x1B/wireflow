@@ -1,7 +1,6 @@
 import { Record, Set } from 'immutable';
 import { Coords } from '../model';
 
-
 import {
   SelectionDragged,
   SelectionCleared,
@@ -53,31 +52,11 @@ class SelectionStore {
         this.selection.update( 'vertices', _ => _.remove( ev.vertex.id ) );
     } );
 
-    dispatcher.register( SelectionMoved, ev => {
-      if( ev.reference.id !== this.moveReference.id ) {
-        this.moveReference = {
-          id: ev.reference.id,
-          coords: ev.reference.coords,
-          layout: this.layoutStore.layout
-        };
-      }
-
-      const { left, top } = ev.offset;
-      var targetLayout = this.moveReference.layout;
-      [ 'vertices', 'edges' ].forEach( kind =>
-        this.selection[ kind ].forEach( id => {
-          targetLayout = targetLayout.updateIn( [ kind, id ], coords =>
-            Coords({
-              left: coords.left + left,
-              top: coords.top + top
-            })
-          );
-        } )
-      );
-      this.layoutStore.layout = targetLayout;
-    } );
-
+    dispatcher.register( SelectionMoved, ev =>
+      this.moveContents( ev.reference, ev.offset )
+    );
   }
+
 
   clear() {
     this.selection =
@@ -88,6 +67,23 @@ class SelectionStore {
   isEmpty() {
     return this.selection.vertices.isEmpty()
       && this.selection.edges.isEmpty();
+  }
+
+
+  moveContents( reference, offset ) {
+    if( reference.id !== this.moveReference.id ) {
+      this.moveReference = {
+        id: reference.id,
+        coords: reference.coords,
+        layout: this.layoutStore.layout
+      };
+    }
+
+    this.layoutStore.moveSelection(
+      this.selection,
+      this.moveReference.layout,
+      offset
+    );
   }
 
 

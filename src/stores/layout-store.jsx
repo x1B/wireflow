@@ -42,8 +42,25 @@ class LayoutStore {
     dispatcher.register( EdgeInserted, ev => {
       this.layout = this.placeEdge( ev.edge, ev.from, ev.to );
     } );
-
   }
+
+
+  moveSelection( selection, referenceLayout, offset ) {
+    const { left, top } = offset;
+    var targetLayout = referenceLayout;
+    [ 'vertices', 'edges' ].forEach( kind =>
+      selection[ kind ].forEach( id => {
+        targetLayout = targetLayout.updateIn( [ kind, id ], coords =>
+          Coords({
+            left: coords.left + left,
+            top: coords.top + top
+          })
+        );
+      } )
+    );
+    this.layout = targetLayout;
+  }
+
 
   placeEdge( edge, from, to ) {
     const { measurements, layout } = this;
@@ -66,7 +83,6 @@ class LayoutStore {
       top: top
     }) );
   }
-
 }
 
 export default LayoutStore;
