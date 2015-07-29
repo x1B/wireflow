@@ -6,7 +6,7 @@ import {
   UiUndo,
   UiRedo,
   UiInsert
-} from '../events/ui';
+} from '../events/selection-commands';
 
 
 /** Maintain fake clipboard across instances if no system clipboard is available. */
@@ -23,14 +23,16 @@ const KEY_CODE_ESCAPE = 0x1B;
 export default function( domNode, eventHandler ) {
 
   /**
-  * If the user agent supports clipboard events, the cut/copy/paste handlers will be called twice after
-  * the user has pressed Ctrl-X/C/V and only once if the user has used the browser menu. This flag makes
-  * sure that each operation is carried out exactly once.
-  */
+   * If the user agent supports clipboard events, the cut/copy/paste handlers will be called twice after
+   * the user has pressed Ctrl-X/C/V and only once if the user has used the browser menu. This flag makes
+   * sure that each operation is carried out exactly once.
+   */
   var clipboardPrepared = false;
 
   /** Make sure that bindings fire only once. */
   var focusHandlersInstalled = false;
+
+  domNode.addEventListener( 'click', () => domNode.focus() );
 
   domNode.addEventListener( 'focusin', function() {
     eventHandler( UiFocusReceived({ domNode: domNode }) );
@@ -87,7 +89,7 @@ export default function( domNode, eventHandler ) {
   ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   function handleKeys( event ) {
-    console.log( 'CLOG', event ); // :TODO: DELETE ME
+    console.log( 'EVENT CLOG', event ); // :TODO: DELETE ME
     if( event.keyCode === KEY_CODE_DELETE ) {
       eventHandler( UiDelete() );
     }

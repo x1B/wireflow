@@ -3,11 +3,11 @@ import * as React from 'react';
 import { IN, OUT } from '../model';
 import { Rendered } from '../events/metrics';
 import count from '../util/metrics';
-import * as settings from '../util/settings';
 import * as pathing from '../util/pathing';
 import * as shallowEqual from '../util/shallow-equal';
-
+import * as settings from '../util/settings';
 const { layout: { edgeOffset } } = settings;
+
 
 const Link = React.createClass({
 

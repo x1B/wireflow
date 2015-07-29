@@ -11,6 +11,10 @@ import {
   EdgeSelected
 } from '../events/selection';
 
+import {
+  UiDelete
+} from '../events/selection-commands';
+
 
 const Selection = Record({
   vertices: Set(), edges: Set(), coords: null, dimensions: null
@@ -55,6 +59,13 @@ class SelectionStore {
     dispatcher.register( SelectionMoved, ev =>
       this.moveContents( ev.reference, ev.offset )
     );
+
+    dispatcher.register( UiDelete, ev => {
+      const { vertices, edges } = this.selection;
+      console.log( 'CLOG', this.graphStore ); // :TODO: DELETE ME
+      vertices.forEach( (_, id) => this.graphStore.removeVertex( id ) );
+      edges.forEach( (_, id) => this.graphStore.removeEdge( id ) );
+    } );
   }
 
 

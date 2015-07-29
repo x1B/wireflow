@@ -2,10 +2,9 @@ import { Coords, Measurements } from '../model';
 import {
   VertexMoved, EdgeMoved, EdgeInserted, EdgeMeasured, VertexMeasured
 } from '../events/layout';
+import * as settings from '../util/settings';
+const { layout: { edgeOffset } } = settings;
 
-
-// TODO determine dynamically?
-const edgeSize = 20;
 
 /**
  * Manages the graph layout prop.
@@ -75,7 +74,7 @@ class LayoutStore {
     const toPortBox = toMeasurements.getIn([ to.direction, to.portId ]);
     const top = (
       fromCoords.top + fromPortBox.top + toCoords.top + toPortBox.top
-      - edgeSize
+      - edgeOffset
     ) / 2;
 
     return this.layout.setIn( [ 'edges', edge.id ], Coords({

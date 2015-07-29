@@ -60,18 +60,18 @@ class GraphStore {
 
 
   disconnect( vertex, port ) {
-    const model = this.graph;
     const types = this.types;
 
     const portsPath = [ 'vertices', vertex.id, 'ports', port.direction ];
 
     const type = types.get( port.type );
     if( type.owningPort === port.direction ) {
-      this.removeEdge( model, port.edgeId );
+      this.removeEdge( port.edgeId );
       return;
     }
 
-    const next = model.setIn( portsPath, model.getIn( portsPath ).map( p =>
+    const current = this.graph;
+    const next = current.setIn( portsPath, current.getIn( portsPath ).map( p =>
       p.id !== port.id ? p : port.set( 'edgeId', null )
     ) );
 
@@ -80,9 +80,9 @@ class GraphStore {
   }
 
 
-  removeEdge( graph, edgeId ) {
+  removeEdge( edgeId ) {
     const mapVertices = f =>
-      graph.set( 'vertices', graph.vertices.map( f ) );
+      this.graph.set( 'vertices', this.graph.vertices.map( f ) );
 
     const mapVertexPorts = ( v, f ) => v.set( 'ports', Ports({
       inbound: v.ports.inbound.map( f ),
@@ -94,6 +94,13 @@ class GraphStore {
     this.graph = mapGraphPorts( p => p.set( 'edgeId',
       p.edgeId === edgeId ? null : p.edgeId
     ) );
+    this.pruneEmptyEdges();
+  }
+
+
+  removeVertex( vertexId ) {
+    this.graph = this.graph.update( 'vertices', vs =>
+      vs.filter( v => v.id !== vertexId ) );
     this.pruneEmptyEdges();
   }
 
