@@ -23,14 +23,6 @@ const EdgeMeasurements = Record({
   dimensions: null
 }, 'EdgeMeasurements');
 
-const Connectable = Record({
-  edgeId: null,
-  type: null,
-  vertexId: null,
-  portId: null,
-  direction: null
-}, 'Connectable');
-
 
 
 // Actual model
@@ -45,6 +37,13 @@ const IN = 'inbound';
 const OUT = 'outbound';
 const Directions = List.of( IN, OUT );
 
+// History Stuff:
+const Checkpoint = Record({
+  before: null,
+  index: null
+}, 'Checkpoint');
+
+
 const convert = {
   graph: graph,
   layout: layout,
@@ -52,7 +51,6 @@ const convert = {
 };
 
 export {
-  Connectable,
   Coords,
   Dimensions,
   Layout,
@@ -65,6 +63,7 @@ export {
   Graph,
   Edge,
   Ports,
+  Checkpoint,
 
   convert
 };

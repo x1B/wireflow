@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import { IN, OUT } from '../model';
-import { Rendered } from '../actions/metrics';
 import count from '../util/metrics';
 import * as pathing from '../util/pathing';
 import * as shallowEqual from '../util/shallow-equal';
@@ -25,7 +24,7 @@ const Link = React.createClass({
     const type = ( fromPort || toPort ).type;
 
     const classes = [ 'nbe-link', 'nbe-type-' + type ].join( ' ' );
-    count( Rendered( { what: Link.displayName } ) );
+    count({ what: Link.displayName });
 
     if( !fromMeasurements || !toMeasurements ) {
       // not measured (yet), e.g. just created

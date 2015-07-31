@@ -1,10 +1,11 @@
 import {
-  UiFocusReceived,
-  UiFocusLost,
-  UiDelete,
-  UiCancel,
-  UiInsert
-} from '../actions/selection-commands';
+  HandleFocusReceived,
+  HandleFocusLost
+} from '../actions/ui';
+
+import {
+  DeleteSelection
+} from '../actions/selection';
 
 import {
   UiUndo,
@@ -38,7 +39,7 @@ export default function( domNode, eventHandler ) {
   domNode.addEventListener( 'click', () => domNode.focus() );
 
   domNode.addEventListener( 'focusin', function() {
-    eventHandler( UiFocusReceived({ domNode: domNode }) );
+    eventHandler( HandleFocusReceived({ domNode: domNode }) );
     if( !focusHandlersInstalled ) {
       document.addEventListener( 'keydown', handleKeys );
       document.body.addEventListener( 'copy', handleCopy );
@@ -52,7 +53,7 @@ export default function( domNode, eventHandler ) {
     document.body.removeEventListener( 'copy', handleCopy );
     document.body.removeEventListener( 'cut', handleCut );
     focusHandlersInstalled = false;
-    eventHandler( UiFocusLost() );
+    eventHandler( HandleFocusLost() );
   } );
 
   return {};
@@ -74,7 +75,7 @@ export default function( domNode, eventHandler ) {
   function handleCut( event ) {
     if( !clipboardPrepared ) {
       copySelectionToClipboard();
-      eventHandler( UiDelete() );
+      eventHandler( DeleteSelection() );
     }
     event.clipboardData.setData( 'application/json', fakeClipboard );
     event.clipboardData.setData( 'text/plain', fakeClipboard );
@@ -93,10 +94,10 @@ export default function( domNode, eventHandler ) {
 
   function handleKeys( event ) {
     if( event.keyCode === KEY_CODE_DELETE ) {
-      eventHandler( UiDelete() );
+      eventHandler( DeleteSelection() );
     }
     else if( event.keyCode === KEY_CODE_ESCAPE ) {
-      eventHandler( UiCancel() );
+      // :TODO:
     }
     else if( event.metaKey || event.ctrlKey ) {
       switch( event.keyCode ) {
@@ -112,12 +113,12 @@ export default function( domNode, eventHandler ) {
           return;
         case KEY_CODE_X:
           copySelectionToClipboard();
-          eventHandler( UiDelete() );
+          // :TODO:
           clipboardPrepared = true;
           return;
         case KEY_CODE_V:
           if( fakeClipboard ) {
-            eventHandler( UiInsert({ graph: JSON.parse( fakeClipboard ) }) );
+            // :TODO:
           }
           return;
         default:

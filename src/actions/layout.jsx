@@ -1,8 +1,9 @@
-import { Map, Record } from 'immutable';
+import { Record } from 'immutable';
 import { Coords, VertexMeasurements, EdgeMeasurements } from '../model';
 import { Connectable } from './graph';
 
 
+// event payload used during port drag/drop
 const PortDragInfo = Record({
   vertex: null,
   port: null,
@@ -10,65 +11,61 @@ const PortDragInfo = Record({
   mouseCoords: null
 }, 'PortDragInfo');
 
-const PortDragged = Record({
-  info: PortDragInfo(),
-  type: () => PortDragged
-}, 'PortDragged');
 
-const PortMeasured = Record({
+const MeasurePort = Record({
   port: null,
   center: Coords(),
-  type: () => PortMeasured
-}, 'PortMeasured');
+  type: () => MeasurePort
+}, 'MeasurePort');
 
-const VertexMeasured = Record({
+const MeasureVertex = Record({
   vertex: null,
   measurements: VertexMeasurements(),
-  type: () => VertexMeasured
-}, 'VertexMeasured');
+  type: () => MeasureVertex
+}, 'MeasureVertex');
 
-const EdgeMeasured = Record({
+const MeasureEdge = Record({
   edge: null,
   measurements: EdgeMeasurements(),
-  type: () => EdgeMeasured
-}, 'EdgeMeasured');
+  type: () => MeasureEdge
+}, 'MeasureEdge');
 
-const EdgeMoved = Record({
+
+const DragPort = Record({
+  info: PortDragInfo(),
+  type: () => DragPort
+}, 'DragPort');
+
+const MoveEdge = Record({
   edge: null,
   to: Coords(),
-  type: () => EdgeMoved
-}, 'EdgeMoved');
+  type: () => MoveEdge
+}, 'MoveEdge');
 
-const VertexMoved = Record({
+const MoveVertex = Record({
   vertex: null,
   to: Coords(),
-  type: () => VertexMoved
-}, 'VertexMoved');
+  type: () => MoveVertex
+}, 'MoveVertex');
 
-const LayoutModified = Record({
-  layout: null,
-  type: () => LayoutModified
-}, 'LayoutModified');
 
-const EdgeInserted = Record({
+const HandleEdgeInserted = Record({
   edge: null,
   from: Connectable(),
   to: Connectable(),
-  type: () => EdgeInserted
-}, 'EdgeInserted');
+  type: () => HandleEdgeInserted
+}, 'HandleEdgeInserted');
 
 
 
 export default {
-  PortMeasured,
-  VertexMeasured,
-  EdgeMeasured,
-
-  EdgeMoved,
-  VertexMoved,
-  PortDragged,
-
-  EdgeInserted,
+  MeasurePort,
+  MeasureVertex,
+  MeasureEdge,
+  MoveEdge,
+  MoveVertex,
+  DragPort,
+  HandleEdgeInserted,
 
   PortDragInfo,
   EdgeMeasurements,

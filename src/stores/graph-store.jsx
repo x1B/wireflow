@@ -1,5 +1,6 @@
 import { Directions, Ports, Edge } from '../model';
-import { EdgeInserted } from '../actions/layout';
+import { HandleEdgeInserted } from '../actions/layout';
+
 import {
   DisconnectPort,
   ConnectPort,
@@ -7,6 +8,11 @@ import {
   RemoveEdge
 } from '../actions/graph';
 
+import {
+  SaveState,
+  RestoreState,
+  CreateCheckpoint
+} from '../actions/history';
 
 /**
  * Manages the graph model prop.
@@ -17,9 +23,12 @@ class GraphStore {
     this.dispatcher = dispatcher;
     this.graph = graph;
     this.types = types;
+    this.storeId = this.constructor.name;
 
-    dispatcher.register( DisconnectPort, ev =>
-      this.disconnect( ev.vertex, ev.port ) );
+    dispatcher.register( DisconnectPort, ev => {
+      this.disconnect( ev.vertex, ev.port );
+      this.save();
+    } );
 
     dispatcher.register( ConnectPort, ev =>
       this.connect( ev.from, ev.to ) );
@@ -32,6 +41,12 @@ class GraphStore {
 
   }
 
+  save() {
+    this.dispatcher.dispatch( SaveState({
+      storeId: this.storeId,
+      state: [ this.graph, this.types ]
+    }) );
+  }
 
   connect( from, to ) {
     if( to.edgeId ) {
@@ -46,7 +61,7 @@ class GraphStore {
     this.setPortEdge( to, newEdgeId );
     this.pruneEmptyEdges();
 
-    this.dispatcher.dispatch( EdgeInserted({
+    this.dispatcher.dispatch( HandleEdgeInserted({
       edge: newEdge,
       from: from,
       to: to

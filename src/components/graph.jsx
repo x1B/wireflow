@@ -8,9 +8,8 @@ import * as Vertex from './vertex';
 import * as GhostPort from './ghost-port';
 
 import { Layout, Coords, Dimensions, Graph as GraphModel } from '../model';
-import { PortDragged } from '../actions/layout';
-import { SelectionDragged, SelectionCleared } from '../actions/selection';
-import { Rendered } from '../actions/metrics';
+import { DragPort } from '../actions/layout';
+import { ResizeSelection, ClearSelection } from '../actions/selection';
 
 import * as shallowEqual from '../util/shallow-equal';
 import count from '../util/metrics';
@@ -39,6 +38,8 @@ const Graph = React.createClass({
   },
 
   render() {
+    count({ what: Graph.displayName });
+
     const self = this;
     const {
       model: { vertices, edges },
@@ -53,8 +54,6 @@ const Graph = React.createClass({
 
     const { portDragInfo } = this.state;
 
-    count( Rendered({ what: Graph.displayName }) );
-
     const canvasSize = self.canvasSize( measurements, layout );
 
     const focusClass =
@@ -66,19 +65,19 @@ const Graph = React.createClass({
 
     const dd = () => dragdrop({
       onMove: ({ dragPayload: { left, top }, dragX, dragY, dragNode }) => {
-        count( Rendered({ what: 'events.SelectionDragged' }) );
+        count({ what: '!DragSelection' });
 
         const x = left + min( 0, dragX );
         const y = top + min( 0, dragY );
         const w = abs( dragX );
         const h = abs( dragY );
-        this.bubble( SelectionDragged({
+        this.bubble( ResizeSelection({
           coords: Coords({ left: x, top: y }),
           dimensions: Dimensions({ width: w, height: h })
         }) );
       },
-      onEnd: () => this.bubble( SelectionDragged({ coords: null, dimensions: null }) ),
-      onClick: () => this.bubble( SelectionCleared() )
+      onEnd: () => this.bubble( ResizeSelection({ coords: null, dimensions: null }) ),
+      onClick: () => this.bubble( ClearSelection() )
     });
 
     const startSelect = ( ev ) => {
@@ -138,7 +137,7 @@ const Graph = React.createClass({
 
   handleEvent( event ) {
     switch( event.type() ) {
-      case PortDragged:
+      case DragPort:
         return this.setState( ({portDragInfo}) => ({
           portDragInfo: event.info
         }) );

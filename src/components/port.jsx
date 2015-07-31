@@ -4,10 +4,9 @@ import * as dragdrop from '../util/dragdrop';
 import * as shallowEqual from '../util/shallow-equal';
 
 import { Coords, IN, OUT } from '../model';
-import { PortMeasured, PortDragged, PortDragInfo } from '../actions/layout';
+import { MeasurePort, DragPort, PortDragInfo } from '../actions/layout';
 import { ConnectPort, DisconnectPort, Connectable } from '../actions/graph';
 
-import { Rendered } from '../actions/metrics';
 import count from '../util/metrics';
 
 
@@ -15,13 +14,13 @@ const Port = React.createClass({
 
   render() {
     const { port, vertex, eventHandler } = this.props;
-    count( Rendered({ what: Port.displayName }) );
+    count({ what: Port.displayName });
     const classes = `nbe-port nbe-type-${port.type}`;
 
     const dd = () => dragdrop({
       onMove: ({ dragPayload: { left, top }, dragX, dragY, dragNode }) => {
-        count( Rendered({ what: 'events.PortDragged' }) );
-        eventHandler( PortDragged({
+        count({ what: '!DragPort' });
+        eventHandler( DragPort({
           info: PortDragInfo({
             port: port,
             vertex: vertex,
@@ -62,7 +61,7 @@ const Port = React.createClass({
         }) );
       },
       onEnd: () => {
-        eventHandler( PortDragged({ info: null }) );
+        eventHandler( DragPort({ info: null }) );
       }
     });
 
@@ -104,7 +103,7 @@ const Port = React.createClass({
       left: node.offsetLeft + (node.offsetWidth / 2),
       top: node.offsetTop + (node.offsetHeight / 2)
     });
-    eventHandler( PortMeasured({ port: port, center: coords }) );
+    eventHandler( MeasurePort({ port: port, center: coords }) );
   },
 
 

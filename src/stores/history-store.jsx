@@ -1,9 +1,11 @@
 import { Record, List, Map } from 'immutable';
 
+import { Checkpoint } from '../model';
+
 import {
   CreateCheckpoint,
-  StateSaved,
-  StateRestored,
+  SaveState,
+  RestoreState,
   UiUndo,
   UiRedo
 } from '../actions/history';
@@ -11,43 +13,54 @@ import {
 
 const LogEntry = Record({ checkpoint: null, state: null }, 'LogEntry');
 
-/**
- */
+
 class HistoryStore {
 
   constructor( dispatcher ) {
     this.dispatcher = dispatcher;
-    this.checkpoint = 0;
-    this.maxCheckpoint = 0;
+
+    this.now = 0;
+    this.log = List();
     this.storeLogs = Map();
 
-    dispatcher.register( CreateCheckpoint, ev => {
-      if( this.checkpoint < this.maxCheckpoint ) {
-        // remove undo-ed states
-        // :TODO:
-        this.maxCheckpoint = this.checkpoint;
+    dispatcher.register( CreateCheckpoint, act => {
+      const now = this.now;
+
+      // cut off undo'ed checkpoints and their states
+      while( this.log.count() && now < this.log.last().index ) {
+        this.log = this.log.pop();
       }
-      ++this.checkpoint;
-      ++this.maxCheckpoint;
+      this.storeLogs.forEach( (storeId, log) => {
+        this.storeLogs.update( storeId, storeLog => {
+          storeLog.filter( _ => _.checkpoint <= now );
+        } );
+      } );
+
+      this.log = this.log.push( Checkpoint({
+        index: now,
+        before: act.before
+      }) );
+      this.checkpoint = now + 1;
     } );
 
-    dispatcher.register( StateSaved, ev => {
-      if( !this.storeLogs.has( ev.storeId ) ) {
-        this.storeLogs = this.storeLogs.set( ev.storeId, List() );
+    dispatcher.register( SaveState, act => {
+      if( !this.storeLogs.has( act.storeId ) ) {
+        this.storeLogs = this.storeLogs.set( act.storeId, List() );
       }
-      this.storeLogs.update( ev.storeId, log => {
-        console.log( 'CLOG saved: ', ev.storeId ); // :TODO: DELETE ME
-        log.push( LogEntry({ checkpoint: this.checkpoint, state: ev.state }) );
+      this.storeLogs.update( act.storeId, log => {
+        return log.push( LogEntry({
+          checkpoint: this.checkpoint,
+          state: act.state
+        }) );
       } );
     } );
 
     dispatcher.register( UiUndo, ev => {
       --this.checkpoint;
       this.storeLogs.forEach( (storeId, log) => {
-        console.log( 'CLOG restore: ', ev.storeId ); // :TODO: DELETE ME
         log.reverse().forEach( ({checkpoint, state}) => {
           if( checkpoint <= this.checkpoint ) {
-            dispatcher.dispatch( StateRestored({ storeId, state}) );
+            dispatcher.dispatch( RestoreState({ storeId, state}) );
             return false;
           }
         } );

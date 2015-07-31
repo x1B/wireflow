@@ -6,18 +6,15 @@ import {
 } from '../actions/graph';
 
 import {
-  SelectionDragged,
-  SelectionCleared,
-  SelectionMoved,
-  VertexDeselected,
-  VertexSelected,
-  EdgeDeselected,
-  EdgeSelected
+  ResizeSelection,
+  ClearSelection,
+  MoveSelection,
+  DeselectVertex,
+  SelectVertex,
+  DeselectEdge,
+  SelectEdge,
+  DeleteSelection
 } from '../actions/selection';
-
-import {
-  UiDelete
-} from '../actions/selection-commands';
 
 import {
   CreateCheckpoint
@@ -36,43 +33,42 @@ class SelectionStore {
     this.layoutStore = layoutStore;
     this.graphStore = graphStore;
 
-    dispatcher.register( SelectionCleared, ev => { this.clear(); } );
+    dispatcher.register( ClearSelection, ev => { this.clear(); } );
 
-    dispatcher.register( SelectionDragged, ev => {
+    dispatcher.register( ResizeSelection, ev => {
       this.selection =
         this.selection.set( 'coords', ev.coords ).set( 'dimensions', ev.dimensions );
       this.updateRectangleContents();
     } );
 
-    dispatcher.register( EdgeSelected, ev => {
+    dispatcher.register( SelectEdge, ev => {
       this.selection =
         this.selection.update( 'edges', _ => _.add( ev.edge.id ) );
     } );
 
-    dispatcher.register( EdgeDeselected, ev => {
+    dispatcher.register( DeselectEdge, ev => {
       this.selection =
         this.selection.update( 'edges', _ => _.remove( ev.edge.id ) );
     } );
 
-    dispatcher.register( VertexSelected, ev => {
+    dispatcher.register( SelectVertex, ev => {
       this.selection =
         this.selection.update( 'vertices', _ => _.add( ev.vertex.id ) );
     } );
 
-    dispatcher.register( VertexDeselected, ev => {
+    dispatcher.register( DeselectVertex, ev => {
       this.selection =
         this.selection.update( 'vertices', _ => _.remove( ev.vertex.id ) );
     } );
 
-    dispatcher.register( SelectionMoved, ev =>
+    dispatcher.register( MoveSelection, ev =>
       this.moveContents( ev.reference, ev.offset )
     );
 
-    dispatcher.register( UiDelete, ev => {
-      dispatcher.dispatch( CreateCheckpoint() );
+    dispatcher.register( DeleteSelection, ev => {
+      dispatcher.dispatch( CreateCheckpoint({ before: 'Delete' }) );
 
       const { vertices, edges } = this.selection;
-
       vertices.forEach( (_, id) => {
         dispatcher.dispatch( RemoveVertex( { vertexId: id } ) );
        } );

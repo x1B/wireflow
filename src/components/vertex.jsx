@@ -4,21 +4,20 @@ import * as dragdrop from '../util/dragdrop';
 import * as Port from './port';
 import * as shallowEqual from '../util/shallow-equal';
 import { Coords, Dimensions, IN, OUT } from '../model';
-import { SelectionMoved } from '../actions/selection';
+import { MoveSelection } from '../actions/selection';
 
 import {
-  VertexMeasured,
+  MeasureVertex,
   VertexMeasurements,
-  PortMeasured,
-  VertexMoved
+  MeasurePort,
+  MoveVertex
 } from '../actions/layout';
 
 import {
-  VertexSelected,
-  VertexDeselected
+  SelectVertex,
+  DeselectVertex
 } from '../actions/selection';
 
-import { Rendered } from '../actions/metrics';
 import count from '../util/metrics';
 
 
@@ -34,7 +33,7 @@ const Vertex = React.createClass({
   render() {
     const self = this;
     const { vertex, selected, layout, eventHandler } = self.props;
-    count( Rendered({ what: Vertex.displayName }) );
+    count({ what: Vertex.displayName });
     const { ports, label } = vertex;
 
     const style = {
@@ -50,14 +49,14 @@ const Vertex = React.createClass({
     const dd = () => dragdrop({
       onMove: ({ dragPayload, dragX, dragY, dragNode }) => {
         if( selected ) {
-          eventHandler( SelectionMoved({
+          eventHandler( MoveSelection({
             reference: dragPayload,
             offset: Coords({ left: dragX, top: dragY })
           }) );
         }
         else {
           const { left, top } = dragPayload.coords;
-          eventHandler( VertexMoved({
+          eventHandler( MoveVertex({
             vertex: vertex,
             to: Coords({ left: left + dragX, top: top + dragY })
           }) );
@@ -65,7 +64,7 @@ const Vertex = React.createClass({
       },
       onClick: ( ev ) => {
         this.bubble(
-          (selected ? VertexDeselected : VertexSelected)({ vertex })
+          (selected ? DeselectVertex : SelectVertex)({ vertex })
         );
       }
     });
@@ -99,7 +98,7 @@ const Vertex = React.createClass({
 
   handleEvent( event ) {
     var type = event.type();
-    if( type === PortMeasured ) {
+    if( type === MeasurePort ) {
       const { port, center } = event;
       this.setState( ({ measurements }) => {
         var newMeasurements = measurements.setIn( [ port.direction, port.id ], center );
@@ -121,7 +120,7 @@ const Vertex = React.createClass({
   propagateMeasurements( measurements ) {
     if( this.isComplete( measurements ) ) {
       var { vertex } = this.props;
-      this.bubble( VertexMeasured( { vertex, measurements } ) );
+      this.bubble( MeasureVertex( { vertex, measurements } ) );
     }
   },
 

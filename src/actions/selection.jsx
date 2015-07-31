@@ -1,48 +1,53 @@
 import { Record } from 'immutable';
 
 
-const EdgeSelected = Record({
+const DeleteSelection = Record({
+  type: () => DeleteSelection
+}, 'DeleteSelection');
+
+const SelectEdge = Record({
   edge: null,
-  type: () => EdgeSelected
-}, 'EdgeSelected');
+  type: () => SelectEdge
+}, 'SelectEdge');
 
-const EdgeDeselected = Record({
+const SelectVertex = Record({
+  vertex: null,
+  type: () => SelectVertex
+}, 'SelectVertex');
+
+const DeselectEdge = Record({
   edge: null,
-  type: () => EdgeDeselected
-}, 'EdgeDeselected');
+  type: () => DeselectEdge
+}, 'DeselectEdge');
 
-const VertexSelected = Record({
+const DeselectVertex = Record({
   vertex: null,
-  type: () => VertexSelected
-}, 'VertexSelected');
+  type: () => DeselectVertex
+}, 'DeselectVertex');
 
-const VertexDeselected = Record({
-  vertex: null,
-  type: () => VertexDeselected
-}, 'VertexDeselected');
-
-const SelectionDragged = Record({
+const ResizeSelection = Record({
   coords: null,
   dimensions: null,
-  type: () => SelectionDragged
-}, 'SelectionDragged');
+  type: () => ResizeSelection
+}, 'ResizeSelection');
 
-const SelectionMoved = Record({
+const MoveSelection = Record({
   reference: null,
   offset: null,
-  type: () => SelectionMoved
-}, 'EdgeMoved');
+  type: () => MoveSelection
+}, 'MoveEdge');
 
-const SelectionCleared = Record({
-  type: () => SelectionCleared
-}, 'SelectionCleared');
+const ClearSelection = Record({
+  type: () => ClearSelection
+}, 'ClearSelection');
 
 export default {
-  SelectionDragged,
-  SelectionMoved,
-  SelectionCleared,
-  VertexDeselected,
-  VertexSelected,
-  EdgeDeselected,
-  EdgeSelected
+  DeleteSelection,
+  ResizeSelection,
+  MoveSelection,
+  ClearSelection,
+  DeselectVertex,
+  SelectVertex,
+  DeselectEdge,
+  SelectEdge
 };

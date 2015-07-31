@@ -1,6 +1,6 @@
 import { Coords, Measurements } from '../model';
 import {
-  VertexMoved, EdgeMoved, EdgeInserted, EdgeMeasured, VertexMeasured
+  MoveVertex, MoveEdge, HandleEdgeInserted, MeasureEdge, MeasureVertex
 } from '../actions/layout';
 import * as settings from '../util/settings';
 const { layout: { edgeOffset } } = settings;
@@ -16,29 +16,29 @@ class LayoutStore {
     this.layout = layout;
     this.measurements = Measurements();
 
-    dispatcher.register( VertexMeasured, ev => {
+    dispatcher.register( MeasureVertex, ev => {
       this.measurements = this.measurements.setIn(
         [ 'vertices', ev.vertex.id ],
         ev.measurements
       );
     } );
 
-    dispatcher.register( EdgeMeasured, ev => {
+    dispatcher.register( MeasureEdge, ev => {
       this.measurements = this.measurements.setIn(
         [ 'edges', ev.edge.id ],
         ev.measurements
       );
     } );
 
-    dispatcher.register( VertexMoved, ev => {
+    dispatcher.register( MoveVertex, ev => {
       this.layout = this.layout.setIn( [ 'vertices', ev.vertex.id ], ev.to );
     } );
 
-    dispatcher.register( EdgeMoved, ev => {
+    dispatcher.register( MoveEdge, ev => {
       this.layout = this.layout.setIn( [ 'edges', ev.edge.id ], ev.to );
     } );
 
-    dispatcher.register( EdgeInserted, ev => {
+    dispatcher.register( HandleEdgeInserted, ev => {
       this.layout = this.placeEdge( ev.edge, ev.from, ev.to );
     } );
   }
