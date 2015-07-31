@@ -21,6 +21,7 @@ describe( 'A history store', () => {
     store = new HistoryStore( dispatcher );
   } );
 
+
   it( 'handles history actions', () => {
     expect( dispatcher.register )
       .toHaveBeenCalledWith( SaveState, any( Function ) );
@@ -31,6 +32,7 @@ describe( 'A history store', () => {
     expect( dispatcher.register )
       .toHaveBeenCalledWith( UiRedo, any( Function ) );
   } );
+
 
   it( 'begins with an empty log', () => {
     expect( store.checkpoints.toJS() ).toEqual( [] );
@@ -69,6 +71,7 @@ describe( 'A history store', () => {
 
   } );
 
+
   describe( 'asked to save state,', () => {
 
     beforeEach( () => {
@@ -81,6 +84,27 @@ describe( 'A history store', () => {
         A: [ { at: 0, state: 'A.1' } ],
         B: [ { at: 0, state: 'B.1' } ]
       });
+    } );
+
+
+    describe( 'then to create a checkpoint,', () => {
+      beforeEach( () => {
+        dispatcher.handleAction( CreateCheckpoint({ before: 'set.to.A.2' }) );
+      } );
+
+      it( 'inserts a checkpoint', () => {
+        expect( store.checkpoints.toJS() ).toEqual([
+          { at: 1, before: 'set.to.A.2' }
+        ]);
+        expect( store.now ).toEqual( 2 );
+      });
+
+      it( 'keeps store log contents', () => {
+        expect( store.storeLogs.toJS() ).toEqual({
+          A: [ { at: 0, state: 'A.1' } ],
+          B: [ { at: 0, state: 'B.1' } ]
+        });
+      } );
     } );
 
 

@@ -49,7 +49,7 @@ class HistoryStore {
       }
       this.storeLogs.forEach( (_, storeId) => {
         this.storeLogs = this.storeLogs.update( storeId, log =>
-          log.filter( entry => entry.checkpoint <= now )
+          log.filter( entry => entry.at <= now )
         );
       } );
 
@@ -69,7 +69,8 @@ class HistoryStore {
       this.storeLogs.forEach( (log, storeId) => {
         log.reverse().forEach( ({at, state}) => {
           if( at <= this.now ) {
-            dispatcher.dispatch( RestoreState({ storeId, state}) );
+            console.log( 'CLOG', 'RESTORE' ); // :TODO: DELETE ME
+            dispatcher.dispatch( RestoreState({ storeId, state }) );
             return false;
           }
         } );
