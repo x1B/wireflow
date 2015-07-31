@@ -9,7 +9,8 @@ var timeout;
 function count( event ) {
   counters = counters.set( event.what, (counters.get( event.what ) || 0) + 1 );
   durations = durations.set( event.what, (durations.get( event.what ) || 0) + event.duration );
-  timeout = timeout || window.setTimeout( report, durationMs );
+  // :TODO:
+  // timeout = timeout || window.setTimeout( report, durationMs );
 }
 
 function round( number ) {

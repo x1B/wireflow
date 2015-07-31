@@ -19,6 +19,7 @@ class Dispatcher {
   }
 
   dispatch( event ) {
+    console.log( 'DISPATCH: ', event[ '_name' ], ' data: ', event.toJS() ); // :TODO: DELETE ME
     this.queue.push( event );
 
     const markA = now();

@@ -1,3 +1,4 @@
+import { List } from 'immutable';
 import { Directions, Ports, Edge } from '../model';
 import { HandleEdgeInserted } from '../actions/layout';
 
@@ -14,6 +15,7 @@ import {
   CreateCheckpoint
 } from '../actions/history';
 
+
 /**
  * Manages the graph model prop.
  */
@@ -21,9 +23,11 @@ class GraphStore {
 
   constructor( dispatcher, graph, types ) {
     this.dispatcher = dispatcher;
+    this.storeId = this.constructor.name;
+
     this.graph = graph;
     this.types = types;
-    this.storeId = this.constructor.name;
+    this.save();
 
     dispatcher.register( DisconnectPort, ev => {
       this.disconnect( ev.vertex, ev.port );
@@ -39,12 +43,19 @@ class GraphStore {
     dispatcher.register( RemoveEdge, ev =>
       this.removeEdge( ev.edgeId ) );
 
+    dispatcher.register( RestoreState, act => {
+      if( act.storeId === this.storeId ) {
+        this.graph = act.state.get(0);
+        this.types = act.state.get(1);
+      }
+    } );
+
   }
 
   save() {
     this.dispatcher.dispatch( SaveState({
       storeId: this.storeId,
-      state: [ this.graph, this.types ]
+      state: List.of( this.graph, this.types )
     }) );
   }
 

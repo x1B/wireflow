@@ -17,10 +17,11 @@ const layout = convert.layout( data.layout );
 const types = convert.types( data.types );
 
 const dispatcher = new Dispatcher( render );
+const historyStore = new HistoryStore( dispatcher );
+
 const graphStore = new GraphStore( dispatcher, graph, types );
 const layoutStore = new LayoutStore( dispatcher, layout, types );
 const selectionStore = new SelectionStore( dispatcher, layoutStore, graphStore );
-const historyStore = new HistoryStore( dispatcher );
 
 render();
 

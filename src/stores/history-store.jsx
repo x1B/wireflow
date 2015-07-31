@@ -30,17 +30,17 @@ class HistoryStore {
       while( this.log.count() && now < this.log.last().index ) {
         this.log = this.log.pop();
       }
-      this.storeLogs.forEach( (storeId, log) => {
-        this.storeLogs.update( storeId, storeLog => {
-          storeLog.filter( _ => _.checkpoint <= now );
-        } );
+      this.storeLogs.forEach( (_, storeId) => {
+        this.storeLogs.update( storeId, log =>
+          log.filter( entry => entry.checkpoint <= now )
+        );
       } );
 
       this.log = this.log.push( Checkpoint({
         index: now,
         before: act.before
       }) );
-      this.checkpoint = now + 1;
+      this.now = now + 1;
     } );
 
     dispatcher.register( SaveState, act => {
@@ -49,17 +49,17 @@ class HistoryStore {
       }
       this.storeLogs.update( act.storeId, log => {
         return log.push( LogEntry({
-          checkpoint: this.checkpoint,
+          checkpoint: this.now,
           state: act.state
         }) );
       } );
     } );
 
-    dispatcher.register( UiUndo, ev => {
-      --this.checkpoint;
-      this.storeLogs.forEach( (storeId, log) => {
+    dispatcher.register( UiUndo, () => {
+      this.now = this.now - 1;
+      this.storeLogs = this.storeLogs.forEach( (log, storeId) => {
         log.reverse().forEach( ({checkpoint, state}) => {
-          if( checkpoint <= this.checkpoint ) {
+          if( checkpoint <= this.now ) {
             dispatcher.dispatch( RestoreState({ storeId, state}) );
             return false;
           }
@@ -67,8 +67,8 @@ class HistoryStore {
       } );
     } );
 
-    dispatcher.register( UiRedo, ev => {
-      if( this.checkpoint === this.maxCheckpoint ) {
+    dispatcher.register( UiRedo, () => {
+      if( this.now === this.maxCheckpoint ) {
         return;
       }
       // :TODO:
