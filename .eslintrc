@@ -25,6 +25,7 @@
     "guard-for-in": 1,
     "valid-jsdoc": [ 2, { "prefer": { "return": "return" } } ],
     "new-cap": [1, {"capIsNew": false, "newIsCap": true}],
+    "no-new": 0,
     "no-else-return": 1,
     "no-self-compare": 1,
     "no-param-reassign": 2,

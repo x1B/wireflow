@@ -1,6 +1,6 @@
 import { Map, List } from 'immutable';
 
-import { Rendered } from './events/metrics';
+import { Rendered } from './actions/metrics';
 import count from './util/metrics';
 
 const now = () => window.performance.now();

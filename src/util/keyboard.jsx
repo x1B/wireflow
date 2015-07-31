@@ -3,10 +3,13 @@ import {
   UiFocusLost,
   UiDelete,
   UiCancel,
-  UiUndo,
-  UiRedo,
   UiInsert
-} from '../events/selection-commands';
+} from '../actions/selection-commands';
+
+import {
+  UiUndo,
+  UiRedo
+} from '../actions/history';
 
 
 /** Maintain fake clipboard across instances if no system clipboard is available. */
@@ -89,7 +92,6 @@ export default function( domNode, eventHandler ) {
   ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   function handleKeys( event ) {
-    console.log( 'EVENT CLOG', event ); // :TODO: DELETE ME
     if( event.keyCode === KEY_CODE_DELETE ) {
       eventHandler( UiDelete() );
     }

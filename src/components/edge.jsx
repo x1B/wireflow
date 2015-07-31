@@ -2,16 +2,16 @@ import * as React from 'react';
 import * as dragdrop from '../util/dragdrop';
 
 import { Coords, Dimensions } from '../model';
-import { EdgeMeasured, EdgeMeasurements, EdgeMoved } from '../events/layout';
-import { SelectionMoved } from '../events/selection';
-import { Rendered } from '../events/metrics';
+import { EdgeMeasured, EdgeMeasurements, EdgeMoved } from '../actions/layout';
+import { SelectionMoved } from '../actions/selection';
+import { Rendered } from '../actions/metrics';
 import count from '../util/metrics';
 import * as shallowEqual from '../util/shallow-equal';
 
 import {
   EdgeSelected,
   EdgeDeselected
-} from '../events/selection';
+} from '../actions/selection';
 
 
 const Edge = React.createClass({

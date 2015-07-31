@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import * as Link from './link';
 import { Directions, IN, OUT } from '../model';
-import { Rendered } from '../events/metrics';
+import { Rendered } from '../actions/metrics';
 import count from '../util/metrics';
 import * as shallowEqual from '../util/shallow-equal';
 

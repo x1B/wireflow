@@ -4,10 +4,10 @@ import * as dragdrop from '../util/dragdrop';
 import * as shallowEqual from '../util/shallow-equal';
 
 import { Coords, IN, OUT } from '../model';
-import { PortMeasured, PortDragged, PortDragInfo } from '../events/layout';
-import { PortConnected, PortDisconnected, Connectable } from '../events/graph';
+import { PortMeasured, PortDragged, PortDragInfo } from '../actions/layout';
+import { ConnectPort, DisconnectPort, Connectable } from '../actions/graph';
 
-import { Rendered } from '../events/metrics';
+import { Rendered } from '../actions/metrics';
 import count from '../util/metrics';
 
 
@@ -49,7 +49,7 @@ const Port = React.createClass({
         }) : null;
       },
       onDrop: ({ dropResult }) => {
-        eventHandler( PortConnected({
+        eventHandler( ConnectPort({
           from: Connectable({
             type: port.type,
             vertexId: vertex.id,
@@ -92,7 +92,7 @@ const Port = React.createClass({
     );
 
     function disconnect() {
-      eventHandler( PortDisconnected({ vertex: vertex, port: port }) );
+      eventHandler( DisconnectPort({ vertex: vertex, port: port }) );
     }
   },
 

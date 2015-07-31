@@ -1,5 +1,9 @@
 import { Record, Set } from 'immutable';
-import { Coords } from '../model';
+
+import {
+  RemoveVertex,
+  RemoveEdge
+} from '../actions/graph';
 
 import {
   SelectionDragged,
@@ -9,11 +13,15 @@ import {
   VertexSelected,
   EdgeDeselected,
   EdgeSelected
-} from '../events/selection';
+} from '../actions/selection';
 
 import {
   UiDelete
-} from '../events/selection-commands';
+} from '../actions/selection-commands';
+
+import {
+  CreateCheckpoint
+} from '../actions/history';
 
 
 const Selection = Record({
@@ -61,10 +69,16 @@ class SelectionStore {
     );
 
     dispatcher.register( UiDelete, ev => {
+      dispatcher.dispatch( CreateCheckpoint() );
+
       const { vertices, edges } = this.selection;
-      console.log( 'CLOG', this.graphStore ); // :TODO: DELETE ME
-      vertices.forEach( (_, id) => this.graphStore.removeVertex( id ) );
-      edges.forEach( (_, id) => this.graphStore.removeEdge( id ) );
+
+      vertices.forEach( (_, id) => {
+        dispatcher.dispatch( RemoveVertex( { vertexId: id } ) );
+       } );
+      edges.forEach( (_, id) => {
+        dispatcher.dispatch( RemoveEdge( { edgeId: id } ) );
+      } );
     } );
   }
 

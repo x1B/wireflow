@@ -4,21 +4,21 @@ import * as dragdrop from '../util/dragdrop';
 import * as Port from './port';
 import * as shallowEqual from '../util/shallow-equal';
 import { Coords, Dimensions, IN, OUT } from '../model';
-import { SelectionMoved } from '../events/selection';
+import { SelectionMoved } from '../actions/selection';
 
 import {
   VertexMeasured,
   VertexMeasurements,
   PortMeasured,
   VertexMoved
-} from '../events/layout';
+} from '../actions/layout';
 
 import {
   VertexSelected,
   VertexDeselected
-} from '../events/selection';
+} from '../actions/selection';
 
-import { Rendered } from '../events/metrics';
+import { Rendered } from '../actions/metrics';
 import count from '../util/metrics';
 
 

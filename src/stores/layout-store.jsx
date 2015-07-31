@@ -1,7 +1,7 @@
 import { Coords, Measurements } from '../model';
 import {
   VertexMoved, EdgeMoved, EdgeInserted, EdgeMeasured, VertexMeasured
-} from '../events/layout';
+} from '../actions/layout';
 import * as settings from '../util/settings';
 const { layout: { edgeOffset } } = settings;
 

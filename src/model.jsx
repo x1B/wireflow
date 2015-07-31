@@ -23,6 +23,15 @@ const EdgeMeasurements = Record({
   dimensions: null
 }, 'EdgeMeasurements');
 
+const Connectable = Record({
+  edgeId: null,
+  type: null,
+  vertexId: null,
+  portId: null,
+  direction: null
+}, 'Connectable');
+
+
 
 // Actual model
 const Graph = Record({ edges: Map(), vertices: Map() });
@@ -43,6 +52,7 @@ const convert = {
 };
 
 export {
+  Connectable,
   Coords,
   Dimensions,
   Layout,

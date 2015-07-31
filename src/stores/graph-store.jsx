@@ -1,6 +1,11 @@
 import { Directions, Ports, Edge } from '../model';
-import { PortDisconnected, PortConnected } from '../events/graph';
-import { EdgeInserted } from '../events/layout';
+import { EdgeInserted } from '../actions/layout';
+import {
+  DisconnectPort,
+  ConnectPort,
+  RemoveVertex,
+  RemoveEdge
+} from '../actions/graph';
 
 
 /**
@@ -8,17 +13,23 @@ import { EdgeInserted } from '../events/layout';
  */
 class GraphStore {
 
-
   constructor( dispatcher, graph, types ) {
     this.dispatcher = dispatcher;
     this.graph = graph;
     this.types = types;
 
-    dispatcher.register( PortDisconnected, ev =>
+    dispatcher.register( DisconnectPort, ev =>
       this.disconnect( ev.vertex, ev.port ) );
 
-    dispatcher.register( PortConnected, ev =>
+    dispatcher.register( ConnectPort, ev =>
       this.connect( ev.from, ev.to ) );
+
+    dispatcher.register( RemoveVertex, ev =>
+      this.removeVertex( ev.vertexId ) );
+
+    dispatcher.register( RemoveEdge, ev =>
+      this.removeEdge( ev.edgeId ) );
+
   }
 
 

@@ -17,14 +17,6 @@ const UiCancel = Record({
   type: () => UiCancel
 }, 'UiCancel');
 
-const UiUndo = Record({
-  type: () => UiUndo
-}, 'UiUndo');
-
-const UiRedo = Record({
-  type: () => UiRedo
-}, 'UiRedo');
-
 const UiInsert = Record({
   graph: null,
   type: () => UiInsert
@@ -35,7 +27,5 @@ export default {
   UiFocusLost,
   UiDelete,
   UiCancel,
-  UiUndo,
-  UiRedo,
   UiInsert
 };

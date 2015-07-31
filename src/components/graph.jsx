@@ -8,9 +8,9 @@ import * as Vertex from './vertex';
 import * as GhostPort from './ghost-port';
 
 import { Layout, Coords, Dimensions, Graph as GraphModel } from '../model';
-import { PortDragged } from '../events/layout';
-import { SelectionDragged, SelectionCleared } from '../events/selection';
-import { Rendered } from '../events/metrics';
+import { PortDragged } from '../actions/layout';
+import { SelectionDragged, SelectionCleared } from '../actions/selection';
+import { Rendered } from '../actions/metrics';
 
 import * as shallowEqual from '../util/shallow-equal';
 import count from '../util/metrics';
