@@ -4,6 +4,10 @@
   <meta charset="utf-8">
   <title>nbe-react specs (Jasmine Spec Runner v2.3.4)</title>
 
+  <script src="../bower_components/jasmine/lib/jasmine-core/jasmine.js"></script>
+  <script src="../bower_components/jasmine/lib/jasmine-core/jasmine-html.js"></script>
+  <script src="../bower_components/jasmine/lib/jasmine-core/boot.js"></script>
+
   <script type="text/javascript">
      var require = {
         baseUrl: '../bower_components',
@@ -18,17 +22,21 @@
         } ]
      };
   </script>
-  <script data-main='tests'
-          src="../bower_components/requirejs/require.js"></script>
+
+  <script src="../bower_components/requirejs/require.js"></script>
+  <script>
+  require( [ 'tests' ], function() {
+    window.onload( function() {
+      jasmine.getEnv().addReporter(new jasmine.TrivialReporter());
+      jasmine.getEnv().execute();
+    } );
+  } );
+  </script>
 
   <link rel="shortcut icon" type="image/png"
         href="../bower_components/jasmine/images/jasmine_favicon.png">
   <link rel="stylesheet"
         href="../bower_components/jasmine/lib/jasmine-core/jasmine.css">
-
-  <script src="../bower_components/jasmine/lib/jasmine-core/jasmine.js"></script>
-  <script src="../bower_components/jasmine/lib/jasmine-core/jasmine-html.js"></script>
-  <script src="../bower_components/jasmine/lib/jasmine-core/boot.js"></script>
 
 </head>
 

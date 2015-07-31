@@ -37,10 +37,11 @@ const IN = 'inbound';
 const OUT = 'outbound';
 const Directions = List.of( IN, OUT );
 
+
 // History Stuff:
 const Checkpoint = Record({
   before: null,
-  index: null
+  at: null
 }, 'Checkpoint');
 
 

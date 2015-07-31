@@ -6,15 +6,15 @@ import count from '../util/metrics';
 const History = React.createClass({
 
   render() {
-    const { log } = this.props;
+    const { checkpoints } = this.props;
     count({ what: History.displayName });
-    return <ol>{this.renderLog(log)}</ol>;
+    return <ol>{ this.renderCheckpoints(checkpoints) }</ol>;
   },
 
-  renderLog( log ) {
-    console.log( 'CLOG', log.toJS() ); // :TODO: DELETE ME
-    return log.map( checkpoint =>
-      <li key={ checkpoint.index }>{ checkpoint.before }</li>
+  renderCheckpoints( checkpoints ) {
+    console.log( 'CLOG', checkpoints.toJS() ); // :TODO: DELETE ME
+    return checkpoints.map( checkpoint =>
+      <li key={ checkpoint.at }>{ checkpoint.before }</li>
     );
   },
 

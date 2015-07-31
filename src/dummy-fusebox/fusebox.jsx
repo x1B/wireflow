@@ -29,10 +29,11 @@ render();
 function render() {
   React.render(
     <div>
-      <History log={historyStore.log} />
-      <Graph model={graphStore.graph}
+      <History checkpoints={historyStore.checkpoints }
+               now={ historyStore.now } />
+      <Graph className={'nbe-theme-fusebox-app'}
+             model={graphStore.graph}
              types={types}
-             className={'nbe-theme-fusebox-app'}
              layout={layoutStore.layout}
              measurements={layoutStore.measurements}
              selection={selectionStore.selection}
