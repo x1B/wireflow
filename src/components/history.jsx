@@ -12,7 +12,6 @@ const History = React.createClass({
   },
 
   renderCheckpoints( checkpoints ) {
-    console.log( 'CLOG', checkpoints.toJS() ); // :TODO: DELETE ME
     return checkpoints.map( checkpoint =>
       <li key={ checkpoint.at }>{ checkpoint.before }</li>
     );

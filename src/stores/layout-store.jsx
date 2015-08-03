@@ -1,7 +1,11 @@
+import { List } from 'immutable';
+
 import { Coords, Measurements } from '../model';
 import {
   MoveVertex, MoveEdge, HandleEdgeInserted, MeasureEdge, MeasureVertex
 } from '../actions/layout';
+import { RemoveVertex, RemoveEdge } from '../actions/graph';
+import { SaveState, RestoreState } from '../actions/history';
 import * as settings from '../util/settings';
 const { layout: { edgeOffset } } = settings;
 
@@ -13,14 +17,19 @@ class LayoutStore {
 
   constructor( dispatcher, layout ) {
     this.dispatcher = dispatcher;
+
+    this.storeId = this.constructor.name;
     this.layout = layout;
     this.measurements = Measurements();
+    this.save();
+
 
     dispatcher.register( MeasureVertex, ev => {
       this.measurements = this.measurements.setIn(
         [ 'vertices', ev.vertex.id ],
         ev.measurements
       );
+      this.save();
     } );
 
     dispatcher.register( MeasureEdge, ev => {
@@ -28,19 +37,48 @@ class LayoutStore {
         [ 'edges', ev.edge.id ],
         ev.measurements
       );
+      this.save();
+    } );
+
+    dispatcher.register( RemoveVertex, ev => {
+      this.layout = this.layout.removeIn( [ 'vertices', ev.vertexId ] );
+      this.save();
+    } );
+
+    dispatcher.register( RemoveEdge, ev => {
+      this.layout = this.layout.removeIn( [ 'vertices', ev.edgeId ] );
+      this.save();
     } );
 
     dispatcher.register( MoveVertex, ev => {
       this.layout = this.layout.setIn( [ 'vertices', ev.vertex.id ], ev.to );
+      this.save();
     } );
 
     dispatcher.register( MoveEdge, ev => {
       this.layout = this.layout.setIn( [ 'edges', ev.edge.id ], ev.to );
+      this.save();
     } );
 
     dispatcher.register( HandleEdgeInserted, ev => {
       this.layout = this.placeEdge( ev.edge, ev.from, ev.to );
+      this.save();
     } );
+
+    dispatcher.register( RestoreState, act => {
+      if( act.storeId === this.storeId ) {
+        this.layout = act.state.get(0);
+        this.measurements = act.state.get(1);
+      }
+    } );
+  }
+
+
+  save() {
+    this.dispatcher.dispatch( SaveState({
+      storeId: this.storeId,
+      state: List.of( this.layout, this.measurements )
+    }) );
   }
 
 

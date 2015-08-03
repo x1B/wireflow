@@ -5,12 +5,17 @@ const now = () => window.performance.now();
 
 class Dispatcher {
 
-  constructor( onAfterDispatch ) {
+  constructor( onAfterDispatch, monitorEvents ) {
     this.queue = [];
     this.registry = Map();
     this.dispatch = this.dispatch.bind( this );
     this.frameRequested = false;
     this.onAfterDispatch = onAfterDispatch;
+    this.monitorEvents = List();
+  }
+
+  monitor( events ) {
+    this.monitorEvents = events;
   }
 
   register( type, callback ) {
@@ -19,7 +24,9 @@ class Dispatcher {
   }
 
   dispatch( event ) {
-    console.log( 'DISPATCH: ', event[ '_name' ], ' data: ', event.toJS() ); // :TODO: DELETE ME
+    if( this.monitorEvents.indexOf( event.type() ) !== -1 ) {
+      window.console.log( 'ACT:' + event[ '_name' ], '  data: ', event.toJS() );
+    }
     this.queue.push( event );
 
     const markA = now();

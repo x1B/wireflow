@@ -17,6 +17,7 @@ import {
 } from '../actions/selection';
 
 import {
+  SaveState,
   CreateCheckpoint
 } from '../actions/history';
 
@@ -28,12 +29,29 @@ const Selection = Record({
 class SelectionStore {
 
   constructor( dispatcher, layoutStore, graphStore ) {
-    this.selection = Selection();
+    this.dispatcher = dispatcher;
     this.moveReference = { id: null };
     this.layoutStore = layoutStore;
     this.graphStore = graphStore;
 
+    this.storeId = this.constructor.name;
+    this.selection = Selection();
+    this.save();
+
+
     dispatcher.register( ClearSelection, ev => { this.clear(); } );
+
+    dispatcher.register( RemoveVertex, ev => {
+      this.selection =
+        this.selection.update( 'vertices', _ => _.remove( ev.vertexId ) );
+      this.save();
+    } );
+
+    dispatcher.register( RemoveEdge, ev => {
+      this.selection =
+        this.selection.update( 'edges', _ => _.remove( ev.edgeId ) );
+      this.save();
+    } );
 
     dispatcher.register( ResizeSelection, ev => {
       this.selection =
@@ -44,21 +62,25 @@ class SelectionStore {
     dispatcher.register( SelectEdge, ev => {
       this.selection =
         this.selection.update( 'edges', _ => _.add( ev.edge.id ) );
+      this.save();
     } );
 
     dispatcher.register( DeselectEdge, ev => {
       this.selection =
         this.selection.update( 'edges', _ => _.remove( ev.edge.id ) );
+      this.save();
     } );
 
     dispatcher.register( SelectVertex, ev => {
       this.selection =
         this.selection.update( 'vertices', _ => _.add( ev.vertex.id ) );
+      this.save();
     } );
 
     dispatcher.register( DeselectVertex, ev => {
       this.selection =
         this.selection.update( 'vertices', _ => _.remove( ev.vertex.id ) );
+      this.save();
     } );
 
     dispatcher.register( MoveSelection, ev =>
@@ -76,6 +98,14 @@ class SelectionStore {
         dispatcher.dispatch( RemoveEdge( { edgeId: id } ) );
       } );
     } );
+  }
+
+
+  save() {
+    this.dispatcher.dispatch( SaveState({
+      storeId: this.storeId,
+      state: this.selection
+    }) );
   }
 
 
