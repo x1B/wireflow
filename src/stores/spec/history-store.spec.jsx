@@ -152,19 +152,42 @@ describe( 'A history store', () => {
           } );
 
           describe( 'and then to redo,', () => {
-            beforeEach( () => { dispatcher.handleAction( UiRedo() ); } );
+            beforeEach( () => {
+              dispatcher.dispatch.calls.reset();
+              dispatcher.handleAction( UiRedo() );
+            } );
 
             it( 'restores the more recent state from the store log', () => {
-              expect( dispatcher.dispatch ).toHaveBeenCalledWith(
-                RestoreState({ storeId: 'A', state: 'A1' })
+              const restore = dispatcher.dispatch.calls.mostRecent().args[ 0 ];
+              expect( restore.toJS() ).toEqual(
+                { storeId: 'A', state: 'A2', type: RestoreState().type }
               );
             } );
 
+            it( 'does not remove store log entries', () => {
+              expect( store.storeLogs.toJS() ).toEqual({
+                A: [ { at: 0, state: 'A1' }, { at: 2, state: 'A2' } ],
+                B: [ { at: 0, state: 'B1' } ]
+              });
+            } );
           } );
 
-          describe( 'and then to save new state,', () => {
+          describe( 'and then to create a new checkpoint,', () => {
+            beforeEach( () => dispatcher.handleAction(
+              CreateCheckpoint({ before: 'set.to.A2x' })
+            ) );
 
-            it( 'discards the more recent state from the store log', () => {
+            it( 'discards any rewound states from the store log', () => {
+              expect( store.storeLogs.toJS() ).toEqual({
+                A: [ { at: 0, state: 'A1' } ],
+                B: [ { at: 0, state: 'B1' } ]
+              });
+            } );
+
+            it( 'replaces any rewound checkpoints with the new one', () => {
+              expect( store.checkpoints.toJS() ).toEqual([
+                { at: 1, before: 'set.to.A2x' }
+              ]);
             } );
 
           } );

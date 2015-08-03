@@ -19,7 +19,9 @@ class HistoryStore {
   constructor( dispatcher ) {
     this.dispatcher = dispatcher;
 
+    // points to the current state, always even
     this.now = 0;
+    // pointers "between" states, always odd
     this.checkpoints = List();
     this.storeLogs = Map();
 
@@ -65,34 +67,32 @@ class HistoryStore {
 
 
     dispatcher.register( UiUndo, () => {
-      if( this.now === 0 ) {
-        return;
+      if( this.now > 0 ) {
+        this.move( this.now, this.now - 2 );
       }
-
-      const newNow = this.now - 2;
-      this.storeLogs.forEach( (log, storeId) => {
-        const latestStates = log.reverse().skipWhile( _ => _.at > this.now );
-        const fromEntry = latestStates.first();
-        const toEntry = latestStates.skipWhile( _ => _.at > newNow ).first();
-        if( !fromEntry || !toEntry ) {
-          return;
-        }
-
-        if( fromEntry.state !== toEntry.state ) {
-          dispatcher.dispatch(
-            RestoreState({ storeId, state: toEntry.state })
-          );
-        }
-      } );
-
-      this.now = newNow;
     } );
 
 
     dispatcher.register( UiRedo, () => {
-      // :TODO:
+      if( this.checkpoints.count() && this.now < this.checkpoints.last().at ) {
+        this.move( this.now, this.now + 2 );
+      }
     } );
 
+  }
+
+  move( from, to ) {
+    this.storeLogs.forEach( (log, storeId) => {
+      const latestStates = log.reverse();
+      const fromEntry = latestStates.skipWhile( _ => _.at > from ).first();
+      const toEntry = latestStates.skipWhile( _ => _.at > to ).first();
+      if( fromEntry && toEntry && fromEntry.state !== toEntry.state ) {
+        this.dispatcher.dispatch(
+          RestoreState({ storeId, state: toEntry.state })
+        );
+      }
+    } );
+    this.now = to;
   }
 
 }

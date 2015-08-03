@@ -39,7 +39,7 @@ export default function( domNode, eventHandler ) {
   domNode.addEventListener( 'click', () => domNode.focus() );
 
   domNode.addEventListener( 'focusin', function() {
-    eventHandler( HandleFocusReceived({ domNode: domNode }) );
+    // eventHandler( HandleFocusReceived({ domNode: domNode }) );
     if( !focusHandlersInstalled ) {
       document.addEventListener( 'keydown', handleKeys );
       document.body.addEventListener( 'copy', handleCopy );
@@ -53,7 +53,7 @@ export default function( domNode, eventHandler ) {
     document.body.removeEventListener( 'copy', handleCopy );
     document.body.removeEventListener( 'cut', handleCut );
     focusHandlersInstalled = false;
-    eventHandler( HandleFocusLost() );
+    // eventHandler( HandleFocusLost() );
   } );
 
   return {};

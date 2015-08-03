@@ -34,14 +34,20 @@ class GraphStore {
       this.save();
     } );
 
-    dispatcher.register( ConnectPort, ev =>
-      this.connect( ev.from, ev.to ) );
+    dispatcher.register( ConnectPort, ev => {
+      this.connect( ev.from, ev.to );
+      this.save();
+    } );
 
-    dispatcher.register( RemoveVertex, ev =>
-      this.removeVertex( ev.vertexId ) );
+    dispatcher.register( RemoveVertex, ev => {
+      this.removeVertex( ev.vertexId );
+      this.save();
+    } );
 
-    dispatcher.register( RemoveEdge, ev =>
-      this.removeEdge( ev.edgeId ) );
+    dispatcher.register( RemoveEdge, ev => {
+      this.removeEdge( ev.edgeId );
+      this.save();
+    } );
 
     dispatcher.register( RestoreState, act => {
       if( act.storeId === this.storeId ) {
