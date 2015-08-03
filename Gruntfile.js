@@ -10,14 +10,29 @@ module.exports = function( grunt ) {
    grunt.initConfig( {
      connect: {
        develop: {
-         options: { keepalive: true }
+         options: {
+           port: 3000,
+           livereload: 33000
+         }
+       }
+     },
+     watch: {
+       options: {
+         livereload: 33000
+       },
+       build: {
+         files: [ 'build/**/*.js' ],
+         tasks: [],
+         spawn: false
        }
      }
    } );
 
 
-   grunt.loadNpmTasks( 'grunt-contrib-connect' );
 
-   grunt.registerTask( 'start', [ 'connect:develop' ] );
+   grunt.loadNpmTasks( 'grunt-contrib-connect' );
+   grunt.loadNpmTasks( 'grunt-contrib-watch' );
+
+   grunt.registerTask( 'start', [ 'connect:develop', 'watch' ] );
 
 };

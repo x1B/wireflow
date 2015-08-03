@@ -29,10 +29,13 @@ class HistoryStore {
         this.storeLogs = this.storeLogs.set( act.storeId, List() );
       }
       this.storeLogs = this.storeLogs.update( act.storeId, log => {
+        const last = log.last();
+        if( last && act.state === last.state ) {
+          return log;
+        }
         const front = log.pop();
-        const end = log.last();
-        const replace = end && ( end.at <= this.now );
-        return ( replace ? front : log ).push( LogEntry({
+        const doReplace = last && ( last.at === this.now );
+        return ( doReplace ? front : log ).push( LogEntry({
           at: this.now,
           state: act.state
         }) );
@@ -65,16 +68,24 @@ class HistoryStore {
       if( this.now === 0 ) {
         return;
       }
-      this.now = this.now - 2;
+
+      const newNow = this.now - 2;
       this.storeLogs.forEach( (log, storeId) => {
-        log.reverse().forEach( ({at, state}) => {
-          if( at <= this.now ) {
-            console.log( 'CLOG', 'RESTORE' ); // :TODO: DELETE ME
-            dispatcher.dispatch( RestoreState({ storeId, state }) );
-            return false;
-          }
-        } );
+        const latestStates = log.reverse().skipWhile( _ => _.at > this.now );
+        const fromEntry = latestStates.first();
+        const toEntry = latestStates.skipWhile( _ => _.at > newNow ).first();
+        if( !fromEntry || !toEntry ) {
+          return;
+        }
+
+        if( fromEntry.state !== toEntry.state ) {
+          dispatcher.dispatch(
+            RestoreState({ storeId, state: toEntry.state })
+          );
+        }
       } );
+
+      this.now = newNow;
     } );
 
 
