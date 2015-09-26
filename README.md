@@ -14,7 +14,7 @@ Before going into the details, here are quick build instructions:
 ```console
 npm install
 export PATH=./node_modules/.bin:$PATH
-jsx --watch --harmony --extension jsx src/ build/
+babel --extension jsx src/ --out-dir=build/
 ```
 
 ## The Data Model
@@ -172,25 +172,25 @@ A written specification is much easier to create and just as useful in answering
 Also, it is a great starting point for _good_ BDD tests.
 
 With this out of the way, let's describe the Wireflow UI.
+Note that individual requirements are described in spec-speak, which should also make it easy to add spec-tests later on.
+This means that _must_, _should_ and so on are to be interpreted as described in [RFC-2119](http://tools.ietf.org/html/rfc2119), but are _italicized_ rather than CAPITALIZED for better readability.
+
+> Informational (non-normative) sections such as this one are included for a better understanding.
 
 
-### Interaction Modes
+### Interaction *Modes*
 
-The Wireflow UI visualizes the graph model, supported by information from the _layout_ and the _schema_.
-It is embedded as a React UI component into an application which gives meaning (semantics) to the graph model.
+> The Wireflow UI visualizes the graph model, supported by information from the _layout_ and the _schema_.
+> It is embedded as a React UI component into an application which gives meaning (semantics) to the graph model.
 
-The UI should support two interaction modes: _read/write_ and _read-only_.
+1. The UI should support two interaction modes: _read/write_ and _read-only_.
+The embedding application _must_ be able to set and change the interaction mode.
 In _read-only_ mode, the UI should be usable with medium-sized touch devices as well as traditional PC-type devices that have mouse and keyboard.
 In _read/write_ mode, the UI should still render properly on smaller devices, but it the actual graph manipulation features may not work properly with the touch input.
+**Note implemented yet: currently, read/write is always enabled.**
 
-Which interaction mode is available to the user is determined by the embedding application.
 
-
-### [DISPLAY] Represent a Graph Model
-
-Now that the basics are clarified, we'll switch to spec-speak for the actual requirements, which should also make it easy to add spec-tests later on.
-This means that _must_, _should_ and so on are to be interpreted as described in [RFC-2119](http://tools.ietf.org/html/rfc2119), but are _italicized_ rather than CAPITALIZED for your reading pleasure.
-> However, informational (non-normative) sections such as this are included for a better understanding.
+### *Display* a Graph Model
 
 1. This feature is enabled in both read-only and read/write interaction modes.
 
@@ -256,17 +256,19 @@ As soon as the user has released the mouse button, the set of nodes _intersectin
 Wireflow _must_ deselect any previously selected nodes not intersecting with the rectangle.
 > I think readers are familiar with the concepts of rubber-band selection, so will not describe the tiresome details.
 
-5. The user _must_ be able to _extend the selection by rectangle_ by holding _shift_ and then dragging a selection rectangle.
+5. **Not implemented yet!** The user _must_ be able to _extend the selection by rectangle_ by holding _shift_ and then dragging a selection rectangle.
 A selection rectangle is said to _extend_ the selection if shift was pressed during the mousedown-event that started the rectangle selection.
 As soon as the user has released the mouse button, Wireframe _must_ add the set of nodes intersecting with the extending rectangle to the selection (if they were not part of the selection before).
 > Note that the extend-mechanism works differently from the toggle-mechanism as it will never remove nodes from the selection.
+
+
 
 6. The user _must_ be able to _clear_ the selection by clicking the graph canvas.
 
 
 ### Manipulating the Graph *Layout*
 
-1. This feature may be enabled by the embedding application independently of the interaction mode.
+1. **Not implemented yet (feature always enabled)!** If using read-only mode, the embedding application _must_ be able to disable this feature through settings.
 If disabled, Wireflow _must not_ offer any of the following functionality.
 > Forming a selection does not necessarily lead to modifications of the underlying graph model or even just the layout.
 
@@ -309,15 +311,15 @@ If disabled, Wireflow _must not_ offer any of the following functionality.
 This operation severs any links to and from the deleted nodes.
 After a delete-operation, edges must be _pruned_ as described under _Edges.5_.
 
-3. Wireflow _must_ allow the user to _copy_ the currently selected set of nodes to the clipboard by pressing _Ctrl-C_ (or _Cmd-C_).
+3. **Not implemented yet!** Wireflow _must_ allow the user to _copy_ the currently selected set of nodes to the clipboard by pressing _Ctrl-C_ (or _Cmd-C_).
 If allowed by the browser, a JSON representation of the graph, restricted to the selection, _should_ be copied to the global OS clipboard.
 
-4. Wireflow _must_ allow the user to _paste_ the current contents of the clipboard by pressing _Ctrl-V_ (or _Cmd-V_).
+4. **Not implemented yet!** Wireflow _must_ allow the user to _paste_ the current contents of the clipboard by pressing _Ctrl-V_ (or _Cmd-V_).
 When inserting the copied sub-graph, Wireflow _must_ modify all IDs and labels in the following manner:
 - Strings that match `/ [0-9]+$/` (that end in a space followed by a sequence of numbers) _must_ be modified by incrementing the trailing number until there is no conflict with any existing ID/label.
 - Other strings _must_ be modified by appending a space and the lowest integer (starting at 1) that does not conflict with an existing ID/label.
 
-5. Wireflow _must_ allow the user to _cut_ the currently selected set of nodes by pressing _Ctrl-X_ (or _Cmd-X_).
+5. **Not implemented yet!** Wireflow _must_ allow the user to _cut_ the currently selected set of nodes by pressing _Ctrl-X_ (or _Cmd-X_).
 Cutting ist equivalent to copying and then deleting the selected set of nodes.
 
 6. Wireflow _must_ reflect addition and removal of vertices, edges and links by the embedding application.
@@ -325,7 +327,7 @@ Cutting ist equivalent to copying and then deleting the selected set of nodes.
 
 ### Undo and Redo of Graph *History*
 
-1. Wireflow _must_ allow the user to _undo_ each of the following _destructive_ operations, by pressing _Ctrl-Z_ (or _Cmd-Z_).
+1. **Only partially implemented (for deleting nodes).** Wireflow _must_ allow the user to _undo_ each of the following _destructive_ operations, by pressing _Ctrl-Z_ (or _Cmd-Z_).
 - moving nodes (_Layout.2_, _Layout.3_).
 - connecting ports (_Edges.2_, _Edges.3_).
 - disconnecting ports (_Edges.4_)
