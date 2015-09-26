@@ -24,7 +24,6 @@ const EdgeMeasurements = Record({
 }, 'EdgeMeasurements');
 
 
-
 // Actual model
 const Graph = Record({ edges: Map(), vertices: Map() });
 const Port = Record({ label: '', direction: null, type: null, id: null, edgeId: null });

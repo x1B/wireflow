@@ -9,7 +9,8 @@ import * as shallowEqual from '../util/shallow-equal';
 
 import {
   SelectEdge,
-  DeselectEdge
+  DeselectEdge,
+  ClearSelection
 } from '../actions/selection';
 
 
@@ -46,9 +47,15 @@ const Edge = React.createClass({
           }) );
         }
       },
-      onClick: () => this.bubble(
-        (selected ? DeselectEdge : SelectEdge)({ edge })
-      )
+      onClick: ( ev ) => {
+        if( ev.shiftKey ) {
+          this.bubble( (selected ? DeselectEdge : SelectEdge)({ edge }) );
+        }
+        else {
+          this.bubble( ClearSelection() );
+          this.bubble( SelectEdge({ edge }) );
+        }
+      }
     });
 
     const startDrag = ( ev ) => dd().start( ev, { coords: layout, id: {} } );

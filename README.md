@@ -224,7 +224,7 @@ For complex edges, Wireflow _must_ draw links from any connected outlets to thei
 For simple edges, Wireflow _must_ draw links between the single owning port and all other ports that form the other side of the relation.
 
 
-### [FOCUS] Managing Focus
+### Managing *Focus*
 
 1. Wireflow _must_ allow for multiple _instances_ of the Wireflow UI to be present within the same HTML document.
 > Each instance has its own settings, model, layout, schema, selection and history.
@@ -237,7 +237,7 @@ For simple edges, Wireflow _must_ draw links between the single owning port and 
 4. Whenever features are triggered by the keyboard (described below), Wireflow _must_ ignore keyboard events for instances that do not have focus.
 
 
-### [SELECTION] Form and Manipulate a Selection
+### Form and Manipulate a *Selection*
 
 1. This feature may be enabled by the embedding application independently of the interaction mode.
 If disabled, Wireflow _must not_ offer any of the following functionality.
@@ -264,7 +264,7 @@ As soon as the user has released the mouse button, Wireframe _must_ add the set 
 6. The user _must_ be able to _clear_ the selection by clicking the graph canvas.
 
 
-### [LAYOUT] Manipulating the Graph Layout
+### Manipulating the Graph *Layout*
 
 1. This feature may be enabled by the embedding application independently of the interaction mode.
 If disabled, Wireflow _must not_ offer any of the following functionality.
@@ -278,7 +278,7 @@ Dragging a node _must not_ change its selection state.
 3. If a node is dragged that is also part of a _selection_, Wireflow _must_ move all currently selected nodes by the same offset.
 
 
-### [EDGES] Manipulating the Graph Connections
+### Manipulating the Graph *Edges* and Connections
 
 1. This feature is enabled if and only if the interaction mode is _read/write_.
 If disabled, Wireflow _must not_ offer any of the following functionality.
@@ -295,7 +295,7 @@ If the edge type of the ports is _simple_ and the port of the owning orientation
 > This ensures that no "invisible edges" pile up.
 
 
-### [VERTICES] Manipulating the Graph Vertices
+### Manipulating the Graph *Vertices*
 
 > **Note:** The operations described here are tightly coupled with application semantics:
 > Potentially they may produce a well-formed hypergraph that cannot be mapped to a valid domain entity, or whose creation circumvents some business rule.
@@ -307,7 +307,7 @@ If disabled, Wireflow _must not_ offer any of the following functionality.
 
 2. Wireflow _must_ allow the user to _delete_ the currently selected set of nodes by pressing the _delete_ key.
 This operation severs any links to and from the deleted nodes.
-After a delete-operation, edges must be _pruned_ as described under _EDGES.5_.
+After a delete-operation, edges must be _pruned_ as described under _Edges.5_.
 
 3. Wireflow _must_ allow the user to _copy_ the currently selected set of nodes to the clipboard by pressing _Ctrl-C_ (or _Cmd-C_).
 If allowed by the browser, a JSON representation of the graph, restricted to the selection, _should_ be copied to the global OS clipboard.
@@ -323,15 +323,15 @@ Cutting ist equivalent to copying and then deleting the selected set of nodes.
 6. Wireflow _must_ reflect addition and removal of vertices, edges and links by the embedding application.
 
 
-### [HISTORY] Undo and Redo
+### Undo and Redo of Graph *History*
 
 1. Wireflow _must_ allow the user to _undo_ each of the following _destructive_ operations, by pressing _Ctrl-Z_ (or _Cmd-Z_).
-- moving nodes (_LAYOUT.2_, _LAYOUT.3_).
-- connecting ports (_EDGES.2_, _EDGES.3_).
-- disconnecting ports (_EDGES.4_)
-- deleting nodes (_VERTICES.2_)
-- pasting nodes (_VERTICES.4_)
-- cutting nodes (_VERTICES.5_)
+- moving nodes (_Layout.2_, _Layout.3_).
+- connecting ports (_Edges.2_, _Edges.3_).
+- disconnecting ports (_Edges.4_)
+- deleting nodes (_Vertices.2_)
+- pasting nodes (_Vertices.4_)
+- cutting nodes (_Vertices.5_)
 Wireflow _must_ allow to undo at least the most recent 50 operations.
 
 2. If no destructive operation has been performed since the most recent _undo_, Wireflow must allow the user to _redo_ the operation that was undone most recently, by pressing _Ctrl-Y_ (or _Cmd-Y_) or _Shift+Ctrl-Z_ (or _Shift+Cmd-Z_).

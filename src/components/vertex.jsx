@@ -14,6 +14,7 @@ import {
 } from '../actions/layout';
 
 import {
+  ClearSelection,
   SelectVertex,
   DeselectVertex
 } from '../actions/selection';
@@ -63,9 +64,13 @@ const Vertex = React.createClass({
         }
       },
       onClick: ( ev ) => {
-        this.bubble(
-          (selected ? DeselectVertex : SelectVertex)({ vertex })
-        );
+        if( ev.shiftKey ) {
+          this.bubble( (selected ? DeselectVertex : SelectVertex)({ vertex }) );
+        }
+        else {
+          this.bubble( ClearSelection() );
+          this.bubble( SelectVertex({ vertex }) );
+        }
       }
     });
 
