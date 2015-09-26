@@ -38,27 +38,38 @@ export default function( domNode, eventHandler ) {
 
   domNode.addEventListener( 'click', () => domNode.focus() );
 
-  domNode.addEventListener( 'focusin', function() {
-    eventHandler( HandleFocusReceived({ domNode: domNode }) );
-    if( !focusHandlersInstalled ) {
-      document.addEventListener( 'keydown', handleKeys );
-      document.body.addEventListener( 'copy', handleCopy );
-      document.body.addEventListener( 'cut', handleCut );
-      focusHandlersInstalled = true;
-    }
-  } );
+  domNode.addEventListener( 'focusin', onFocusin );
+  domNode.addEventListener( 'focus', onFocusin );
 
-  domNode.addEventListener( 'focusout', function() {
+  domNode.addEventListener( 'focusout', onFocusout );
+  domNode.addEventListener( 'blur', onFocusout );
+
+  return {};
+
+
+  function onFocusin() {
+    if( focusHandlersInstalled ) {
+      return;
+    }
+    eventHandler( HandleFocusReceived({ domNode: domNode }) );
+    document.addEventListener( 'keydown', handleKeys );
+    document.body.addEventListener( 'copy', handleCopy );
+    document.body.addEventListener( 'cut', handleCut );
+    focusHandlersInstalled = true;
+  }
+
+
+  function onFocusout() {
+    if( !focusHandlersInstalled ) {
+      return;
+    }
     document.removeEventListener( 'keydown', handleKeys );
     document.body.removeEventListener( 'copy', handleCopy );
     document.body.removeEventListener( 'cut', handleCut );
     focusHandlersInstalled = false;
     eventHandler( HandleFocusLost() );
-  } );
+  }
 
-  return {};
-
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   function handleCopy( event ) {
     if( !clipboardPrepared ) {
@@ -70,7 +81,6 @@ export default function( domNode, eventHandler ) {
     clipboardPrepared = false;
   }
 
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   function handleCut( event ) {
     if( !clipboardPrepared ) {
@@ -83,14 +93,13 @@ export default function( domNode, eventHandler ) {
     clipboardPrepared = false;
   }
 
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   function copySelectionToClipboard() {
     // :TODO:
     // fakeClipboard = JSON.stringify( selectionController.copy() );
+    // ...
   }
 
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   function handleKeys( event ) {
     if( event.keyCode === KEY_CODE_DELETE ) {
