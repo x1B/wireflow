@@ -23,7 +23,11 @@ import {
 
 
 const Selection = Record({
-  vertices: Set(), edges: Set(), coords: null, dimensions: null
+  vertices: Set(),
+  edges: Set(),
+  extensionOf: null,
+  coords: null,
+  dimensions: null
 });
 
 class SelectionStore {
@@ -39,55 +43,58 @@ class SelectionStore {
     this.save();
 
 
-    dispatcher.register( ClearSelection, ev => { this.clear(); } );
+    dispatcher.register( ClearSelection, act => { this.clear(); } );
 
-    dispatcher.register( RemoveVertex, ev => {
-      this.selection =
-        this.selection.update( 'vertices', _ => _.remove( ev.vertexId ) );
+    dispatcher.register( RemoveVertex, act => {
+      this.selection = this.selection
+        .update( 'vertices', _ => _.remove( act.vertexId ) );
       this.save();
     } );
 
-    dispatcher.register( RemoveEdge, ev => {
-      this.selection =
-        this.selection.update( 'edges', _ => _.remove( ev.edgeId ) );
+    dispatcher.register( RemoveEdge, act => {
+      this.selection = this.selection
+        .update( 'edges', _ => _.remove( act.edgeId ) );
       this.save();
     } );
 
-    dispatcher.register( ResizeSelection, ev => {
-      this.selection =
-        this.selection.set( 'coords', ev.coords ).set( 'dimensions', ev.dimensions );
+    dispatcher.register( ResizeSelection, act => {
+      this.selection = this.selection
+        .set( 'extensionOf', act.isExtension ? (this.selection.extensionOf || this.selection) : null );
+      this.selection = this.selection
+        .set( 'coords', act.coords )
+        .set( 'dimensions', act.dimensions );
       this.updateRectangleContents();
     } );
 
-    dispatcher.register( SelectEdge, ev => {
-      this.selection =
-        this.selection.update( 'edges', _ => _.add( ev.edge.id ) );
+    dispatcher.register( SelectEdge, act => {
+      this.selection = this.selection
+        .update( 'edges', _ => _.add( act.edge.id ) );
       this.save();
     } );
 
-    dispatcher.register( DeselectEdge, ev => {
-      this.selection =
-        this.selection.update( 'edges', _ => _.remove( ev.edge.id ) );
+    dispatcher.register( DeselectEdge, act => {
+      this.selection = this.selection
+        .update( 'edges', _ => _.remove( act.edge.id ) );
       this.save();
     } );
 
-    dispatcher.register( SelectVertex, ev => {
-      this.selection =
-        this.selection.update( 'vertices', _ => _.add( ev.vertex.id ) );
+    dispatcher.register( SelectVertex, act => {
+      this.selection = this.selection
+        .update( 'vertices', _ => _.add( act.vertex.id ) );
       this.save();
     } );
 
-    dispatcher.register( DeselectVertex, ev => {
-      this.selection =
-        this.selection.update( 'vertices', _ => _.remove( ev.vertex.id ) );
+    dispatcher.register( DeselectVertex, act => {
+      this.selection = this.selection
+        .update( 'vertices', _ => _.remove( act.vertex.id ) );
       this.save();
     } );
 
-    dispatcher.register( MoveSelection, ev =>
-      this.moveContents( ev.reference, ev.offset )
+    dispatcher.register( MoveSelection, act =>
+      this.moveContents( act.reference, act.offset )
     );
 
-    dispatcher.register( DeleteSelection, ev => {
+    dispatcher.register( DeleteSelection, act => {
       dispatcher.dispatch( CreateCheckpoint({ before: 'Delete' }) );
 
       const { vertices, edges } = this.selection;
@@ -143,19 +150,31 @@ class SelectionStore {
       return;
     }
 
-    const { coords, dimensions } = this.selection;
+    const { coords, dimensions, extensionOf } = this.selection;
     const { measurements, layout } = this.layoutStore;
+    const edgesToKeep = extensionOf ? extensionOf.edges : Set();
+    const verticesToKeep = extensionOf ? extensionOf.vertices : Set();
+
     this.selection = Selection({
       coords: this.selection.coords,
       dimensions: this.selection.dimensions,
-      edges: nodeSet( measurements.edges.toJS(), layout.edges.toJS() ),
-      vertices: nodeSet( measurements.vertices.toJS(), layout.vertices.toJS() )
+      extensionOf: this.selection.extensionOf,
+      vertices: nodeSet(
+        measurements.vertices.toJS(), layout.vertices.toJS(), verticesToKeep
+      ),
+      edges: nodeSet(
+        measurements.edges.toJS(), layout.edges.toJS(), edgesToKeep
+      )
     });
 
-    function nodeSet( nodeMeasurements, nodeCoords ) {
+    function nodeSet( nodeMeasurements, nodeCoords, toKeep ) {
       var matches = Set();
       for( const id in nodeMeasurements ) {
         if( !nodeMeasurements.hasOwnProperty( id ) ) { continue; }
+        if( toKeep.has( id ) ) {
+          matches = matches.add( id );
+          continue;
+        }
         const { left, top } = nodeCoords[ id ];
         const { width, height } = nodeMeasurements[ id ].dimensions;
         if( left + width < coords.left

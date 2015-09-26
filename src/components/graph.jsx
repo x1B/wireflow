@@ -64,14 +64,14 @@ const Graph = React.createClass({
       `nbe-graph nbe-zoom-${zoom} ${focusClass} ${highlightClass} ${className}`;
 
     const dd = () => dragdrop({
-      onMove: ({ dragPayload: { left, top }, dragX, dragY, dragNode }) => {
+      onMove: ({ dragPayload: { left, top, isExtension }, dragX, dragY, dragNode }) => {
         count({ what: '!DragSelection' });
-
         const x = left + min( 0, dragX );
         const y = top + min( 0, dragY );
         const w = abs( dragX );
         const h = abs( dragY );
         this.bubble( ResizeSelection({
+          isExtension,
           coords: Coords({ left: x, top: y }),
           dimensions: Dimensions({ width: w, height: h })
         }) );
@@ -84,7 +84,8 @@ const Graph = React.createClass({
       const rect = ev.currentTarget.getBoundingClientRect();
       const left = ev.clientX - rect.left;
       const top = ev.clientY - rect.top;
-      dd().start( ev, { left, top } );
+      const isExtension = ev.shiftKey;
+      dd().start( ev, { left, top, isExtension } );
     };
 
     return (

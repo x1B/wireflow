@@ -256,12 +256,10 @@ As soon as the user has released the mouse button, the set of nodes _intersectin
 Wireflow _must_ deselect any previously selected nodes not intersecting with the rectangle.
 > I think readers are familiar with the concepts of rubber-band selection, so will not describe the tiresome details.
 
-5. **Not implemented yet!** The user _must_ be able to _extend the selection by rectangle_ by holding _shift_ and then dragging a selection rectangle.
+5. The user _must_ be able to _extend the selection by rectangle_ by holding _shift_ and then dragging a selection rectangle.
 A selection rectangle is said to _extend_ the selection if shift was pressed during the mousedown-event that started the rectangle selection.
 As soon as the user has released the mouse button, Wireframe _must_ add the set of nodes intersecting with the extending rectangle to the selection (if they were not part of the selection before).
 > Note that the extend-mechanism works differently from the toggle-mechanism as it will never remove nodes from the selection.
-
-
 
 6. The user _must_ be able to _clear_ the selection by clicking the graph canvas.
 

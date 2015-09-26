@@ -26,6 +26,7 @@ const DeselectVertex = Record({
 }, 'DeselectVertex');
 
 const ResizeSelection = Record({
+  isExtension: false,
   coords: null,
   dimensions: null,
   type: () => ResizeSelection
