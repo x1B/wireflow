@@ -1,10 +1,3 @@
-
-/**
- * Copyright 2015 aixigo AG
- * Released under the MIT license.
- * www.laxarjs.org
- */
-/*global module */
 module.exports = function( grunt ) {
 
    grunt.initConfig( {
@@ -27,8 +20,6 @@ module.exports = function( grunt ) {
        }
      }
    } );
-
-
 
    grunt.loadNpmTasks( 'grunt-contrib-connect' );
    grunt.loadNpmTasks( 'grunt-contrib-watch' );

@@ -186,7 +186,7 @@ In _read/write_ mode, the UI should still render properly on smaller devices, bu
 Which interaction mode is available to the user is determined by the embedding application.
 
 
-### F1: Represent a Graph Model
+### [DISPLAY] Represent a Graph Model
 
 Now that the basics are clarified, we'll switch to spec-speak for the actual requirements, which should also make it easy to add spec-tests later on.
 This means that _must_, _should_ and so on are to be interpreted as described in [RFC-2119](http://tools.ietf.org/html/rfc2119), but are _italicized_ rather than CAPITALIZED for your reading pleasure.
@@ -224,7 +224,20 @@ For complex edges, Wireflow _must_ draw links from any connected outlets to thei
 For simple edges, Wireflow _must_ draw links between the single owning port and all other ports that form the other side of the relation.
 
 
-### F2: Form and Manipulate a Selection
+### [FOCUS] Managing Focus
+
+1. Wireflow _must_ allow for multiple _instances_ of the Wireflow UI to be present within the same HTML document.
+> Each instance has its own settings, model, layout, schema, selection and history.
+> The embedding application may back multiple instances by the same store, effectively coupling their model and/or layout.
+
+2. Wireflow _must_ ensure that at most one instance has _focus_ at any given time, using the HTML `tabindex` attribute and DOM `focus` event.
+
+3. Wireflow _must_ move focus to an instance if it is clicked into, or tabbed to.
+
+4. Whenever features are triggered by the keyboard (described below), Wireflow _must_ ignore keyboard events for instances that do not have focus.
+
+
+### [SELECTION] Form and Manipulate a Selection
 
 1. This feature may be enabled by the embedding application independently of the interaction mode.
 If disabled, Wireflow _must not_ offer any of the following functionality.
@@ -251,7 +264,7 @@ As soon as the user has released the mouse button, Wireframe _must_ add the set 
 6. The user _must_ be able to _clear_ the selection by clicking the graph canvas.
 
 
-### F3: Manipulating the Graph Layout
+### [LAYOUT] Manipulating the Graph Layout
 
 1. This feature may be enabled by the embedding application independently of the interaction mode.
 If disabled, Wireflow _must not_ offer any of the following functionality.
@@ -262,10 +275,10 @@ This _must_ change the layout property of the node.
 Any connected links must immediately be updated to reflect the repositioning, while other nodes are not affected.
 Dragging a node _must not_ change its selection state.
 
-3. If a node is dragged that is also part of a _selection_ (see _F2_), Wireflow _must_ move all currently selected nodes by the same offset.
+3. If a node is dragged that is also part of a _selection_, Wireflow _must_ move all currently selected nodes by the same offset.
 
 
-### F4: Manipulating the Graph Connections
+### [EDGES] Manipulating the Graph Connections
 
 1. This feature is enabled if and only if the interaction mode is _read/write_.
 If disabled, Wireflow _must not_ offer any of the following functionality.
@@ -282,7 +295,7 @@ If the edge type of the ports is _simple_ and the port of the owning orientation
 > This ensures that no "invisible edges" pile up.
 
 
-### F5: Manipulating the Graph Vertices
+### [VERTICES] Manipulating the Graph Vertices
 
 > **Note:** The operations described here are tightly coupled with application semantics:
 > Potentially they may produce a well-formed hypergraph that cannot be mapped to a valid domain entity, or whose creation circumvents some business rule.
@@ -294,7 +307,7 @@ If disabled, Wireflow _must not_ offer any of the following functionality.
 
 2. Wireflow _must_ allow the user to _delete_ the currently selected set of nodes by pressing the _delete_ key.
 This operation severs any links to and from the deleted nodes.
-After a delete-operation, edges must be _pruned_ as described under _F4.5_.
+After a delete-operation, edges must be _pruned_ as described under _EDGES.5_.
 
 3. Wireflow _must_ allow the user to _copy_ the currently selected set of nodes to the clipboard by pressing _Ctrl-C_ (or _Cmd-C_).
 If allowed by the browser, a JSON representation of the graph, restricted to the selection, _should_ be copied to the global OS clipboard.
@@ -304,9 +317,22 @@ When inserting the copied sub-graph, Wireflow _must_ modify all IDs and labels i
 - Strings that match `/ [0-9]+$/` (that end in a space followed by a sequence of numbers) _must_ be modified by incrementing the trailing number until there is no conflict with any existing ID/label.
 - Other strings _must_ be modified by appending a space and the lowest integer (starting at 1) that does not conflict with an existing ID/label.
 
-5. Wireflow _must_ reflect addition and removal of vertices, edges and links by the embedding application.
+5. Wireflow _must_ allow the user to _cut_ the currently selected set of nodes by pressing _Ctrl-X_ (or _Cmd-X_).
+Cutting ist equivalent to copying and then deleting the selected set of nodes.
+
+6. Wireflow _must_ reflect addition and removal of vertices, edges and links by the embedding application.
 
 
-### F6: Undo and Redo
+### [HISTORY] Undo and Redo
 
-tbd
+1. Wireflow _must_ allow the user to _undo_ each of the following _destructive_ operations, by pressing _Ctrl-Z_ (or _Cmd-Z_).
+- moving nodes (_LAYOUT.2_, _LAYOUT.3_).
+- connecting ports (_EDGES.2_, _EDGES.3_).
+- disconnecting ports (_EDGES.4_)
+- deleting nodes (_VERTICES.2_)
+- pasting nodes (_VERTICES.4_)
+- cutting nodes (_VERTICES.5_)
+Wireflow _must_ allow to undo at least the most recent 50 operations.
+
+2. If no destructive operation has been performed since the most recent _undo_, Wireflow must allow the user to _redo_ the operation that was undone most recently, by pressing _Ctrl-Y_ (or _Cmd-Y_) or _Shift+Ctrl-Z_ (or _Shift+Cmd-Z_).
+> Multiple operations may be undone and then redone as long no destructive operation is performed.
