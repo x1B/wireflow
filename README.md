@@ -1,10 +1,10 @@
-# Node Based Editor
+# Wireflow
 
 > a react component to display and manipulate directed hypergraphs
 
-Use NBE to visualize or model data-flow applications, pub/sub communication or dependency graphs.
+Wireflow is a node-based editing component for React to visualize or model data-flow applications, pub/sub communication or dependency graphs.
 
-Here is a description of NBE's data structures and UI features, serving as both documentation and specification.
+Here is a description of Wireflow's data structures and UI features, serving as both documentation and specification.
 
 
 ## Build Instructions
@@ -19,7 +19,7 @@ jsx --watch --harmony --extension jsx src/ build/
 
 ## The Data Model
 
-The NBE manipulates a directed graph, with two types of nodes:
+The Wireflow UI is used to display and manipulate a directed graph, with two types of nodes:
 So called _vertex nodes_ represented as rounded rectangles and _edge nodes_ represented as circles.
 The nodes are connected by _links_, represented as curved lines.
 
@@ -41,19 +41,19 @@ In contrast, _complex edges_ can model _n:m_ connections and are visually repres
 
 ### Aside: Mapping to Discrete Math
 
-If you try to map this type of graph to a more fundamental directed graph *G = (V, E)* more commonly used in computer science and discrete math, the NBE links would correspond to the relation *E* of edges, and *V* would be the union of the sets of NBE edge and vertex nodes.
-However, to the applications that NBE is geared towards, the concept of *hyperedges* is important:
+If you try to map this type of graph to a more fundamental directed graph *G = (V, E)* more commonly used in computer science and discrete math, the Wireflow links would correspond to the relation *E* of edges, and *V* would be the union of the sets of Wireflow edge and vertex nodes.
+However, to the applications that Wireflow is geared towards, the concept of *hyperedges* is important:
 These edges are named and may connect to and from multiple vertices (n:m relationship), meaning that in a traditional mathematical graph model, they would themselves be best modeled as vertices.
 
 
 ## The JSON model
 
-NBE uses three models: The _graph_, the _layout_, and the _schema_.
+Wireflow uses three models: The _graph_, the _layout_, and the _schema_.
 
 
 ### The Graph
 
-The _graph_ represents the actual domain data for which NBE is used.
+The _graph_ represents the actual domain data for which Wireflow is used.
 Its edges, vertices and links describe model entities of your problem domain and their relations.
 The graph is represented as a _JSON object_, containing two maps: `edges` and `vertices` (each a _JSON object_).
 The vertices and edges are each stored by ID, usually a generated string:
@@ -148,7 +148,7 @@ var types = {
 ```
 
 The actual coloring is determined by suitably generated CSS styles.
-For this to work, NBE generates CSS classes corresponding to the edge types.
+For this to work, Wireflow generates CSS classes corresponding to the edge types.
 
 
 ## The UI
@@ -163,13 +163,33 @@ A full suite of BDD tests is of course the most reliable way to achieve this, bu
 A written specification is much easier to create and just as useful in answering _bug vs. feature_ questions.
 Also, it is a great starting point for _good_ BDD tests.
 
-With this out of the way, let's describe the NBE UI.
+With this out of the way, let's describe the Wireflow UI.
 
 
-### UI Components
+### Interaction Modes
 
-The NBE UI visualizes the graph model, supported by information from the _layout_ and the _schema_.
+The Wireflow UI visualizes the graph model, supported by information from the _layout_ and the _schema_.
+It is embedded as a React UI component into an application which gives meaning (semantics) to the graph model.
 
 The UI should support two interaction modes: _read/write_ and _read-only_.
 In _read-only_ mode, the UI should be usable with medium-sized touch devices as well as traditional PC-type devices that have mouse and keyboard.
 In _read/write_ mode, the UI should still render properly on smaller devices, but it the actual graph manipulation features may not work properly with the touch input.
+
+Which interaction mode is available to the user is determined by the embedding application.
+
+
+### Feature 1: Represent a Graph Model
+
+Now that the basics are clarified, we'll switch to spec-speak for the actual requirements.
+This should also make it easy to add tests later on.
+
+> However, informational (non-normative) sections such as this are included for better understanding.
+
+1. This feature is enabled in both read-only and read/write interaction modes.
+
+2. Conceptually, the Wireflow component must provide the user with a _canvas_ and a _viewport_.
+
+> The _viewport_ determines the bounding box that the Wireflow component takes up in the embedding application.
+> The _canvas_ is nested within the viewport and contains the node- and link-representations.
+
+3. Wireflow MUST
