@@ -159,6 +159,13 @@ The actual coloring is determined by suitably generated CSS styles.
 For this to work, Wireflow generates CSS classes corresponding to the edge types.
 
 
+## The API
+
+Wireflow exposes an API for embedding applications to instantiate the UI components, and to create the hypergraph model.
+It exposes a set of Flux-Style stores and a dispatcher to implement graph operations.
+Currently, the application author needs to wire everything together as illustrated in the _src/dummy-fusebox.jsx_ example.
+
+
 ## The UI
 
 When writing non-trivial software, it is easy to forget, how it is supposed to behave.

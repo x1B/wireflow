@@ -5,7 +5,8 @@
     "Michael Kurze <michael@thefoundation.de>"
   ],
   "description": "Node based editing for the web (react-based)",
-  "main": "src/nbe.jsx",
+  "main": "build/wireflow.js",
+  "moduleType": [ "amd" ],
   "license": "MIT",
   "ignore": [
     "**/.*",
