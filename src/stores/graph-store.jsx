@@ -1,6 +1,18 @@
-import { Directions, Ports, Edge } from '../model';
-import { PortDisconnected, PortConnected } from '../events/graph';
-import { EdgeInserted } from '../events/layout';
+import { List, Map } from 'immutable';
+import { Directions, Ports, Edge, Graph } from '../model';
+import { HandleEdgeInserted } from '../actions/layout';
+
+import {
+  DisconnectPort,
+  ConnectPort,
+  RemoveVertex,
+  RemoveEdge
+} from '../actions/graph';
+
+import {
+  SaveState,
+  RestoreState
+} from '../actions/history';
 
 
 /**
@@ -8,19 +20,49 @@ import { EdgeInserted } from '../events/layout';
  */
 class GraphStore {
 
-
   constructor( dispatcher, graph, types ) {
     this.dispatcher = dispatcher;
+
+    this.storeId = this.constructor.name;
     this.graph = graph;
     this.types = types;
+    this.save();
 
-    dispatcher.register( PortDisconnected, ev =>
-      this.disconnect( ev.vertex, ev.port ) );
+    dispatcher.register( DisconnectPort, act => {
+      this.disconnect( act.vertex, act.port );
+      this.save();
+    } );
 
-    dispatcher.register( PortConnected, ev =>
-      this.connect( ev.from, ev.to ) );
+    dispatcher.register( ConnectPort, act => {
+      this.connect( act.from, act.to );
+      this.save();
+    } );
+
+    dispatcher.register( RemoveVertex, act => {
+      this.removeVertex( act.vertexId );
+      this.save();
+    } );
+
+    dispatcher.register( RemoveEdge, act => {
+      this.removeEdge( act.edgeId );
+      this.save();
+    } );
+
+    dispatcher.register( RestoreState, act => {
+      if( act.storeId === this.storeId ) {
+        this.graph = act.state.get(0);
+        this.types = act.state.get(1);
+      }
+    } );
+
   }
 
+  save() {
+    this.dispatcher.dispatch( SaveState({
+      storeId: this.storeId,
+      state: List.of( this.graph, this.types )
+    }) );
+  }
 
   connect( from, to ) {
     if( to.edgeId ) {
@@ -35,7 +77,7 @@ class GraphStore {
     this.setPortEdge( to, newEdgeId );
     this.pruneEmptyEdges();
 
-    this.dispatcher.dispatch( EdgeInserted({
+    this.dispatcher.dispatch( HandleEdgeInserted({
       edge: newEdge,
       from: from,
       to: to
@@ -60,18 +102,16 @@ class GraphStore {
 
 
   disconnect( vertex, port ) {
-    const model = this.graph;
-    const types = this.types;
-
     const portsPath = [ 'vertices', vertex.id, 'ports', port.direction ];
 
-    const type = types.get( port.type );
+    const type = this.types.get( port.type );
     if( type.owningPort === port.direction ) {
-      this.graph = this.withoutEdge( model, port.edgeId );
+      this.removeEdge( port.edgeId );
       return;
     }
 
-    const next = model.setIn( portsPath, model.getIn( portsPath ).map( p =>
+    const current = this.graph;
+    const next = current.setIn( portsPath, current.getIn( portsPath ).map( p =>
       p.id !== port.id ? p : port.set( 'edgeId', null )
     ) );
 
@@ -80,20 +120,33 @@ class GraphStore {
   }
 
 
-  withoutEdge( graph, edgeId ) {
-    const mapVertices = f =>
-      graph.set( 'vertices', graph.vertices.map( f ) );
-
+  removeEdge( edgeId ) {
     const mapVertexPorts = ( v, f ) => v.set( 'ports', Ports({
       inbound: v.ports.inbound.map( f ),
       outbound: v.ports.outbound.map( f )
     }) );
 
-    const mapGraphPorts = f => mapVertices( v => mapVertexPorts( v, f ) );
+    const mapVertices = f =>
+      this.graph.setIn( [ 'vertices' ], this.graph.vertices.map( f ) );
+
+    const mapGraphPorts = f =>
+      mapVertices( v => mapVertexPorts( v, f ) );
 
     this.graph = mapGraphPorts( p => p.set( 'edgeId',
       p.edgeId === edgeId ? null : p.edgeId
     ) );
+    this.pruneEmptyEdges();
+  }
+
+
+  removeVertex( vertexId ) {
+    const vertex = this.graph.vertices.get( vertexId );
+    Directions.flatMap( d => vertex.ports[ d ] ).forEach( port => {
+      this.disconnect( vertex, port );
+    } );
+
+    this.graph = this.graph.update( 'vertices', vs =>
+      vs.filter( v => v.id !== vertexId ) );
     this.pruneEmptyEdges();
   }
 

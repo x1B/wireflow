@@ -9,6 +9,7 @@ export default function dragdrop( options ) {
   const doc = window.document;
 
   const {
+    onBeforeStart,
     onStart,
     onMove,
     onCancel,
@@ -18,6 +19,7 @@ export default function dragdrop( options ) {
     containerNode,
     getDropResult
   } = Object.assign( {
+    onBeforeStart: noOp,
     onStart: noOp,
     onMove: noOp,
     onCancel: noOp,
@@ -48,7 +50,7 @@ export default function dragdrop( options ) {
     dragStarted = false;
     const isLeftButton = ev.button === 0;
     const isTouch = ( ev.targetTouches || [] ).length;
-    if( (isLeftButton || isTouch) && onStart( ev ) ) {
+    if( (isLeftButton || isTouch) && onBeforeStart( ev ) ) {
       dragNode = node || ev.currentTarget;
       dragPayload = payload;
       const { clientX, clientY } = isTouch ? ev.targetTouches[ 0 ] : ev;
@@ -60,8 +62,8 @@ export default function dragdrop( options ) {
       doc.addEventListener( 'mouseup', tryDrop );
       doc.addEventListener( 'touchend', tryDrop );
       doc.addEventListener( 'touchcancel', cancel );
+      ev.preventDefault();
     }
-    ev.preventDefault();
   }
 
 
@@ -72,10 +74,14 @@ export default function dragdrop( options ) {
     dragY = clientY - startClientY;
 
     if( !dragStarted &&
-        abs( dragX ) < dragThreshold && abs( dragY ) < dragThreshold ) {
+        abs( dragX ) < dragThreshold && abs( dragY ) < dragThreshold  ) {
       return;
     }
-    dragStarted = true;
+
+    if( !dragStarted ) {
+      onStart( ev );
+      dragStarted = true;
+    }
 
     const { node, result } = anyDropResult( clientX, clientY );
     dropNode = node;
@@ -108,7 +114,7 @@ export default function dragdrop( options ) {
 
 
   function maybeClick( ev ) {
-    doc.removeEventListener( 'click', onClick );
+    doc.removeEventListener( 'click', maybeClick );
     if( !dragStarted ) {
       onClick( ev );
     }

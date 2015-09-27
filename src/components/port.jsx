@@ -3,25 +3,25 @@ import * as React from 'react';
 import * as dragdrop from '../util/dragdrop';
 import * as shallowEqual from '../util/shallow-equal';
 
-import { Coords, IN, OUT } from '../model';
-import { PortMeasured, PortDragged, PortDragInfo } from '../events/layout';
-import { PortConnected, PortDisconnected, Connectable } from '../events/graph';
+import { Coords, IN, OUT, READ_WRITE } from '../model';
+import { MeasurePort, DragPort, PortDragInfo } from '../actions/layout';
+import { ConnectPort, DisconnectPort, Connectable } from '../actions/graph';
 
-import { Rendered } from '../events/metrics';
 import count from '../util/metrics';
 
 
 const Port = React.createClass({
 
   render() {
-    const { port, vertex, eventHandler } = this.props;
-    count( Rendered({ what: Port.displayName }) );
+    const { port, vertex, eventHandler, settings } = this.props;
+    count({ what: Port.displayName });
     const classes = `nbe-port nbe-type-${port.type}`;
 
     const dd = () => dragdrop({
+      onBeforeStart: () => settings.mode === READ_WRITE,
       onMove: ({ dragPayload: { left, top }, dragX, dragY, dragNode }) => {
-        count( Rendered({ what: 'events.PortDragged' }) );
-        eventHandler( PortDragged({
+        count({ what: '!DragPort' });
+        eventHandler( DragPort({
           info: PortDragInfo({
             port: port,
             vertex: vertex,
@@ -31,8 +31,12 @@ const Port = React.createClass({
         }) );
       },
       getDropResult: ( hoverNode ) => {
+        if( hoverNode.nodeName === 'svg' ) {
+          // Background or outside of drop-zone
+          return false;
+        }
         const data = hoverNode.dataset;
-        const matches =
+        const matches = data &&
             data.nbeConnectable &&
             data.nbeType === port.type &&
             data.nbeDirection !== port.direction;
@@ -45,7 +49,7 @@ const Port = React.createClass({
         }) : null;
       },
       onDrop: ({ dropResult }) => {
-        eventHandler( PortConnected({
+        eventHandler( ConnectPort({
           from: Connectable({
             type: port.type,
             vertexId: vertex.id,
@@ -58,7 +62,7 @@ const Port = React.createClass({
         }) );
       },
       onEnd: () => {
-        eventHandler( PortDragged({ info: null }) );
+        eventHandler( DragPort({ info: null }) );
       }
     });
 
@@ -88,7 +92,9 @@ const Port = React.createClass({
     );
 
     function disconnect() {
-      eventHandler( PortDisconnected({ vertex: vertex, port: port }) );
+      if( settings.mode === READ_WRITE ) {
+        eventHandler( DisconnectPort({ vertex: vertex, port: port }) );
+      }
     }
   },
 
@@ -100,7 +106,7 @@ const Port = React.createClass({
       left: node.offsetLeft + (node.offsetWidth / 2),
       top: node.offsetTop + (node.offsetHeight / 2)
     });
-    eventHandler( PortMeasured({ port: port, center: coords }) );
+    eventHandler( MeasurePort({ port: port, center: coords }) );
   },
 
 

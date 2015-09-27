@@ -1,18 +1,21 @@
 import * as React from 'react';
 import * as dragdrop from '../util/dragdrop';
 
-import { Coords, convert } from '../model';
-import { EdgeMeasured, EdgeMeasurements, EdgeMoved } from '../events/layout';
-import { Rendered } from '../events/metrics';
+import { Coords, Dimensions } from '../model';
+import { MeasureEdge, EdgeMeasurements, MoveEdge } from '../actions/layout';
+import { MoveSelection } from '../actions/selection';
 import count from '../util/metrics';
 import * as shallowEqual from '../util/shallow-equal';
 
 import {
-  EdgeSelected,
-  EdgeDeselected
-} from '../events/selection';
+  CreateCheckpoint
+} from '../actions/history';
 
-const { boxFromNode } = convert;
+import {
+  SelectEdge,
+  DeselectEdge,
+  ClearSelection
+} from '../actions/selection';
 
 
 const Edge = React.createClass({
@@ -20,7 +23,7 @@ const Edge = React.createClass({
   render() {
     const { edge, selected, layout } = this.props;
     const { id, type, label } = edge;
-    count( Rendered({ what: Edge.displayName }) );
+    count({ what: Edge.displayName });
 
     const style = {
       position: 'absolute', // :TODO: move to stylesheet
@@ -33,20 +36,37 @@ const Edge = React.createClass({
     const className = `nbe-node nbe-edge nbe-type-${type} ${selectedClass}`;
 
     const dd = () => dragdrop({
-      onMove: ({ dragPayload: { left, top }, dragX, dragY, dragNode }) => {
-        count( Rendered({ what: 'events.EdgeMoved' }) );
-        this.bubble( EdgeMoved({
-          edge: edge,
-          to: Coords({ left: left + dragX, top: top + dragY })
-        }) );
-        this.measure();
+      onStart: () => {
+        this.bubble( CreateCheckpoint({ before: 'Move Edge' }) );
+        return true;
       },
-      onClick: () => this.bubble(
-        (selected ? EdgeDeselected : EdgeSelected)({ edge })
-      )
+      onMove: ({ dragPayload, dragX, dragY, dragNode }) => {
+        if( selected ) {
+          this.bubble( MoveSelection({
+            reference: dragPayload,
+            offset: Coords({ left: dragX, top: dragY })
+          }) );
+        }
+        else {
+          const { left, top } = dragPayload.coords;
+          this.bubble( MoveEdge({
+            edge: edge,
+            to: Coords({ left: left + dragX, top: top + dragY })
+          }) );
+        }
+      },
+      onClick: ( ev ) => {
+        if( ev.shiftKey ) {
+          this.bubble( (selected ? DeselectEdge : SelectEdge)({ edge }) );
+        }
+        else {
+          this.bubble( ClearSelection() );
+          this.bubble( SelectEdge({ edge }) );
+        }
+      }
     });
 
-    const startDrag = ( ev ) => dd().start( ev, layout );
+    const startDrag = ( ev ) => dd().start( ev, { coords: layout, id: {} } );
 
     return (
       <div style={style} className={className}>
@@ -74,16 +94,15 @@ const Edge = React.createClass({
 
 
   measure() {
-    const icon = React.findDOMNode( this.refs.icon );
-    const container = icon.parentNode;
+    const domIcon = React.findDOMNode( this.refs.icon );
+    const domContainer = domIcon.parentNode;
     const { edge } = this.props;
-    this.bubble( EdgeMeasured({
+    this.bubble( MeasureEdge({
       edge: edge,
       measurements: EdgeMeasurements({
-        box: boxFromNode( container ),
-        center: Coords({
-          left: container.offsetLeft + (icon.offsetWidth / 2),
-          top: container.offsetTop + (icon.offsetHeight / 2)
+        dimensions: Dimensions({
+          width: domContainer.offsetWidth,
+          height: domContainer.offsetHeight
         })
       })
     }) );

@@ -3,14 +3,20 @@ import { Map } from 'immutable';
 
 import * as Links from './links';
 import * as Edge from './edge';
+import * as SelectionBox from './selection-box';
 import * as Vertex from './vertex';
 import * as GhostPort from './ghost-port';
-import * as shallowEqual from '../util/shallow-equal';
 
-import { Layout, Graph as GraphModel } from '../model';
-import { PortDragged } from '../events/layout';
-import { Rendered } from '../events/metrics';
+import { Layout, Coords, Dimensions, Graph as GraphModel, Settings, READ_ONLY } from '../model';
+import { DragPort } from '../actions/layout';
+import { ResizeSelection, ClearSelection } from '../actions/selection';
+
+import * as shallowEqual from '../util/shallow-equal';
 import count from '../util/metrics';
+import dragdrop from '../util/dragdrop';
+import keyboard from '../util/keyboard';
+
+const { abs, min, max } = Math;
 
 
 const Graph = React.createClass({
@@ -23,6 +29,7 @@ const Graph = React.createClass({
 
   getDefaultProps() {
     return {
+      settings: Settings(),
       types: Map(),
       model: GraphModel(),
       layout: Layout(),
@@ -32,6 +39,8 @@ const Graph = React.createClass({
   },
 
   render() {
+    count({ what: Graph.displayName });
+
     const self = this;
     const {
       model: { vertices, edges },
@@ -41,14 +50,13 @@ const Graph = React.createClass({
       selection,
       zoom,
       hasFocus,
+      settings,
       className
     } = this.props;
 
     const { portDragInfo } = this.state;
 
-    count( Rendered({ what: Graph.displayName }) );
-
-    const canvasSize = self.canvasSize( measurements );
+    const canvasSize = self.canvasSize( measurements, layout );
 
     const focusClass =
       hasFocus ? 'nbe-has-focus' : '';
@@ -57,15 +65,42 @@ const Graph = React.createClass({
     const classes =
       `nbe-graph nbe-zoom-${zoom} ${focusClass} ${highlightClass} ${className}`;
 
+    const dd = () => dragdrop({
+      onMove: ({ dragPayload: { left, top, isExtension }, dragX, dragY, dragNode }) => {
+        count({ what: '!DragSelection' });
+        const x = left + min( 0, dragX );
+        const y = top + min( 0, dragY );
+        const w = abs( dragX );
+        const h = abs( dragY );
+        this.bubble( ResizeSelection({
+          isExtension,
+          coords: Coords({ left: x, top: y }),
+          dimensions: Dimensions({ width: w, height: h })
+        }) );
+      },
+      onEnd: () => this.bubble( ResizeSelection({ coords: null, dimensions: null }) ),
+      onClick: () => this.bubble( ClearSelection() )
+    });
+
+    const startSelect = ( ev ) => {
+      const rect = ev.currentTarget.getBoundingClientRect();
+      const left = ev.clientX - rect.left;
+      const top = ev.clientY - rect.top;
+      const isExtension = ev.shiftKey;
+      dd().start( ev, { left, top, isExtension } );
+    };
+
     return (
-      <div tabIndex="0" className={classes}>
+      <div tabIndex="0" className={classes} ref="graph">
         <div className="nbe-graph-viewport">
           <div className="nbe-graph-canvas" style={canvasSize}>
+            <SelectionBox coords={selection.coords}
+                          dimensions={selection.dimensions} />
             <div className="nbe-graph-nodes">
-              {renderVertices()}
               {renderEdges()}
+              {renderVertices()}
             </div>
-            <svg className="nbe-links">
+            <svg className="nbe-links" onMouseDown={startSelect}>
               <Links measurements={measurements}
                      types={types}
                      vertices={vertices}
@@ -80,7 +115,8 @@ const Graph = React.createClass({
 
     function renderVertices() {
       return vertices.valueSeq().map( vertex =>
-        <Vertex key={vertex.id}
+        <Vertex settings={settings}
+                key={vertex.id}
                 vertex={vertex}
                 selected={selection.vertices.has(vertex.id)}
                 layout={layout.vertices.get( vertex.id )}
@@ -105,7 +141,7 @@ const Graph = React.createClass({
 
   handleEvent( event ) {
     switch( event.type() ) {
-      case PortDragged:
+      case DragPort:
         return this.setState( ({portDragInfo}) => ({
           portDragInfo: event.info
         }) );
@@ -128,22 +164,21 @@ const Graph = React.createClass({
   },
 
 
-  canvasSize( measurements ) {
+  canvasSize( measurements, layout ) {
     var w = 0;
     var h = 0;
     const padding = 50;
-    const { max } = Math;
 
-    const measure = node => {
-      const { box: {
-        coords: { left, top },
-        dimensions: { width, height }
-      } } = node;
-      w = max( w, left + width );
-      h = max( h, top + height );
+    const measure = ( nodeCoords ) => (nodeMeasurements, id) => {
+      if( nodeCoords.hasOwnProperty( id ) ) {
+        const { dimensions: { width, height } } = nodeMeasurements.toJS();
+        const { left, top } = nodeCoords[ id ];
+        w = max( w, left + width );
+        h = max( h, top + height );
+      }
     };
-    measurements.vertices.forEach( measure );
-    measurements.edges.forEach( measure );
+    measurements.vertices.forEach( measure( layout.vertices.toJS() ) );
+    measurements.edges.forEach( measure( layout.edges.toJS() ) );
 
     // TODO: 'font-size: 0' is a weird hack.
     // find a better way to make sure that no scrollbar is shown
@@ -152,6 +187,11 @@ const Graph = React.createClass({
       'minWidth': (w + padding) + 'px',
       'minHeight': (h + padding) + 'px'
     };
+  },
+
+  componentDidMount() {
+    const domGraph = React.findDOMNode( this.refs.graph );
+    keyboard( domGraph, this.bubble, () => this.props.settings.mode === READ_ONLY );
   }
 
 });

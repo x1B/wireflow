@@ -5,11 +5,30 @@ import * as options from './util/options';
 
 const { Map, List, Record } = Immutable;
 
+// dimensions for each node, plus node-internal positions of vertex-ports
+const Measurements = Record({ vertices: Map(), edges: Map() });
+
+// Settings, to be used by the embedding application
+const READ_WRITE = 'read/write';
+const READ_ONLY = 'read-only';
+const Settings = Record({ mode: READ_WRITE }, 'Settings');
+const InteractionModes = List.of( READ_ONLY, READ_WRITE );
+
 // Types related to layout/measurements
 const Coords = Record({ left: 0, top: 0 });
 const Dimensions = Record({ width: 0, height: 0 });
-const Box = Record({ coords: Coords(), dimensions: Dimensions() });
 const Layout = Record({ edges: Map(), vertices: Map() });
+
+const VertexMeasurements = Record({
+  dimensions: null,
+  inbound: Map(),
+  outbound: Map()
+}, 'VertexMeasurements');
+
+const EdgeMeasurements = Record({
+  dimensions: null
+}, 'EdgeMeasurements');
+
 
 // Actual model
 const Graph = Record({ edges: Map(), vertices: Map() });
@@ -23,24 +42,39 @@ const IN = 'inbound';
 const OUT = 'outbound';
 const Directions = List.of( IN, OUT );
 
+
+// History Stuff:
+const Checkpoint = Record({
+  before: null,
+  at: null
+}, 'Checkpoint');
+
+
 const convert = {
   graph: graph,
   layout: layout,
-  types: types,
-  boxFromNode: boxFromNode
+  types: types
 };
 
 export {
   Coords,
   Dimensions,
-  Box,
   Layout,
+  Measurements,
+  VertexMeasurements,
+  EdgeMeasurements,
   IN,
   OUT,
   Directions,
   Graph,
   Edge,
   Ports,
+  Checkpoint,
+
+  Settings,
+  READ_ONLY,
+  READ_WRITE,
+  InteractionModes,
 
   convert
 };
@@ -64,19 +98,6 @@ function type( jsType ) {
 
 
 // model ///////////////////////////////////////////////////////////////////////
-
-function boxFromNode( domNode ) {
-  return Box({
-    coords: Coords({
-      left: domNode.offsetLeft,
-      top: domNode.offsetTop
-    }),
-    dimensions: Dimensions({
-      width: domNode.offsetWidth,
-      height: domNode.offsetHeight
-    })
-  });
-}
 
 function graph( jsGraph ) {
   return Graph({

@@ -1,14 +1,21 @@
 import { Map, List } from 'immutable';
+import count from './util/metrics';
 
+const now = () => window.performance.now();
 
 class Dispatcher {
 
-  constructor( onAfterDispatch ) {
+  constructor( onAfterDispatch, monitorEvents ) {
     this.queue = [];
     this.registry = Map();
     this.dispatch = this.dispatch.bind( this );
     this.frameRequested = false;
     this.onAfterDispatch = onAfterDispatch;
+    this.monitorEvents = List();
+  }
+
+  monitor( events ) {
+    this.monitorEvents = events;
   }
 
   register( type, callback ) {
@@ -17,12 +24,21 @@ class Dispatcher {
   }
 
   dispatch( event ) {
+    if( this.monitorEvents.indexOf( event.type() ) !== -1 ) {
+      window.console.log( 'ACT:' + event[ '_name' ], '  data: ', event.toJS() );
+    }
     this.queue.push( event );
+
+    const markA = now();
     const anyDispatched = this.processQueue();
+    count({ what: 'dispatch', duration: now() - markA });
+
     if( anyDispatched && !this.frameRequested ) {
       window.requestAnimationFrame( () => {
         this.frameRequested = false;
+        const markB = window.performance.now();
         this.onAfterDispatch();
+        count({ what: 'render', duration: now() - markB });
       } );
       this.frameRequested = true;
     }

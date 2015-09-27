@@ -1,13 +1,14 @@
-import { Coords } from '../model';
+import { List } from 'immutable';
+
+import { Coords, Measurements } from '../model';
 import {
-  VertexMoved, EdgeMoved, EdgeInserted, EdgeMeasured, VertexMeasured
-} from '../events/layout';
-import { Record, Map } from 'immutable';
+  MoveVertex, MoveEdge, HandleEdgeInserted, MeasureEdge, MeasureVertex
+} from '../actions/layout';
+import { RemoveVertex, RemoveEdge } from '../actions/graph';
+import { SaveState, RestoreState } from '../actions/history';
+import * as settings from '../util/settings';
+const { layout: { edgeOffset } } = settings;
 
-const Measurements = Record({ vertices: Map(), edges: Map() });
-
-// TODO determine dynamically?
-const edgeSize = 20;
 
 /**
  * Manages the graph layout prop.
@@ -16,50 +17,103 @@ class LayoutStore {
 
   constructor( dispatcher, layout ) {
     this.dispatcher = dispatcher;
+
+    this.storeId = this.constructor.name;
     this.layout = layout;
     this.measurements = Measurements();
+    this.save();
 
-    dispatcher.register( VertexMeasured, ev => {
+
+    dispatcher.register( MeasureVertex, ev => {
       this.measurements = this.measurements.setIn(
         [ 'vertices', ev.vertex.id ],
         ev.measurements
       );
+      this.save();
     } );
 
-    dispatcher.register( EdgeMeasured, ev => {
+    dispatcher.register( MeasureEdge, ev => {
       this.measurements = this.measurements.setIn(
         [ 'edges', ev.edge.id ],
         ev.measurements
       );
+      this.save();
     } );
 
-    dispatcher.register( VertexMoved, ev => {
+    dispatcher.register( RemoveVertex, ev => {
+      this.layout = this.layout.removeIn( [ 'vertices', ev.vertexId ] );
+      this.save();
+    } );
+
+    dispatcher.register( RemoveEdge, ev => {
+      this.layout = this.layout.removeIn( [ 'vertices', ev.edgeId ] );
+      this.save();
+    } );
+
+    dispatcher.register( MoveVertex, ev => {
       this.layout = this.layout.setIn( [ 'vertices', ev.vertex.id ], ev.to );
+      this.save();
     } );
 
-    dispatcher.register( EdgeMoved, ev => {
+    dispatcher.register( MoveEdge, ev => {
       this.layout = this.layout.setIn( [ 'edges', ev.edge.id ], ev.to );
+      this.save();
     } );
 
-    dispatcher.register( EdgeInserted, ev => {
+    dispatcher.register( HandleEdgeInserted, ev => {
       this.layout = this.placeEdge( ev.edge, ev.from, ev.to );
+      this.save();
     } );
 
+    dispatcher.register( RestoreState, act => {
+      if( act.storeId === this.storeId ) {
+        this.layout = act.state.get(0);
+        this.measurements = act.state.get(1);
+      }
+    } );
   }
 
-  placeEdge( edge, from, to ) {
-    const fromMeasurements = this.measurements.vertices.get( from.vertexId );
-    const toMeasurements = this.measurements.vertices.get( to.vertexId );
 
-    const { coords, dimensions } = fromMeasurements.box;
-    const toBox = toMeasurements.box;
-    const left = (coords.left + dimensions.width + toBox.coords.left) / 2;
+  save() {
+    this.dispatcher.dispatch( SaveState({
+      storeId: this.storeId,
+      state: List.of( this.layout, this.measurements )
+    }) );
+  }
+
+
+  moveSelection( selection, referenceLayout, offset ) {
+    const { left, top } = offset;
+    var targetLayout = referenceLayout;
+    [ 'vertices', 'edges' ].forEach( kind =>
+      selection[ kind ].forEach( id => {
+        targetLayout = targetLayout.updateIn( [ kind, id ], coords =>
+          Coords({
+            left: coords.left + left,
+            top: coords.top + top
+          })
+        );
+      } )
+    );
+    this.layout = targetLayout;
+    this.save();
+  }
+
+
+  placeEdge( edge, from, to ) {
+    const { measurements, layout } = this;
+    const fromMeasurements = measurements.vertices.get( from.vertexId );
+    const toMeasurements = measurements.vertices.get( to.vertexId );
+    const fromCoords = layout.vertices.get( from.vertexId );
+    const toCoords = layout.vertices.get( to.vertexId );
+
+    const left = (fromCoords.left + fromMeasurements.dimensions.width + toCoords.left) / 2;
 
     const fromPortBox = fromMeasurements.getIn([ from.direction, from.portId ]);
     const toPortBox = toMeasurements.getIn([ to.direction, to.portId ]);
     const top = (
-      coords.top + fromPortBox.top + toBox.coords.top + toPortBox.top
-      - edgeSize
+      fromCoords.top + fromPortBox.top + toCoords.top + toPortBox.top
+      - edgeOffset
     ) / 2;
 
     return this.layout.setIn( [ 'edges', edge.id ], Coords({
@@ -67,7 +121,6 @@ class LayoutStore {
       top: top
     }) );
   }
-
 }
 
 export default LayoutStore;

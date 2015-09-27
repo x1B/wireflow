@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import * as Link from './link';
 import { Directions, IN, OUT } from '../model';
-import { Rendered } from '../events/metrics';
 import count from '../util/metrics';
 import * as shallowEqual from '../util/shallow-equal';
 
@@ -12,10 +11,10 @@ const Links = React.createClass({
   render() {
 
     const {
-      measurements, vertices, types, eventHandler
+      measurements, layout, vertices, types, eventHandler
     } = this.props;
 
-    count( Rendered({ what: Links.displayName }) );
+    count({ what: Links.displayName });
 
     return <svg>{renderLinks()}</svg>;
 
@@ -35,8 +34,10 @@ const Links = React.createClass({
 
     function links( vertexId, direction, neighborTable ) {
       const vertex = vertices.get( vertexId );
-      const edgeMeasurements = measurements.edges;
+      const vertexLayout = layout.vertices.get( vertexId );
       const vertexMeasurements = measurements.vertices.get( vertexId );
+      const edgeLayouts = layout.edges;
+      const edgeMeasurements = measurements.edges;
 
       // Is the link outbound wrt the current vertex?
       const isOutbound = direction === OUT;
@@ -47,26 +48,33 @@ const Links = React.createClass({
         .map( port => {
           const edgeId = port.edgeId;
 
+          const hereLayout = vertexLayout;
           const hereMeasurements = vertexMeasurements;
           const herePort = port;
 
           const owningPort = types.get( port.type ).owningPort;
-          const [ thereMeasurements, therePort ] = owningPort ?
-          neighborTable[ otherDirection ][ edgeId ] :
-          [ edgeMeasurements.get( edgeId ), '' ];
+          const [ thereLayout, thereMeasurements, therePort ] = owningPort ?
+            neighborTable[ otherDirection ][ edgeId ] :
+            [ edgeLayouts.get( edgeId ), edgeMeasurements.get( edgeId ), '' ];
+
+          const [ fromLayout, toLayout ] = isOutbound ?
+            [ hereLayout, thereLayout ] :
+            [ thereLayout, hereLayout ];
 
           const [ fromMeasurements, toMeasurements ] = isOutbound ?
-          [ hereMeasurements, thereMeasurements ] :
-          [ thereMeasurements, hereMeasurements ];
+            [ hereMeasurements, thereMeasurements ] :
+            [ thereMeasurements, hereMeasurements ];
 
           const [ fromPort, toPort ] = isOutbound ?
-          [ herePort, therePort ] :
-          [ therePort, herePort ];
+            [ herePort, therePort ] :
+            [ therePort, herePort ];
 
           return <Link key={vertexId + '/' + port.id}
                        eventHandler={eventHandler}
                        fromPort={fromPort}
                        toPort={toPort}
+                       fromLayout={fromLayout}
+                       toLayout={toLayout}
                        fromMeasurements={fromMeasurements}
                        toMeasurements={toMeasurements} />;
       } );
@@ -92,10 +100,13 @@ const Links = React.createClass({
         const matchingMeasurements = lut[ direction ] = {};
         vertexIds.forEach( id => {
           const vertexMeasurements = measurements.vertices.get( id );
+          const vertexLayout = layout.vertices.get( id );
           vertices.get( id ).ports[ direction ].forEach( port => {
             const edgeId = port.edgeId;
             if( edgeId ) {
-              matchingMeasurements[ edgeId ] = [ vertexMeasurements, port ];
+              matchingMeasurements[ edgeId ] = [
+                vertexLayout, vertexMeasurements, port
+              ];
             }
           } );
         } );

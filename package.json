@@ -1,16 +1,16 @@
 {
-  "name": "nbe-react",
+  "name": "wireflow",
   "version": "0.1.0-pre",
   "description": "Node based editing for the web (react-based)",
   "main": "src/nbe.jsx",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "babel": "^5.6.14",
     "eslint": "^0.24.1",
     "eslint-plugin-react": "^2.7.0",
     "grunt": "~0.4.4",
-    "grunt-contrib-connect": "~0.10.1"
+    "grunt-contrib-connect": "~0.10.1",
+    "grunt-contrib-watch": "^0.6.1"
   },
   "scripts": {
     "start": "grunt start",

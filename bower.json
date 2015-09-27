@@ -1,21 +1,26 @@
 {
-   "name": "nbe-react",
-   "version": "0.1.0-pre",
-   "authors": [
-      "Michael Kurze <michael@thefoundation.de>"
-   ],
-   "description": "Node based editing for the web (react-based)",
-   "main": "src/nbe.jsx",
-   "license": "MIT",
-   "ignore": [
-      "**/.*",
-      "node_modules",
-      "bower_components",
-      "test",
-      "tests"
-   ],
-   "dependencies": {
-      "requirejs": "~2.1.18",
-      "react": "~0.13.3"
-   }
+  "name": "wireflow",
+  "version": "0.1.0-pre",
+  "authors": [
+    "Michael Kurze <michael@thefoundation.de>"
+  ],
+  "description": "Node based editing for the web (react-based)",
+  "main": "build/wireflow.js",
+  "moduleType": [ "amd" ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "immutable": "~3.7.4",
+    "requirejs": "~2.1.20",
+    "react": "~0.13.3"
+  },
+  "devDependencies": {
+    "jasmine": "~2.3.4"
+  }
 }

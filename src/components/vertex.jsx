@@ -3,25 +3,29 @@ import * as dragdrop from '../util/dragdrop';
 
 import * as Port from './port';
 import * as shallowEqual from '../util/shallow-equal';
-import { Coords, convert, IN, OUT } from '../model';
+import { Coords, Dimensions, IN, OUT } from '../model';
+import { MoveSelection } from '../actions/selection';
+
 
 import {
-  VertexMeasured,
+  CreateCheckpoint
+} from '../actions/history';
+
+
+import {
+  MeasureVertex,
   VertexMeasurements,
-  PortMeasured,
-  VertexMoved
-} from '../events/layout';
+  MeasurePort,
+  MoveVertex
+} from '../actions/layout';
 
 import {
-  VertexSelected,
-  VertexDeselected
-} from '../events/selection';
+  ClearSelection,
+  SelectVertex,
+  DeselectVertex
+} from '../actions/selection';
 
-import { Rendered } from '../events/metrics';
 import count from '../util/metrics';
-
-
-const { boxFromNode } = convert;
 
 
 const Vertex = React.createClass({
@@ -35,8 +39,8 @@ const Vertex = React.createClass({
 
   render() {
     const self = this;
-    const { vertex, selected, layout, eventHandler } = self.props;
-    count( Rendered({ what: Vertex.displayName }) );
+    const { vertex, selected, layout, eventHandler, settings } = self.props;
+    count({ what: Vertex.displayName });
     const { ports, label } = vertex;
 
     const style = {
@@ -50,22 +54,36 @@ const Vertex = React.createClass({
     const classes = `nbe-vertex nbe-node ${selectedClass}`;
 
     const dd = () => dragdrop({
-      onMove: ({ dragPayload: { left, top }, dragX, dragY, dragNode }) => {
-        count( Rendered({ what: 'events.VertexMoved' }) );
-        eventHandler( VertexMoved({
-          vertex: vertex,
-          to: Coords( { left: left + dragX, top: top + dragY } )
-        }) );
-        this.measure();
+      onStart: () => {
+        this.bubble( CreateCheckpoint({ before: 'Move Vertex' }) );
+      },
+      onMove: ({ dragPayload, dragX, dragY, dragNode }) => {
+        if( selected ) {
+          eventHandler( MoveSelection({
+            reference: dragPayload,
+            offset: Coords({ left: dragX, top: dragY })
+          }) );
+        }
+        else {
+          const { left, top } = dragPayload.coords;
+          eventHandler( MoveVertex({
+            vertex: vertex,
+            to: Coords({ left: left + dragX, top: top + dragY })
+          }) );
+        }
       },
       onClick: ( ev ) => {
-        this.bubble(
-          (selected ? VertexDeselected : VertexSelected)({ vertex })
-        );
+        if( ev.shiftKey ) {
+          this.bubble( (selected ? DeselectVertex : SelectVertex)({ vertex }) );
+        }
+        else {
+          this.bubble( ClearSelection() );
+          this.bubble( SelectVertex({ vertex }) );
+        }
       }
     });
 
-    const startDrag = ( ev ) => dd().start( ev, layout );
+    const startDrag = ( ev ) => dd().start( ev, { coords: layout, id: {} } );
 
     return (
       <div style={style} className={classes} ref="vertex"
@@ -87,14 +105,15 @@ const Vertex = React.createClass({
         <Port key={port.id}
               port={port}
               vertex={vertex}
-              eventHandler={self.handleEvent} /> ).toJS();
+              eventHandler={self.handleEvent}
+              settings={settings} /> ).toJS();
     }
   },
 
 
   handleEvent( event ) {
     var type = event.type();
-    if( type === PortMeasured ) {
+    if( type === MeasurePort ) {
       const { port, center } = event;
       this.setState( ({ measurements }) => {
         var newMeasurements = measurements.setIn( [ port.direction, port.id ], center );
@@ -116,14 +135,14 @@ const Vertex = React.createClass({
   propagateMeasurements( measurements ) {
     if( this.isComplete( measurements ) ) {
       var { vertex } = this.props;
-      this.bubble( VertexMeasured( { vertex, measurements } ) );
+      this.bubble( MeasureVertex( { vertex, measurements } ) );
     }
   },
 
 
   isComplete( measurements ) {
     const { ports } = this.props.vertex;
-    return measurements.box
+    return measurements.dimensions
       && measurements.inbound.size === ports.inbound.size
       && measurements.outbound.size === ports.outbound.size;
   },
@@ -132,8 +151,11 @@ const Vertex = React.createClass({
   measure() {
     const domVertex = React.findDOMNode( this.refs.vertex );
     this.setState( ({ measurements }) => {
-      const box = boxFromNode( domVertex );
-      const newMeasurements = measurements.setIn( [ 'box' ], box );
+      const newMeasurements =
+        measurements.set( 'dimensions', Dimensions({
+          width: domVertex.offsetWidth,
+          height: domVertex.offsetHeight
+        }) );
       this.propagateMeasurements( newMeasurements );
       return { measurements: newMeasurements };
     } );
@@ -151,5 +173,6 @@ const Vertex = React.createClass({
   }
 
 });
+
 
 export default Vertex;
