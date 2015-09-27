@@ -8,6 +8,12 @@ const { Map, List, Record } = Immutable;
 // dimensions for each node, plus node-internal positions of vertex-ports
 const Measurements = Record({ vertices: Map(), edges: Map() });
 
+// Settings, to be used by the embedding application
+const READ_WRITE = 'read/write';
+const READ_ONLY = 'read-only';
+const Settings = Record({ mode: READ_WRITE }, 'Settings');
+const InteractionModes = List.of( READ_ONLY, READ_WRITE );
+
 // Types related to layout/measurements
 const Coords = Record({ left: 0, top: 0 });
 const Dimensions = Record({ width: 0, height: 0 });
@@ -64,6 +70,11 @@ export {
   Edge,
   Ports,
   Checkpoint,
+
+  Settings,
+  READ_ONLY,
+  READ_WRITE,
+  InteractionModes,
 
   convert
 };

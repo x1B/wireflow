@@ -273,7 +273,7 @@ As soon as the user has released the mouse button, Wireframe _must_ add the set 
 
 ### Manipulating the Graph *Layout*
 
-1. **Not implemented yet (feature always enabled)!** If using read-only mode, the embedding application _must_ be able to disable this feature through settings.
+1. If using read-only mode, the embedding application _must_ be able to disable this feature through settings.
 If disabled, Wireflow _must not_ offer any of the following functionality.
 > Forming a selection does not necessarily lead to modifications of the underlying graph model or even just the layout.
 

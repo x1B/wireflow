@@ -7,7 +7,7 @@ import * as SelectionBox from './selection-box';
 import * as Vertex from './vertex';
 import * as GhostPort from './ghost-port';
 
-import { Layout, Coords, Dimensions, Graph as GraphModel } from '../model';
+import { Layout, Coords, Dimensions, Graph as GraphModel, Settings, READ_ONLY } from '../model';
 import { DragPort } from '../actions/layout';
 import { ResizeSelection, ClearSelection } from '../actions/selection';
 
@@ -29,6 +29,7 @@ const Graph = React.createClass({
 
   getDefaultProps() {
     return {
+      settings: Settings(),
       types: Map(),
       model: GraphModel(),
       layout: Layout(),
@@ -49,6 +50,7 @@ const Graph = React.createClass({
       selection,
       zoom,
       hasFocus,
+      settings,
       className
     } = this.props;
 
@@ -113,7 +115,8 @@ const Graph = React.createClass({
 
     function renderVertices() {
       return vertices.valueSeq().map( vertex =>
-        <Vertex key={vertex.id}
+        <Vertex settings={settings}
+                key={vertex.id}
                 vertex={vertex}
                 selected={selection.vertices.has(vertex.id)}
                 layout={layout.vertices.get( vertex.id )}
@@ -167,13 +170,15 @@ const Graph = React.createClass({
     const padding = 50;
 
     const measure = ( nodeCoords ) => (nodeMeasurements, id) => {
-      const { dimensions: { width, height } } = nodeMeasurements;
-      const { left, top } = nodeCoords;
-      w = max( w, left + width );
-      h = max( h, top + height );
+      if( nodeCoords.hasOwnProperty( id ) ) {
+        const { dimensions: { width, height } } = nodeMeasurements.toJS();
+        const { left, top } = nodeCoords[ id ];
+        w = max( w, left + width );
+        h = max( h, top + height );
+      }
     };
-    measurements.vertices.forEach( measure( layout.vertices ) );
-    measurements.edges.forEach( measure( layout.edges ) );
+    measurements.vertices.forEach( measure( layout.vertices.toJS() ) );
+    measurements.edges.forEach( measure( layout.edges.toJS() ) );
 
     // TODO: 'font-size: 0' is a weird hack.
     // find a better way to make sure that no scrollbar is shown
@@ -186,7 +191,7 @@ const Graph = React.createClass({
 
   componentDidMount() {
     const domGraph = React.findDOMNode( this.refs.graph );
-    keyboard( domGraph, this.bubble );
+    keyboard( domGraph, this.bubble, () => this.props.settings.mode === READ_ONLY );
   }
 
 });

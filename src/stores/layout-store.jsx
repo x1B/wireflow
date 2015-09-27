@@ -96,6 +96,7 @@ class LayoutStore {
       } )
     );
     this.layout = targetLayout;
+    this.save();
   }
 
 

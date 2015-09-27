@@ -8,6 +8,10 @@ import count from '../util/metrics';
 import * as shallowEqual from '../util/shallow-equal';
 
 import {
+  CreateCheckpoint
+} from '../actions/history';
+
+import {
   SelectEdge,
   DeselectEdge,
   ClearSelection
@@ -32,6 +36,10 @@ const Edge = React.createClass({
     const className = `nbe-node nbe-edge nbe-type-${type} ${selectedClass}`;
 
     const dd = () => dragdrop({
+      onStart: () => {
+        this.bubble( CreateCheckpoint({ before: 'Move Edge' }) );
+        return true;
+      },
       onMove: ({ dragPayload, dragX, dragY, dragNode }) => {
         if( selected ) {
           this.bubble( MoveSelection({

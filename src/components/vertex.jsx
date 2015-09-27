@@ -6,6 +6,12 @@ import * as shallowEqual from '../util/shallow-equal';
 import { Coords, Dimensions, IN, OUT } from '../model';
 import { MoveSelection } from '../actions/selection';
 
+
+import {
+  CreateCheckpoint
+} from '../actions/history';
+
+
 import {
   MeasureVertex,
   VertexMeasurements,
@@ -33,7 +39,7 @@ const Vertex = React.createClass({
 
   render() {
     const self = this;
-    const { vertex, selected, layout, eventHandler } = self.props;
+    const { vertex, selected, layout, eventHandler, settings } = self.props;
     count({ what: Vertex.displayName });
     const { ports, label } = vertex;
 
@@ -48,6 +54,9 @@ const Vertex = React.createClass({
     const classes = `nbe-vertex nbe-node ${selectedClass}`;
 
     const dd = () => dragdrop({
+      onStart: () => {
+        this.bubble( CreateCheckpoint({ before: 'Move Vertex' }) );
+      },
       onMove: ({ dragPayload, dragX, dragY, dragNode }) => {
         if( selected ) {
           eventHandler( MoveSelection({
@@ -96,7 +105,8 @@ const Vertex = React.createClass({
         <Port key={port.id}
               port={port}
               vertex={vertex}
-              eventHandler={self.handleEvent} /> ).toJS();
+              eventHandler={self.handleEvent}
+              settings={settings} /> ).toJS();
     }
   },
 

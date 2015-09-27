@@ -3,7 +3,7 @@ import * as React from 'react';
 import * as dragdrop from '../util/dragdrop';
 import * as shallowEqual from '../util/shallow-equal';
 
-import { Coords, IN, OUT } from '../model';
+import { Coords, IN, OUT, READ_WRITE } from '../model';
 import { MeasurePort, DragPort, PortDragInfo } from '../actions/layout';
 import { ConnectPort, DisconnectPort, Connectable } from '../actions/graph';
 
@@ -13,11 +13,12 @@ import count from '../util/metrics';
 const Port = React.createClass({
 
   render() {
-    const { port, vertex, eventHandler } = this.props;
+    const { port, vertex, eventHandler, settings } = this.props;
     count({ what: Port.displayName });
     const classes = `nbe-port nbe-type-${port.type}`;
 
     const dd = () => dragdrop({
+      onBeforeStart: () => settings.mode === READ_WRITE,
       onMove: ({ dragPayload: { left, top }, dragX, dragY, dragNode }) => {
         count({ what: '!DragPort' });
         eventHandler( DragPort({
@@ -91,7 +92,9 @@ const Port = React.createClass({
     );
 
     function disconnect() {
-      eventHandler( DisconnectPort({ vertex: vertex, port: port }) );
+      if( settings.mode === READ_WRITE ) {
+        eventHandler( DisconnectPort({ vertex: vertex, port: port }) );
+      }
     }
   },
 

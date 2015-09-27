@@ -9,7 +9,8 @@ import {
 
 import {
   UiUndo,
-  UiRedo
+  UiRedo,
+  CreateCheckpoint
 } from '../actions/history';
 
 
@@ -24,7 +25,7 @@ const KEY_CODE_Y = 89;
 const KEY_CODE_Z = 90;
 const KEY_CODE_ESCAPE = 0x1B;
 
-export default function( domNode, eventHandler ) {
+export default function( domNode, eventHandler, isReadOnly ) {
 
   /**
    * If the user agent supports clipboard events, the cut/copy/paste handlers will be called twice after
@@ -103,6 +104,8 @@ export default function( domNode, eventHandler ) {
 
   function handleKeys( event ) {
     if( event.keyCode === KEY_CODE_DELETE ) {
+      if( isReadOnly() ) { return; }
+      eventHandler( CreateCheckpoint({ before: 'Delete Selection' }) );
       eventHandler( DeleteSelection() );
     }
     else if( event.keyCode === KEY_CODE_ESCAPE ) {
@@ -121,6 +124,7 @@ export default function( domNode, eventHandler ) {
           clipboardPrepared = true;
           return;
         case KEY_CODE_X:
+          if( isReadOnly() ) { return; }
           copySelectionToClipboard();
           // :TODO:
           clipboardPrepared = true;

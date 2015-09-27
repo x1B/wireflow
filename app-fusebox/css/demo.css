@@ -1,0 +1,54 @@
+/* outer table */
+
+html {
+  height: 100%;
+}
+body {
+  height: 100%;
+  width: 100%;
+  display: table;
+}
+
+header,
+content {
+  display: table-row;
+}
+
+header > h3,
+content > div {
+  display: table-cell;
+}
+header > h3 {
+  height: 40px;
+}
+content > div {
+  height: 100%;
+}
+
+
+/* inner table */
+
+.demo-wrapper {
+  display: table;
+  width: 100%;
+  height: 100%;
+}
+
+.demo-wrapper > div {
+  display: table-row;
+}
+
+.demo-wrapper > div.demo-menu {
+  height: 20px;
+}
+
+.demo-wrapper > div.demo-menu > * {
+  padding: 5px;
+}
+
+.nbe-graph {
+  display: table-cell;
+  height: 100%;
+  // background: green;
+  position: relative;
+}

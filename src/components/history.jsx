@@ -8,7 +8,7 @@ const History = React.createClass({
   render() {
     const { checkpoints } = this.props;
     count({ what: History.displayName });
-    return <ol>{ this.renderCheckpoints(checkpoints) }</ol>;
+    return <ol className={'nbe-history'}>{ this.renderCheckpoints( checkpoints ) }</ol>;
   },
 
   renderCheckpoints( checkpoints ) {
@@ -20,7 +20,6 @@ const History = React.createClass({
   shouldComponentUpdate( nextProps ) {
     return !shallowEqual( nextProps, this.props );
   }
-
 
 });
 

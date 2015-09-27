@@ -17,8 +17,7 @@ import {
 } from '../actions/selection';
 
 import {
-  SaveState,
-  CreateCheckpoint
+  SaveState
 } from '../actions/history';
 
 
@@ -90,13 +89,12 @@ class SelectionStore {
       this.save();
     } );
 
-    dispatcher.register( MoveSelection, act =>
-      this.moveContents( act.reference, act.offset )
-    );
+    dispatcher.register( MoveSelection, act => {
+      this.moveContents( act.reference, act.offset );
+      this.save();
+    } );
 
     dispatcher.register( DeleteSelection, act => {
-      dispatcher.dispatch( CreateCheckpoint({ before: 'Delete' }) );
-
       const { vertices, edges } = this.selection;
       vertices.forEach( (_, id) => {
         dispatcher.dispatch( RemoveVertex( { vertexId: id } ) );
