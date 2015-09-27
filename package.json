@@ -1,6 +1,6 @@
 {
   "name": "wireflow",
-  "version": "0.1.0-pre",
+  "version": "0.1.0",
   "description": "Node based editing for the web (react-based)",
   "main": "src/nbe.jsx",
   "dependencies": {},
