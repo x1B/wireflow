@@ -332,13 +332,15 @@ Cutting ist equivalent to copying and then deleting the selected set of nodes.
 
 ### Undo and Redo of Graph *History*
 
-1. **Only partially implemented (for deleting nodes).** Wireflow _must_ allow the user to _undo_ each of the following _destructive_ operations, by pressing _Ctrl-Z_ (or _Cmd-Z_).
-- moving nodes (_Layout.2_, _Layout.3_).
-- connecting ports (_Edges.2_, _Edges.3_).
-- disconnecting ports (_Edges.4_)
-- deleting nodes (_Vertices.2_)
-- pasting nodes (_Vertices.4_)
-- cutting nodes (_Vertices.5_)
+1. Wireflow _must_ allow the user to _undo_ each of the following _destructive_ operations, by pressing _Ctrl-Z_ (or _Cmd-Z_):
+
+   - moving nodes (_Layout.2_, _Layout.3_)
+   - connecting ports (_Edges.2_, _Edges.3_) **Not implemented yet!**
+   - disconnecting ports (_Edges.4_) **Not implemented yet!**
+   - deleting nodes (_Vertices.2_)
+   - pasting nodes (_Vertices.4_) **Not implemented yet!**
+   - cutting nodes (_Vertices.5_) **Not implemented yet!**
+
 Wireflow _must_ allow to undo at least the most recent 50 operations.
 
 2. If no destructive operation has been performed since the most recent _undo_, Wireflow must allow the user to _redo_ the operation that was undone most recently, by pressing _Ctrl-Y_ (or _Cmd-Y_) or _Shift+Ctrl-Z_ (or _Shift+Cmd-Z_).
