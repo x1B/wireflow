@@ -167,37 +167,31 @@
 }
 
 .nbe-port-group {
+   display: table;
+   width: 100%;
    border-top: solid #f9f9f9 1px;
-   display: -webkit-flex;
-   -webkit-flex-direction: row;
-   -webkit-align-items: flex-start;
 }
 
 .nbe-ports {
-   flex: 0 1 auto;
-   display: flex;
-   flex-flow: column;
-   justify-content: space-between;
+   display: table-cell;
+   width: 50%;
 }
 
 .nbe-inbound {
-   align-items: flex-start;
+  text-align: left;
 }
 .nbe-inbound .nbe-port {
-   text-align: left;
    padding-right: 9px;
 }
 
 .nbe-outbound {
-   align-items: flex-end;
+  text-align: right;
 }
 .nbe-outbound .nbe-port {
-   text-align: right;
    padding-left: 9px;
 }
 
 .nbe-port {
-   flex: 0 1 auto;
    padding-top: 0;
    color: #202020;
    font-family: "Roboto", "Arial", sans-serif;
