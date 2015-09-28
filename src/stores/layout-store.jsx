@@ -1,13 +1,21 @@
-import { List } from 'immutable';
+import { List, Map } from 'immutable';
 
-import { Coords, Measurements } from '../model';
+import { Coords, Measurements, convert } from '../model';
 import {
-  MoveVertex, MoveEdge, HandleEdgeInserted, MeasureEdge, MeasureVertex
+  AutoLayout,
+  HandleEdgeInserted,
+  MeasureEdge,
+  MeasureVertex,
+  MoveEdge,
+  MoveVertex
 } from '../actions/layout';
+
 import { RemoveVertex, RemoveEdge } from '../actions/graph';
 import { SaveState, RestoreState } from '../actions/history';
 import * as settings from '../util/settings';
 const { layout: { edgeOffset } } = settings;
+
+import { calculateLayout } from '../util/layout';
 
 
 /**
@@ -15,9 +23,10 @@ const { layout: { edgeOffset } } = settings;
  */
 class LayoutStore {
 
-  constructor( dispatcher, layout ) {
+  constructor( dispatcher, layout, graphStore ) {
     this.dispatcher = dispatcher;
 
+    this.graphStore = graphStore;
     this.storeId = this.constructor.name;
     this.layout = layout;
     this.measurements = Measurements();
@@ -36,6 +45,13 @@ class LayoutStore {
       this.measurements = this.measurements.setIn(
         [ 'edges', ev.edge.id ],
         ev.measurements
+      );
+      this.save();
+    } );
+
+    dispatcher.register( AutoLayout, ev => {
+      this.layout = convert.layout(
+        calculateLayout( graphStore.graph, Map(this.measurements) )
       );
       this.save();
     } );

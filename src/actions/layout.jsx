@@ -56,7 +56,7 @@ const HandleEdgeInserted = Record({
   type: () => HandleEdgeInserted
 }, 'HandleEdgeInserted');
 
-
+const AutoLayout = Record({ type: () => AutoLayout }, 'AutoLayout');
 
 export default {
   MeasurePort,
@@ -66,6 +66,7 @@ export default {
   MoveVertex,
   DragPort,
   HandleEdgeInserted,
+  AutoLayout,
 
   PortDragInfo,
   EdgeMeasurements,

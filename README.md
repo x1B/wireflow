@@ -163,6 +163,7 @@ For this to work, Wireflow generates CSS classes corresponding to the edge types
 
 Wireflow exposes an API for embedding applications to instantiate the UI components, and to create the hypergraph model.
 It exposes a set of Flux-Style stores and a dispatcher to implement graph operations.
+Also, there is a utility method for calculating a graph layout.
 Currently, the application author needs to wire everything together as illustrated in the _src/dummy-fusebox.jsx_ example.
 
 
