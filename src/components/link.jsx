@@ -60,6 +60,11 @@ function xy( coords, measurements, port, direction ) {
   if( port ) {
     const { left, top } = coords;
     const portOffset = measurements[ direction ].get( port.id );
+    if( !portOffset ) {
+      // :TODO: implement smarter measurements.
+      console.log( 'missing measurements for port: ', port.id ); // :TODO: DELETE ME
+      return [ left, top ];
+    }
     return [ left + portOffset.left, top + portOffset.top ];
   }
 
