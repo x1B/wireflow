@@ -10,13 +10,11 @@ const Links = React.createClass({
 
   render() {
 
-    const {
-      measurements, layout, vertices, types, eventHandler
-    } = this.props;
+    const { measurements, layout, vertices, types } = this.props;
 
     count({ what: Links.displayName });
 
-    return <svg>{renderLinks()}</svg>;
+    return <g>{renderLinks()}</g>;
 
     function renderLinks() {
       if( measurements.vertices.isEmpty() ) {
@@ -70,7 +68,6 @@ const Links = React.createClass({
             [ therePort, herePort ];
 
           return <Link key={vertexId + '/' + port.id}
-                       eventHandler={eventHandler}
                        fromPort={fromPort}
                        toPort={toPort}
                        fromLayout={fromLayout}

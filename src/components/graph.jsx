@@ -6,9 +6,11 @@ import * as Edge from './edge';
 import * as SelectionBox from './selection-box';
 import * as Vertex from './vertex';
 import * as GhostPort from './ghost-port';
+import * as Minimap from './minimap';
 
 import { Layout, Coords, Dimensions, Graph as GraphModel, Settings, READ_ONLY } from '../model';
 import { DragPort } from '../actions/layout';
+import { ViewportMoved, ViewportMeasured } from '../actions/settings';
 import { ResizeSelection, ClearSelection } from '../actions/selection';
 
 import * as shallowEqual from '../util/shallow-equal';
@@ -56,8 +58,6 @@ const Graph = React.createClass({
 
     const { portDragInfo } = this.state;
 
-    const canvasSize = self.canvasSize( measurements, layout );
-
     const focusClass =
       hasFocus ? 'nbe-has-focus' : '';
     const highlightClass =
@@ -90,10 +90,26 @@ const Graph = React.createClass({
       dd().start( ev, { left, top, isExtension } );
     };
 
+    const canvasSize = self.canvasSize( measurements, layout );
+    // TODO: 'font-size: 0' is a weird hack.
+    // find a better way to make sure that no scrollbar is shown
+    const canvasStyle = {
+      'fontSize': 0,
+      'minWidth': canvasSize.width + 'px',
+      'minHeight': canvasSize.height + 'px'
+    };
+
     return (
       <div tabIndex="0" className={classes} ref="graph">
-        <div className="nbe-graph-viewport">
-          <div className="nbe-graph-canvas" style={canvasSize}>
+        <Minimap measurements={measurements}
+                 canvasSize={canvasSize}
+                 types={types}
+                 vertices={vertices}
+                 layout={layout}
+                 settings={settings} />
+        <div className="nbe-graph-viewport"
+             onScroll={this.handleScroll}>
+          <div className="nbe-graph-canvas" style={canvasStyle}>
             <SelectionBox coords={selection.coords}
                           dimensions={selection.dimensions} />
             <div className="nbe-graph-nodes">
@@ -104,7 +120,6 @@ const Graph = React.createClass({
               <Links measurements={measurements}
                      types={types}
                      vertices={vertices}
-                     edges={edges}
                      layout={layout} />
               <GhostPort dragInfo={portDragInfo} />
             </svg>
@@ -151,6 +166,12 @@ const Graph = React.createClass({
     }
   },
 
+  handleScroll( ev ) {
+    this.bubble( ViewportMoved({
+      left: ev.target.scrollLeft,
+      top: ev.target.scrollTop
+    }) );
+  },
 
   bubble( event ) {
     const { eventHandler } = this.props;
@@ -168,7 +189,6 @@ const Graph = React.createClass({
     var w = 0;
     var h = 0;
     const padding = 50;
-
     const measure = ( nodeCoords ) => (nodeMeasurements, id) => {
       if( nodeCoords.hasOwnProperty( id ) ) {
         const { dimensions: { width, height } } = nodeMeasurements.toJS();
@@ -179,18 +199,19 @@ const Graph = React.createClass({
     };
     measurements.vertices.forEach( measure( layout.vertices.toJS() ) );
     measurements.edges.forEach( measure( layout.edges.toJS() ) );
-
-    // TODO: 'font-size: 0' is a weird hack.
-    // find a better way to make sure that no scrollbar is shown
     return {
-      'fontSize': 0,
-      'minWidth': (w + padding) + 'px',
-      'minHeight': (h + padding) + 'px'
+      width: w + padding,
+      height: h + padding
     };
   },
 
+
   componentDidMount() {
     const domGraph = React.findDOMNode( this.refs.graph );
+    this.bubble( ViewportMeasured({
+      width: domGraph.offsetWidth,
+      height: domGraph.offsetHeight
+    }) );
     keyboard( domGraph, this.bubble, () => this.props.settings.mode === READ_ONLY );
   }
 

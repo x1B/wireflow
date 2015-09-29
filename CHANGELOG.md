@@ -2,6 +2,8 @@
 
 ## Last Changes
 
+- implemented basic minimap (read-only)
+
 
 ## v0.2.0
 

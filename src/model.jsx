@@ -11,8 +11,9 @@ const Measurements = Record({ vertices: Map(), edges: Map() });
 // Settings, to be used by the embedding application
 const READ_WRITE = 'read/write';
 const READ_ONLY = 'read-only';
-const Settings = Record({ mode: READ_WRITE }, 'Settings');
 const InteractionModes = List.of( READ_ONLY, READ_WRITE );
+const Viewport = Record({ left: null, top: null, width: null, height: null }, 'Viewport');
+const Settings = Record({ mode: READ_WRITE, viewport: Viewport() }, 'Settings');
 
 // Types related to layout/measurements
 const Coords = Record({ left: 0, top: 0 });
@@ -71,10 +72,11 @@ export {
   Ports,
   Checkpoint,
 
-  Settings,
   READ_ONLY,
   READ_WRITE,
   InteractionModes,
+  Viewport,
+  Settings,
 
   convert
 };

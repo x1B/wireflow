@@ -51,6 +51,5 @@ content > div {
 .nbe-graph {
   display: table-cell;
   height: 100%;
-  // background: green;
   position: relative;
 }

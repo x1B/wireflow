@@ -15,30 +15,30 @@
     <div id="demo-root"></div>
   </content>
 
-   <script type="text/javascript">
-      var require = {
-         baseUrl: 'bower_components',
-         paths: {
-           lodash: 'lodash/lodash',
-           react: 'react/react',
-           dagre: 'dagre/dist/dagre.core',
-           graphlib: 'graphlib/dist/graphlib.core',
-           immutable: 'immutable/dist/immutable'
-         },
-         // dagre dependencies:
-         shim: {
-           lodash: { exports: '_' },
-           graphlib: { deps: [ 'lodash' ], exports: 'graphlib' },
-           dagre: { deps: [ 'graphlib', 'lodash' ], exports: 'dagre' },
-         },
-         packages: [ {
-            name: 'app',
-            location: '../build',
-            main: 'dummy-fusebox/fusebox'
-         } ]
-      };
-   </script>
-   <script data-main="app" src="bower_components/requirejs/require.js"></script>
+  <script type="text/javascript">
+    var require = {
+      baseUrl: 'bower_components',
+      paths: {
+        lodash: 'lodash/lodash',
+        react: 'react/react',
+        dagre: 'dagre/dist/dagre.core',
+        graphlib: 'graphlib/dist/graphlib.core',
+        immutable: 'immutable/dist/immutable'
+      },
+      // dagre dependencies:
+      shim: {
+        lodash: { exports: '_' },
+        graphlib: { deps: [ 'lodash' ], exports: 'graphlib' },
+        dagre: { deps: [ 'graphlib', 'lodash' ], exports: 'dagre' },
+      },
+      packages: [ {
+        name: 'app',
+        location: '../build',
+        main: 'dummy-fusebox/fusebox'
+      } ]
+  };
+  </script>
+  <script data-main="app" src="bower_components/requirejs/require.js"></script>
 
 </body>
 </html>

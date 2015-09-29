@@ -220,27 +220,47 @@
    background: #c62828;
 }
 
-.nbe-minimap-graph {
-   background: rgba(255, 255, 255, 0.75);
+.nbe-minimap {
+   background: rgba(255, 255, 255, 0.85);
    position: absolute;
-   right: 30px;
-   bottom: 30px;
-   width: 200px;
+   left: 10px;
+   bottom: 20px;
    box-shadow: 0 2px 2px #a0a0a0;
    border: 1px solid orange;
    z-index: 200;
+   width: 200px;
+   height: 100px;
+   overflow: hidden;
 }
 
-.nbe-minimap-edge {
-   fill: #ccc;
+.nbe-minimap .nbe-minimap-viewport {
+   position: absolute;
+   background: rgba(128, 128, 128, 0.25);
 }
 
-.nbe-minimap-vertex {
-   fill: #999;
+.nbe-minimap svg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 200px;
+  height: 100px;
 }
 
-.nbe-minimap-graph .nbe-minimap-viewbox {
-   fill: rgba(128, 128, 128, 0.25);
+.nbe-minimap-edges circle {
+  fill: #dcc;
+  stroke-width: 2px;
+  stroke: #dcc;
+}
+
+.nbe-minimap-vertices rect {
+   fill: #f0f0f0;
+   stroke-width: 2px;
+   stroke: #dcc;
+}
+
+
+.nbe-minimap .nbe-minimap-links .nbe-link {
+   stroke-width: 4;
 }
 
 .nbe-theme-fusebox-app .nbe-type-ACTION > .nbe-port-handle {

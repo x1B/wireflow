@@ -7,7 +7,8 @@ const {
   Dispatcher,
   actions: {
     CreateCheckpoint,
-    AutoLayout
+    AutoLayout,
+    ChangeMode
   },
   model: {
     convert,
@@ -19,7 +20,8 @@ const {
     LayoutStore,
     GraphStore,
     SelectionStore,
-    HistoryStore
+    HistoryStore,
+    SettingsStore
   },
   components: { Graph }
 } = api;
@@ -29,19 +31,20 @@ const {
 const graph = convert.graph( data.graph );
 const layout = convert.layout( data.layout );
 const types = convert.types( data.types );
-var settings = Settings({ mode: READ_ONLY });
+const settings = Settings({ mode: READ_ONLY });
 
 const dispatcher = new Dispatcher( render );
 
 new HistoryStore( dispatcher );
 const graphStore = new GraphStore( dispatcher, graph, types );
 const layoutStore = new LayoutStore( dispatcher, layout, graphStore );
+const settingsStore = new SettingsStore( dispatcher, settings );
 const selectionStore = new SelectionStore( dispatcher, layoutStore, graphStore );
 
 function toggleMode() {
-  settings = Settings({
+  dispatcher.dispatch( ChangeMode({
     mode: settings.mode === READ_ONLY ? READ_WRITE : READ_ONLY
-  });
+  }) );
   render();
 }
 
@@ -66,10 +69,10 @@ function render() {
         </label>
       </div>
       <div className='demo-editor'>
-        <Graph settings={settings}
+        <Graph types={types}
                className={'nbe-theme-fusebox-app'}
+               settings={settingsStore.settings}
                model={graphStore.graph}
-               types={types}
                layout={layoutStore.layout}
                measurements={layoutStore.measurements}
                selection={selectionStore.selection}
