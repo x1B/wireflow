@@ -1,9 +1,7 @@
 import { Record, Set } from 'immutable';
 
-import {
-  RemoveVertex,
-  RemoveEdge
-} from '../actions/graph';
+import { SaveState } from '../history/history-actions';
+import { RemoveVertex, RemoveEdge } from '../graph/graph-actions';
 
 import {
   ResizeSelection,
@@ -14,11 +12,7 @@ import {
   DeselectEdge,
   SelectEdge,
   DeleteSelection
-} from '../actions/selection';
-
-import {
-  SaveState
-} from '../actions/history';
+} from '../selection/selection-actions';
 
 
 const Selection = Record({

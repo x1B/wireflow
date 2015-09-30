@@ -1,6 +1,11 @@
 import { List, Map } from 'immutable';
 
-import { Coords, Measurements, convert } from '../model';
+import settings from '../../util/settings';
+import { calculateLayout } from '../../util/layout';
+
+import { RemoveVertex, RemoveEdge } from '../graph/graph-actions';
+import { SaveState, RestoreState } from '../history/history-actions';
+import { Coords, Measurements, convert } from './layout-model';
 import {
   AutoLayout,
   HandleEdgeInserted,
@@ -8,15 +13,10 @@ import {
   MeasureVertex,
   MoveEdge,
   MoveVertex
-} from '../actions/layout';
+} from './layout-actions';
 
-import { RemoveVertex, RemoveEdge } from '../actions/graph';
-import { SaveState, RestoreState } from '../actions/history';
-import * as settings from '../util/settings';
+
 const { layout: { edgeOffset } } = settings;
-
-import { calculateLayout } from '../util/layout';
-
 
 /**
  * Manages the graph layout prop.

@@ -1,12 +1,14 @@
-import * as React from 'react';
+import React from 'react';
 
-import { IN, OUT } from '../model';
 import count from '../util/metrics';
-import * as pathing from '../util/pathing';
-import * as shallowEqual from '../util/shallow-equal';
-import * as settings from '../util/settings';
-const { layout: { edgeOffset } } = settings;
+import pathing from '../util/pathing';
+import shallowEqual from '../util/shallow-equal';
+import settings from '../util/settings';
 
+import { IN, OUT } from '../flux/graph/graph-model';
+
+
+const { layout: { edgeOffset } } = settings;
 
 const Link = React.createClass({
 
@@ -62,7 +64,6 @@ function xy( coords, measurements, port, direction ) {
     const portOffset = measurements[ direction ].get( port.id );
     if( !portOffset ) {
       // :TODO: implement smarter measurements.
-      console.log( 'missing measurements for port: ', port.id ); // :TODO: DELETE ME
       return [ left, top ];
     }
     return [ left + portOffset.left, top + portOffset.top ];

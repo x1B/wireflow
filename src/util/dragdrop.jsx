@@ -1,5 +1,6 @@
 import '../polyfill/object-assign';
 
+
 const { abs } = Math;
 const dragThreshold = 3;
 
@@ -74,7 +75,7 @@ export default function dragdrop( options ) {
     dragY = clientY - startClientY;
 
     if( !dragStarted &&
-        abs( dragX ) < dragThreshold && abs( dragY ) < dragThreshold  ) {
+        abs( dragX ) < dragThreshold && abs( dragY ) < dragThreshold ) {
       return;
     }
 

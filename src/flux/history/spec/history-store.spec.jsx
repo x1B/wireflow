@@ -1,8 +1,7 @@
 import HistoryStore from '../history-store';
-
 import {
   CreateCheckpoint, SaveState, RestoreState, UiUndo, UiRedo
-} from '../../actions/history';
+} from '../history-actions';
 
 import DispatcherMock from '../../testing/dispatcher-mock';
 

@@ -1,9 +1,10 @@
-import * as React from 'react';
+import React from 'react';
 
-import * as Link from './link';
-import { Directions, IN, OUT } from '../model';
+import shallowEqual from '../util/shallow-equal';
 import count from '../util/metrics';
-import * as shallowEqual from '../util/shallow-equal';
+
+import { Directions, IN, OUT } from '../flux/graph/graph-model';
+import Link from './link';
 
 
 const Links = React.createClass({

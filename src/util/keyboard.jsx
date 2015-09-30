@@ -1,17 +1,19 @@
+// :TODO: move actual action wiring to graph component (similar to dragdrop)
+
 import {
   HandleFocusReceived,
   HandleFocusLost
-} from '../actions/ui';
+} from '../flux/ui/ui-actions';
 
 import {
   DeleteSelection
-} from '../actions/selection';
+} from '../flux/selection/selection-actions';
 
 import {
   UiUndo,
   UiRedo,
   CreateCheckpoint
-} from '../actions/history';
+} from '../flux/history/history-actions';
 
 
 /** Maintain fake clipboard across instances if no system clipboard is available. */

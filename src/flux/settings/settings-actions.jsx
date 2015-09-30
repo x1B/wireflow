@@ -1,5 +1,6 @@
 import { Record } from 'immutable';
 
+
 const ViewportMoved = Record({
   left: null,
   top: null,

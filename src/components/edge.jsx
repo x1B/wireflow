@@ -1,22 +1,18 @@
 import * as React from 'react';
+
 import * as dragdrop from '../util/dragdrop';
-
-import { Coords, Dimensions } from '../model';
-import { MeasureEdge, EdgeMeasurements, MoveEdge } from '../actions/layout';
-import { MoveSelection } from '../actions/selection';
-import count from '../util/metrics';
 import * as shallowEqual from '../util/shallow-equal';
+import count from '../util/metrics';
 
+import { CreateCheckpoint } from '../flux/history/history-actions';
+import { Coords, Dimensions } from '../flux/layout/layout-model';
+import { MeasureEdge, MoveEdge, payload } from '../flux/layout/layout-actions';
 import {
-  CreateCheckpoint
-} from '../actions/history';
+  MoveSelection, SelectEdge, DeselectEdge, ClearSelection
+} from '../flux/selection/selection-actions';
 
-import {
-  SelectEdge,
-  DeselectEdge,
-  ClearSelection
-} from '../actions/selection';
 
+const { EdgeMeasurements } = payload;
 
 const Edge = React.createClass({
 
@@ -81,17 +77,14 @@ const Edge = React.createClass({
     );
   },
 
-
   componentDidMount() {
     this.measure();
   },
-
 
   bubble( event ) {
     const { eventHandler } = this.props;
     return eventHandler && eventHandler( event );
   },
-
 
   measure() {
     const domIcon = React.findDOMNode( this.refs.icon );

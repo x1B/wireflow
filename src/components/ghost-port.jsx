@@ -1,7 +1,8 @@
 import * as React from 'react';
 
-import { OUT, Dimensions } from '../model';
 import * as pathing from '../util/pathing';
+import { OUT } from '../flux/graph/graph-model';
+import { Dimensions } from '../flux/layout/layout-model';
 
 
 const GhostPort = React.createClass({

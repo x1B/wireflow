@@ -1,4 +1,4 @@
-import * as dagre from 'dagre';
+import dagre from 'dagre';
 
 export default { calculateLayout };
 

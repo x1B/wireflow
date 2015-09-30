@@ -1,18 +1,15 @@
-import { List, Map } from 'immutable';
-import { Directions, Ports, Edge, Graph } from '../model';
-import { HandleEdgeInserted } from '../actions/layout';
+import { List } from 'immutable';
 
+import { SaveState, RestoreState } from '../history/history-actions';
+import { HandleEdgeInserted } from '../layout/layout-actions';
+
+import { Directions, Ports, Edge } from './graph-model';
 import {
   DisconnectPort,
   ConnectPort,
   RemoveVertex,
   RemoveEdge
-} from '../actions/graph';
-
-import {
-  SaveState,
-  RestoreState
-} from '../actions/history';
+} from './graph-actions';
 
 
 /**
@@ -92,14 +89,12 @@ class GraphStore {
     }
   }
 
-
   setPortEdge( from, edgeId ) {
     const portsPath = [ 'vertices', from.vertexId, 'ports', from.direction ];
     this.graph = this.graph.updateIn( portsPath, ports => ports.map( p =>
       p.id === from.portId ? p.set( 'edgeId', edgeId ) : p
     ) );
   }
-
 
   disconnect( vertex, port ) {
     const portsPath = [ 'vertices', vertex.id, 'ports', port.direction ];
@@ -119,7 +114,6 @@ class GraphStore {
     this.pruneEmptyEdges();
   }
 
-
   removeEdge( edgeId ) {
     const mapVertexPorts = ( v, f ) => v.set( 'ports', Ports({
       inbound: v.ports.inbound.map( f ),
@@ -138,7 +132,6 @@ class GraphStore {
     this.pruneEmptyEdges();
   }
 
-
   removeVertex( vertexId ) {
     const vertex = this.graph.vertices.get( vertexId );
     Directions.flatMap( d => vertex.ports[ d ] ).forEach( port => {
@@ -149,7 +142,6 @@ class GraphStore {
       vs.filter( v => v.id !== vertexId ) );
     this.pruneEmptyEdges();
   }
-
 
   pruneEmptyEdges() {
     const ports = this.graph.vertices.valueSeq()
@@ -162,7 +154,6 @@ class GraphStore {
       this.graph.edges.filter( edge => ports.has( edge.id ) )
     );
   }
-
 }
 
 export default GraphStore;

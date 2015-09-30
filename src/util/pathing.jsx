@@ -1,4 +1,4 @@
-import * as settings from './settings';
+import settings from './settings';
 
 export default {
   cubic: svgCubicBezierLinkPath,

@@ -1,14 +1,9 @@
 import { Record, List, Map } from 'immutable';
 
-import { Checkpoint } from '../model';
-
+import { Checkpoint } from './history-model';
 import {
-  CreateCheckpoint,
-  SaveState,
-  RestoreState,
-  UiUndo,
-  UiRedo
-} from '../actions/history';
+  CreateCheckpoint, SaveState, RestoreState, UiUndo, UiRedo
+} from './history-actions';
 
 
 const LogEntry = Record({ at: null, state: null }, 'LogEntry');
@@ -71,7 +66,6 @@ class HistoryStore {
         this.move( this.now, this.now - 2 );
       }
     } );
-
 
     dispatcher.register( UiRedo, () => {
       if( this.checkpoints.count() && this.now < this.checkpoints.last().at ) {

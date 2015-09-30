@@ -1,14 +1,18 @@
-import * as React from 'react';
+import React from 'react';
 
-import * as dragdrop from '../util/dragdrop';
-import * as shallowEqual from '../util/shallow-equal';
-
-import { Coords, IN, OUT, READ_WRITE } from '../model';
-import { MeasurePort, DragPort, PortDragInfo } from '../actions/layout';
-import { ConnectPort, DisconnectPort, Connectable } from '../actions/graph';
-
+import dragdrop from '../util/dragdrop';
+import shallowEqual from '../util/shallow-equal';
 import count from '../util/metrics';
 
+import layoutActions from '../flux/layout/layout-actions';
+import { Coords } from '../flux/layout/layout-model';
+import graphActions from '../flux/graph/graph-actions';
+import { IN, OUT } from '../flux/graph/graph-model';
+import { READ_WRITE } from '../flux/settings/settings-model';
+
+
+const { MeasurePort, DragPort, payload: { PortDragInfo } } = layoutActions;
+const { ConnectPort, DisconnectPort, payload: { Connectable } } = graphActions;
 
 const Port = React.createClass({
 

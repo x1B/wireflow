@@ -1,15 +1,6 @@
 import { Record } from 'immutable';
 
 
-const Connectable = Record({
-  edgeId: null,
-  type: null,
-  vertexId: null,
-  portId: null,
-  direction: null
-}, 'Connectable');
-
-
 const DisconnectPort = Record({
   vertex: null,
   port: null,
@@ -33,10 +24,22 @@ const RemoveEdge = Record({
 }, 'RemoveEdge');
 
 
+const Connectable = Record({
+  edgeId: null,
+  type: null,
+  vertexId: null,
+  portId: null,
+  direction: null
+}, 'Connectable');
+
+
 export default {
-  Connectable,
   DisconnectPort,
   ConnectPort,
   RemoveVertex,
-  RemoveEdge
+  RemoveEdge,
+
+  payload: {
+    Connectable
+  }
 };

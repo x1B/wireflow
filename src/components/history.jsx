@@ -1,7 +1,8 @@
-import * as React from 'react';
+import React from 'react';
 
 import shallowEqual from '../util/shallow-equal';
 import count from '../util/metrics';
+
 
 const History = React.createClass({
 

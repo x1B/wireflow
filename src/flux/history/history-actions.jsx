@@ -18,14 +18,19 @@ const CreateCheckpoint = Record({
   type: () => CreateCheckpoint
 }, 'CreateCheckpoint');
 
-/** Dispatched by various stores to save state changes. */
+/**
+ * Dispatched by various stores to save state to the history store.
+ * The next checkpoint will include all changes saved up to that point.
+ */
 const SaveState = Record({
   storeId: null,
   state: null,
   type: () => SaveState
 }, 'SaveState');
 
-/** Dispatched by the history store to restore the state at a checkpoint. */
+/**
+ * Dispatched by the history store to restore the state at a checkpoint.
+ */
 const RestoreState = Record({
   storeId: null,
   state: null,

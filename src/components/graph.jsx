@@ -1,25 +1,31 @@
-import * as React from 'react';
+import React from 'react';
 import { Map } from 'immutable';
 
-import * as Links from './links';
-import * as Edge from './edge';
-import * as SelectionBox from './selection-box';
-import * as Vertex from './vertex';
-import * as GhostPort from './ghost-port';
-import * as Minimap from './minimap';
-
-import { Layout, Coords, Dimensions, Graph as GraphModel, Settings, READ_ONLY } from '../model';
-import { DragPort } from '../actions/layout';
-import { ViewportMoved, ViewportMeasured } from '../actions/settings';
-import { ResizeSelection, ClearSelection } from '../actions/selection';
-
-import * as shallowEqual from '../util/shallow-equal';
+import shallowEqual from '../util/shallow-equal';
 import count from '../util/metrics';
 import dragdrop from '../util/dragdrop';
 import keyboard from '../util/keyboard';
 
-const { abs, min, max } = Math;
+import Edge from './edge';
+import Vertex from './vertex';
+import Links from './links';
+import GhostPort from './ghost-port';
+import SelectionBox from './selection-box';
+import Minimap from './minimap';
 
+import { DragPort } from '../flux/layout/layout-actions';
+import { Layout, Coords, Dimensions } from '../flux/layout/layout-model';
+import { Settings, READ_ONLY } from '../flux/settings/settings-model';
+import { Graph as GraphModel } from '../flux/graph/graph-model';
+import {
+  ViewportMoved, ViewportMeasured
+} from '../flux/settings/settings-actions';
+import {
+  ResizeSelection, ClearSelection
+} from '../flux/selection/selection-actions';
+
+
+const { abs, min, max } = Math;
 
 const Graph = React.createClass({
 
@@ -153,7 +159,6 @@ const Graph = React.createClass({
     }
   },
 
-
   handleEvent( event ) {
     switch( event.type() ) {
       case DragPort:
@@ -178,12 +183,10 @@ const Graph = React.createClass({
     return eventHandler && eventHandler( event );
   },
 
-
   shouldComponentUpdate( nextProps, nextState ) {
     return !shallowEqual( nextState, this.state )
       || !shallowEqual( nextProps, this.props );
   },
-
 
   canvasSize( measurements, layout ) {
     var w = 0;
@@ -204,7 +207,6 @@ const Graph = React.createClass({
       height: h + padding
     };
   },
-
 
   componentDidMount() {
     const domGraph = React.findDOMNode( this.refs.graph );

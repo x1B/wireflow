@@ -1,32 +1,23 @@
-import * as React from 'react';
-import * as dragdrop from '../util/dragdrop';
+import React from 'react';
 
-import * as Port from './port';
-import * as shallowEqual from '../util/shallow-equal';
-import { Coords, Dimensions, IN, OUT } from '../model';
-import { MoveSelection } from '../actions/selection';
-
-
-import {
-  CreateCheckpoint
-} from '../actions/history';
-
-
-import {
-  MeasureVertex,
-  VertexMeasurements,
-  MeasurePort,
-  MoveVertex
-} from '../actions/layout';
-
-import {
-  ClearSelection,
-  SelectVertex,
-  DeselectVertex
-} from '../actions/selection';
-
+import dragdrop from '../util/dragdrop';
+import shallowEqual from '../util/shallow-equal';
 import count from '../util/metrics';
 
+import { CreateCheckpoint } from '../flux/history/history-actions';
+import { IN, OUT } from '../flux/graph/graph-model';
+import { Coords, Dimensions } from '../flux/layout/layout-model';
+import layoutActions from '../flux/layout/layout-actions';
+import {
+  ClearSelection, SelectVertex, DeselectVertex, MoveSelection
+} from '../flux/selection/selection-actions';
+
+import Port from './port';
+
+
+const {
+  MeasureVertex, MeasurePort, MoveVertex, payload: { VertexMeasurements }
+} = layoutActions;
 
 const Vertex = React.createClass({
 

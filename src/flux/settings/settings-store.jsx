@@ -1,6 +1,7 @@
 import {
   ViewportMoved, ViewportMeasured, ChangeMode
-} from '../actions/settings';
+} from './settings-actions';
+
 
 class SettingsStore {
 
