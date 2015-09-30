@@ -2,6 +2,7 @@
 
 ## Last Changes
 
+- reorganized demo code under demos
 - implemented basic minimap (read-only)
 
 

@@ -4,9 +4,6 @@ export default { calculateLayout };
 
 function calculateLayout( graph, measurements ) {
 
-  window.console.log( 'GRAPH: ', graph.toJS() ); // :TODO: DELETE ME
-  window.console.log( 'MEASUREMENTS: ', measurements.toJS() ); // :TODO: DELETE ME
-
   const owners = {
     inbound: {},
     outbound: {}
@@ -48,12 +45,6 @@ function calculateLayout( graph, measurements ) {
           dgNeighborId = 'V.' + owners[ isInbound ? 'outbound' : 'inbound' ][ edgeId ];
         }
 
-        window.console.log(
-          'CON',
-          isInbound ? dgNeighborId : dgVertexId,
-          ' --> ',
-          isInbound ? dgVertexId : dgNeighborId
-        );
         dg.setEdge(
           isInbound ? dgNeighborId : dgVertexId,
           isInbound ? dgVertexId : dgNeighborId

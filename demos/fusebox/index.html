@@ -3,9 +3,9 @@
 <head>
    <title>NBE / React</title>
    <meta charset="UTF-8">
-   <link rel="stylesheet" href="app-fusebox/css/theme.css" />
-   <link rel="stylesheet" href="app-fusebox/css/nbe-react.css" />
-   <link rel="stylesheet" href="app-fusebox/css/demo.css" />
+   <link rel="stylesheet" href="css/bootstrap-theme.css" />
+   <link rel="stylesheet" href="css/wireflow.css" />
+   <link rel="stylesheet" href="css/demo.css" />
 </head>
 <body>
   <header>
@@ -17,7 +17,18 @@
 
   <script type="text/javascript">
     var require = {
-      baseUrl: 'bower_components',
+      baseUrl: '../../bower_components',
+      packages: [
+        {
+          name: 'app',
+          location: '../demos/fusebox/build',
+          main: 'fusebox'
+        },
+        {
+          name: 'wireflow',
+          location: '../build',
+          main: 'wireflow'
+        } ],
       paths: {
         lodash: 'lodash/lodash',
         react: 'react/react',
@@ -30,15 +41,10 @@
         lodash: { exports: '_' },
         graphlib: { deps: [ 'lodash' ], exports: 'graphlib' },
         dagre: { deps: [ 'graphlib', 'lodash' ], exports: 'dagre' },
-      },
-      packages: [ {
-        name: 'app',
-        location: '../build',
-        main: 'dummy-fusebox/fusebox'
-      } ]
+      }
   };
   </script>
-  <script data-main="app" src="bower_components/requirejs/require.js"></script>
+  <script data-main="app" src="../../bower_components/requirejs/require.js"></script>
 
 </body>
 </html>

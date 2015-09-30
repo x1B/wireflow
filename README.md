@@ -15,7 +15,13 @@ Before going into the details, here are quick build instructions:
 npm install
 export PATH=./node_modules/.bin:$PATH
 babel --extension jsx src/ --out-dir=build/
+
+# for the demos
+babel --extension jsx demos/fusebox/src/ --out-dir=demos/fusebox/build/
 ```
+
+Have a look at the demo code for details on the RequireJS configuration and the actual component wiring.
+
 
 ## The Data Model
 
