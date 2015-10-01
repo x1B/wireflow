@@ -2,6 +2,7 @@
 
 ## Last Changes
 
+- allow to resize the minimap by dragging top-right corner
 - allow to navigate by clicking/dragging on the minimap
 - update minimap on resize, and hide if not needed
 - reorganized code files by functionality rather than type

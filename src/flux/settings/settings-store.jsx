@@ -1,6 +1,7 @@
 import {
   ViewportMoved,
   ViewportMeasured,
+  MinimapResized,
   ChangeMode,
   HandleFocusLost,
   HandleFocusReceived
@@ -20,13 +21,17 @@ class SettingsStore {
       this.settings = this.settings.set( 'viewport', viewport );
     } );
 
-    dispatcher.register( ViewportMeasured, ({ width, height, by }) => {
+    dispatcher.register( MinimapResized, ({ width, height }) => {
+      const minimap = this.settings.minimap
+        .set( 'width', width );
+      this.settings = this.settings.set( 'minimap', minimap );
+    } );
 
+    dispatcher.register( ViewportMeasured, ({ width, height, by }) => {
       const viewport = this.settings.viewport
         .set( 'width', width )
         .set( 'height', height )
         .set( 'movedBy', by );
-
       this.settings = this.settings.set( 'viewport', viewport );
     } );
 

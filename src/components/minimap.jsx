@@ -2,12 +2,12 @@ import React from 'react';
 
 import shallowEqual from '../util/shallow-equal';
 import dragdrop from '../util/dragdrop';
-import { ViewportMoved } from '../flux/settings/settings-actions';
+import { ViewportMoved, MinimapResized } from '../flux/settings/settings-actions';
 
 import Links from './links';
 
 
-const { max } = Math;
+const { min, max } = Math;
 
 const Minimap = React.createClass({
 
@@ -35,29 +35,15 @@ const Minimap = React.createClass({
       top: ( viewport.top / canvasSize.height ) * mapHeight
     };
 
-    const mapDisplay = ( canvasSize.width > viewport.width ||
-                         canvasSize.height > viewport.height ) ? 'block' : 'none';
+    const showMap = viewport.width !== null && (
+      canvasSize.width > viewport.width ||
+      canvasSize.height > viewport.height );
 
-     const dd = () => dragdrop({
-       dragThreshold: 0,
-       onMove: ({ dragPayload: { baseX, baseY }, dragX, dragY, dragNode }) => {
-         this.reposition( baseX + dragX, baseY + dragY );
-       }
-    });
+    const classes = 'nbe-minimap' + ( showMap ? '' : ' nbe-hidden' );
 
-    const startDrag = ( ev ) => {
-      const { target, clientX, clientY } = ev;
-      const { left, top } = target.getBoundingClientRect();
-      const offsetX = clientX - left;
-      const offsetY = clientY - top;
-      this.reposition( offsetX, offsetY );
-      dd().start( ev, { baseX: offsetX, baseY: offsetY } );
-      ev.stopPropagation();
-    };
-
-    return <div className='nbe-minimap'
-                onMouseDown={startDrag}
-                style={{ display: mapDisplay, width: mapWidth, height: mapHeight }}>
+    return <div className={classes}
+                onMouseDown={this.startDragReposition}
+                style={{ width: mapWidth, height: mapHeight }}>
       <div className='nbe-minimap-viewport'
            style={boxStyle} />
       <svg className='nbe-minimap-links'
@@ -74,7 +60,24 @@ const Minimap = React.createClass({
           {this.edges( layout, measurements )}
         </g>
       </svg>
+      <div className='nbe-minimap-handle'
+           onMouseDown={this.startDragResize}/>
     </div>;
+  },
+
+
+  startDragReposition( ev ) {
+    dragdrop({
+      dragThreshold: 0,
+      onBeforeStart: ( _, baseX, baseY ) => {
+        this.reposition( baseX, baseY );
+        return true;
+      },
+      onMove: ({ base: { baseX, baseY }, dragX, dragY, dragNode }) => {
+        this.reposition( baseX + dragX, baseY + dragY );
+      }
+    }).start( ev );
+    ev.stopPropagation();
   },
 
   reposition( mapX, mapY ) {
@@ -82,9 +85,25 @@ const Minimap = React.createClass({
     const toLeft = (mapX / minimap.width) * canvasSize.width;
     const toTop = (mapY / this.mapHeight()) * canvasSize.height;
     // center viewport at target coordinate:
-    const left = max( 0, toLeft - viewport.width / 2 );
-    const top = max( 0, toTop - viewport.height / 2 );
+    const left = max( 0,
+      min( toLeft - viewport.width / 2, canvasSize.width - viewport.width ) );
+    const top = max( 0,
+      min( toTop - viewport.height / 2, canvasSize.height - viewport.height ) );
     this.bubble( ViewportMoved({ left, top, by: ':MINIMAP:' }) );
+  },
+
+  startDragResize( ev ) {
+    const { settings: { minimap } } = this.props;
+    dragdrop({
+      onMove: ({ dragPayload: { baseWidth, baseHeight }, dragX, dragY, dragNode }) => {
+        this.resize( baseWidth + dragX, baseHeight + dragY );
+      }
+    }).start( ev, { baseWidth: minimap.width, baseHeight: minimap.height } );
+    ev.stopPropagation();
+  },
+
+  resize( width, height ) {
+    this.bubble( MinimapResized({ width, height }) );
   },
 
   mapHeight() {

@@ -7,6 +7,11 @@ const ViewportMoved = Record({
   type: () => ViewportMoved
 }, 'ViewportMoved');
 
+const MinimapResized = Record({
+  width: null,
+  type: () => MinimapResized
+}, 'MinimapResized');
+
 const ViewportMeasured = Record({
   width: null,
   height: null,
@@ -31,6 +36,7 @@ const HandleFocusLost = Record({
 export default {
   ViewportMoved,
   ViewportMeasured,
+  MinimapResized,
   ChangeMode,
   HandleFocusReceived,
   HandleFocusLost

@@ -15,7 +15,7 @@ const Viewport = Record({
 
 const MinimapSettings = Record({
   width: 200
-}, 'Viewport');
+}, 'MinimapSettings');
 
 const Settings = Record({
   mode: READ_WRITE,

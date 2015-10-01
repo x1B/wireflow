@@ -40,6 +40,7 @@ export default function dragdrop( options ) {
   let dragX = 0;
   let dragY = 0;
 
+  let base;
   let dragPayload;
   let dragNode;
   let dropResult;
@@ -53,10 +54,15 @@ export default function dragdrop( options ) {
     dragStarted = false;
     const isLeftButton = ev.button === 0;
     const isTouch = ( ev.targetTouches || [] ).length;
-    if( (isLeftButton || isTouch) && onBeforeStart( ev ) ) {
+
+    const { target, clientX, clientY } = isTouch ? ev.targetTouches[ 0 ] : ev;
+    const { left, top } = target.getBoundingClientRect();
+    const offsetX = clientX - left;
+    const offsetY = clientY - top;
+    if( (isLeftButton || isTouch) && onBeforeStart( ev, offsetX, offsetY ) ) {
+      base = { baseX: offsetX, baseY: offsetY };
       dragNode = node || ev.currentTarget;
       dragPayload = payload;
-      const { clientX, clientY } = isTouch ? ev.targetTouches[ 0 ] : ev;
       [ startClientX, startClientY ] = [ clientX, clientY ];
 
       doc.addEventListener( 'click', maybeClick );
@@ -152,6 +158,7 @@ export default function dragdrop( options ) {
 
   function state() {
     return {
+      base,
       dragPayload,
       dragNode,
       dragX,
