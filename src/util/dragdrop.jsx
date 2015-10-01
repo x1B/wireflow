@@ -2,7 +2,7 @@ import '../polyfill/object-assign';
 
 
 const { abs } = Math;
-const dragThreshold = 3;
+const defaultDragThreshold = 3;
 
 export default function dragdrop( options ) {
 
@@ -11,6 +11,7 @@ export default function dragdrop( options ) {
 
   const {
     onBeforeStart,
+    dragThreshold,
     onStart,
     onMove,
     onCancel,
@@ -21,6 +22,7 @@ export default function dragdrop( options ) {
     getDropResult
   } = Object.assign( {
     onBeforeStart: noOp,
+    dragThreshold: defaultDragThreshold,
     onStart: noOp,
     onMove: noOp,
     onCancel: noOp,

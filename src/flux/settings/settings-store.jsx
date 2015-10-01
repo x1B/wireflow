@@ -1,5 +1,9 @@
 import {
-  ViewportMoved, ViewportMeasured, ChangeMode
+  ViewportMoved,
+  ViewportMeasured,
+  ChangeMode,
+  HandleFocusLost,
+  HandleFocusReceived
 } from './settings-actions';
 
 
@@ -16,16 +20,28 @@ class SettingsStore {
       this.settings = this.settings.set( 'viewport', viewport );
     } );
 
-    dispatcher.register( ViewportMeasured, act => {
+    dispatcher.register( ViewportMeasured, ({ width, height, by }) => {
+
       const viewport = this.settings.viewport
-        .set( 'width', act.width )
-        .set( 'height', act.height );
+        .set( 'width', width )
+        .set( 'height', height )
+        .set( 'movedBy', by );
+
       this.settings = this.settings.set( 'viewport', viewport );
     } );
 
     dispatcher.register( ChangeMode, act => {
       this.settings = this.settings.set( 'mode', act.mode );
     } );
+
+    dispatcher.register( HandleFocusReceived, act => {
+      this.settings = this.settings.set( 'hasFocus', true );
+    } );
+
+    dispatcher.register( HandleFocusLost, act => {
+      this.settings = this.settings.set( 'hasFocus', false );
+    } );
+
   }
 
 }

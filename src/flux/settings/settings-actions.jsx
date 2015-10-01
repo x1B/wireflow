@@ -18,8 +18,20 @@ const ChangeMode = Record({
   type: () => ChangeMode
 }, 'ChangeMode');
 
+const HandleFocusReceived = Record({
+  domNode: null,
+  type: () => HandleFocusReceived
+}, 'HandleFocusReceived');
+
+const HandleFocusLost = Record({
+  type: () => HandleFocusLost
+}, 'HandleFocusLost');
+
+
 export default {
   ViewportMoved,
   ViewportMeasured,
-  ChangeMode
+  ChangeMode,
+  HandleFocusReceived,
+  HandleFocusLost
 };

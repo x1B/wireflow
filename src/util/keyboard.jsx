@@ -3,7 +3,7 @@
 import {
   HandleFocusReceived,
   HandleFocusLost
-} from '../flux/ui/ui-actions';
+} from '../flux/settings/settings-actions';
 
 import {
   DeleteSelection

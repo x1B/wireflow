@@ -112,7 +112,8 @@ const Graph = React.createClass({
                  types={types}
                  vertices={vertices}
                  layout={layout}
-                 settings={settings} />
+                 settings={settings}
+                 eventHandler={self.handleEvent} />
         <div className="nbe-graph-viewport"
              onScroll={this.handleScroll}>
           <div className="nbe-graph-canvas" style={canvasStyle}>
@@ -171,13 +172,6 @@ const Graph = React.createClass({
     }
   },
 
-  handleScroll( ev ) {
-    this.bubble( ViewportMoved({
-      left: ev.target.scrollLeft,
-      top: ev.target.scrollTop
-    }) );
-  },
-
   bubble( event ) {
     const { eventHandler } = this.props;
     return eventHandler && eventHandler( event );
@@ -216,11 +210,31 @@ const Graph = React.createClass({
     }) );
   },
 
+  handleScroll( ev ) {
+    this.bubble( ViewportMoved({
+      left: ev.target.scrollLeft,
+      top: ev.target.scrollTop,
+      by: ':GRAPH:'
+    }) );
+  },
+
   componentDidMount() {
     this.measure();
     const domGraph = React.findDOMNode( this.refs.graph );
     window.addEventListener( 'resize', () => this.measure() );
     keyboard( domGraph, this.bubble, () => this.props.settings.mode === READ_ONLY );
+  },
+
+  componentDidUpdate() {
+    const { settings: { viewport } } = this.props;
+    if( viewport.movedBy === ':GRAPH:' ) {
+      return;
+    }
+    const domGraph = React
+      .findDOMNode( this.refs.graph )
+      .querySelector( '.nbe-graph-viewport' );
+    domGraph.scrollTop = viewport.top;
+    domGraph.scrollLeft = viewport.left;
   }
 
 });

@@ -2,6 +2,7 @@
 
 ## Last Changes
 
+- allow to navigate by clicking/dragging on the minimap
 - update minimap on resize, and hide if not needed
 - reorganized code files by functionality rather than type
 - reorganized demo code under demos
