@@ -18,7 +18,7 @@ const Minimap = React.createClass({
       canvasSize
     } = this.props;
 
-    const viewport = settings.viewport;
+    const { viewport } = settings;
     const viewbox = [ 0, 0, canvasSize.width, canvasSize.height ].join( ' ' );
 
     const mapWidth = 200;
@@ -31,8 +31,11 @@ const Minimap = React.createClass({
       top: ( viewport.top / canvasSize.height ) * mapHeight
     };
 
+    const mapDisplay = ( canvasSize.width > viewport.width ||
+                         canvasSize.height > viewport.height ) ? 'block' : 'none';
+
     return <div className='nbe-minimap'
-                style={{ width: mapWidth, height: mapHeight }}>
+                style={{ display: mapDisplay, width: mapWidth, height: mapHeight }}>
       <div className='nbe-minimap-viewport'
            style={boxStyle} />
       <svg className='nbe-minimap-links'

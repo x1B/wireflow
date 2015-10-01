@@ -2,6 +2,7 @@
 
 ## Last Changes
 
+- update minimap on resize, and hide if not needed
 - reorganized code files by functionality rather than type
 - reorganized demo code under demos
 - implemented basic minimap (read-only)

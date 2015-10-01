@@ -208,12 +208,18 @@ const Graph = React.createClass({
     };
   },
 
-  componentDidMount() {
+  measure() {
     const domGraph = React.findDOMNode( this.refs.graph );
     this.bubble( ViewportMeasured({
       width: domGraph.offsetWidth,
       height: domGraph.offsetHeight
     }) );
+  },
+
+  componentDidMount() {
+    this.measure();
+    const domGraph = React.findDOMNode( this.refs.graph );
+    window.addEventListener( 'resize', () => this.measure() );
     keyboard( domGraph, this.bubble, () => this.props.settings.mode === READ_ONLY );
   }
 
