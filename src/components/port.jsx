@@ -7,9 +7,9 @@ import count from '../util/metrics';
 import layoutActions from '../flux/layout/layout-actions';
 import { Coords } from '../flux/layout/layout-model';
 import graphActions from '../flux/graph/graph-actions';
+import { CreateCheckpoint } from '../flux/history/history-actions';
 import { IN, OUT } from '../flux/graph/graph-model';
 import { READ_WRITE } from '../flux/settings/settings-model';
-
 
 const { MeasurePort, DragPort, payload: { PortDragInfo } } = layoutActions;
 const { ConnectPort, DisconnectPort, payload: { Connectable } } = graphActions;
@@ -53,6 +53,7 @@ const Port = React.createClass({
         }) : null;
       },
       onDrop: ({ dropResult }) => {
+        eventHandler( CreateCheckpoint() );
         eventHandler( ConnectPort({
           from: Connectable({
             type: port.type,
@@ -97,6 +98,7 @@ const Port = React.createClass({
 
     function disconnect() {
       if( settings.mode === READ_WRITE ) {
+        eventHandler( CreateCheckpoint() );
         eventHandler( DisconnectPort({ vertex: vertex, port: port }) );
       }
     }

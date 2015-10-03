@@ -36,7 +36,7 @@ const dispatcher = new Dispatcher( render );
 new HistoryStore( dispatcher );
 const graphStore = new GraphStore( dispatcher, graph( data.graph ), types( data.types ) );
 const layoutStore = new LayoutStore( dispatcher, layout( data.layout ), graphStore );
-const settingsStore = new SettingsStore( dispatcher, Settings({ mode: READ_ONLY }) );
+const settingsStore = new SettingsStore( dispatcher, Settings({ mode: READ_WRITE }) );
 const selectionStore = new SelectionStore( dispatcher, layoutStore, graphStore );
 
 function toggleMode() {
@@ -54,8 +54,6 @@ function autoLayout() {
 
 
 function render() {
-  // Later: <History checkpoints={historyStore.checkpoints } now={ historyStore.now } />
-
   React.render(
     <div className='demo-wrapper'>
       <div className='demo-menu'>

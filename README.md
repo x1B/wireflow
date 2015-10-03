@@ -201,7 +201,6 @@ This means that _must_, _should_ and so on are to be interpreted as described in
 The embedding application _must_ be able to set and change the interaction mode.
 In _read-only_ mode, the UI should be usable with medium-sized touch devices as well as traditional PC-type devices that have mouse and keyboard.
 In _read/write_ mode, the UI should still render properly on smaller devices, but it the actual graph manipulation features may not work properly with the touch input.
-**Note implemented yet: currently, read/write is always enabled.**
 
 
 ### *Display* a Graph Model
@@ -342,8 +341,8 @@ Cutting ist equivalent to copying and then deleting the selected set of nodes.
 1. Wireflow _must_ allow the user to _undo_ each of the following _destructive_ operations, by pressing _Ctrl-Z_ (or _Cmd-Z_):
 
    - moving nodes (_Layout.2_, _Layout.3_)
-   - connecting ports (_Edges.2_, _Edges.3_) **Not implemented yet!**
-   - disconnecting ports (_Edges.4_) **Not implemented yet!**
+   - connecting ports (_Edges.2_, _Edges.3_)
+   - disconnecting ports (_Edges.4_)
    - deleting nodes (_Vertices.2_)
    - pasting nodes (_Vertices.4_) **Not implemented yet!**
    - cutting nodes (_Vertices.5_) **Not implemented yet!**
