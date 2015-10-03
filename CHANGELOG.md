@@ -2,6 +2,9 @@
 
 ## Last Changes
 
+
+## v0.3.0
+
 - implemented undo/redo for connect/disconnect operations
 - allow to resize the minimap by dragging top-right corner
 - allow to navigate by clicking/dragging on the minimap
