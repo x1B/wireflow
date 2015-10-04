@@ -1,11 +1,11 @@
 import { List, Map } from 'immutable';
 
 import settings from '../../util/settings';
-import { calculateLayout } from '../../util/layout';
+import { calculateLayout } from '../../util/auto-layout';
 
 import { RemoveVertex, RemoveEdge } from '../graph/graph-actions';
 import { SaveState, RestoreState } from '../history/history-actions';
-import { Coords, Measurements, convert } from './layout-model';
+import { Coords, Measurements, Layout, convert } from './layout-model';
 import {
   AutoLayout,
   HandleEdgeInserted,
@@ -25,8 +25,8 @@ class LayoutStore {
 
   constructor( dispatcher, layout, graphStore ) {
     this.dispatcher = dispatcher;
-
     this.graphStore = graphStore;
+
     this.storeId = this.constructor.name;
     this.layout = layout;
     this.measurements = Measurements();
@@ -89,7 +89,6 @@ class LayoutStore {
     } );
   }
 
-
   save() {
     this.dispatcher.dispatch( SaveState({
       storeId: this.storeId,
@@ -97,6 +96,42 @@ class LayoutStore {
     }) );
   }
 
+  insert( newLayout, renameRules ) {
+    var disjointLayout;
+    if( renameRules ) {
+      const edgeRules = renameRules.get( 'edges' );
+      const edges = {};
+      newLayout.edges.forEach( (edge, eId) => {
+        const newId = edgeRules.get( eId );
+        edges[ newId ] = edge;
+      } );
+      const vertexRules = renameRules.get( 'vertices' );
+      const vertices = {};
+      newLayout.vertices.forEach( (vertex, vId) => {
+        const newId = vertexRules.get( vId );
+        vertices[ newId ] = vertex;
+      } );
+      disjointLayout = Layout({
+        edges: Map( edges ),
+        vertices: Map( vertices )
+      });
+    }
+    else {
+      disjointLayout = newLayout;
+    }
+
+    console.log( 'CURRENT L.E:', this.layout.edges.toJS() );
+    console.log( 'NEW L.E:    ', disjointLayout.edges.toJS() );
+    console.log( 'UNION L.E:  ', this.layout.edges.merge( disjointLayout.edges ).toJS() );
+
+    console.log( 'CURRENT L.V:', this.layout.vertices.toJS() );
+    console.log( 'NEW L.V:    ', disjointLayout.vertices.toJS() );
+    console.log( 'UNION L.V:  ', this.layout.vertices.merge( disjointLayout.vertices ) .toJS() );
+
+    this.layout = this.layout
+      .set( 'edges', this.layout.edges.merge( disjointLayout.edges ) )
+      .set( 'vertices', this.layout.vertices.merge( disjointLayout.vertices ) );
+  }
 
   moveSelection( selection, referenceLayout, offset ) {
     const { left, top } = offset;
@@ -104,7 +139,7 @@ class LayoutStore {
     [ 'vertices', 'edges' ].forEach( kind =>
       selection[ kind ].forEach( id => {
         targetLayout = targetLayout.updateIn( [ kind, id ], coords =>
-          Coords({
+          coords && Coords({
             left: coords.left + left,
             top: coords.top + top
           })
@@ -114,7 +149,6 @@ class LayoutStore {
     this.layout = targetLayout;
     this.save();
   }
-
 
   placeEdge( edge, from, to ) {
     const { measurements, layout } = this;

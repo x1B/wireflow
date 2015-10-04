@@ -1,10 +1,24 @@
 import { Map, Record } from 'immutable';
 
-const Coords = Record({ left: 0, top: 0 });
-const Layout = Record({ edges: Map(), vertices: Map() });
+const Coords = Record({
+  left: 0,
+  top: 0
+});
 
-const Dimensions = Record({ width: 0, height: 0 });
-const Measurements = Record({ vertices: Map(), edges: Map() });
+const Layout = Record({
+  edges: Map(),
+  vertices: Map()
+});
+
+const Dimensions = Record({
+  width: 0,
+  height: 0
+});
+
+const Measurements = Record({
+  vertices: Map(),
+  edges: Map()
+});
 
 const VertexMeasurements = Record({
   dimensions: null,

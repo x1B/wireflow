@@ -3,7 +3,7 @@ import {
   CreateCheckpoint, SaveState, RestoreState, UiUndo, UiRedo
 } from '../history-actions';
 
-import DispatcherMock from '../../testing/dispatcher-mock';
+import DispatcherMock from '../../../testing/dispatcher-mock';
 
 
 // Jasmine:

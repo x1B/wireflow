@@ -42,7 +42,25 @@ const ClearSelection = Record({
   type: () => ClearSelection
 }, 'ClearSelection');
 
+const CopySelection = Record({
+  copyEvent: null,
+  type: () => CopySelection
+}, 'CopySelection' );
+
+const CutSelection = Record({
+  cutEvent: null,
+  type: () => CutSelection
+}, 'CutSelection' );
+
+const PasteClipboard = Record({
+  pasteEvent: null,
+  type: () => PasteClipboard
+}, 'PasteClipboard' );
+
 export default {
+  CopySelection,
+  CutSelection,
+  PasteClipboard,
   DeleteSelection,
   ResizeSelection,
   MoveSelection,
