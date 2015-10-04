@@ -269,17 +269,15 @@
 }
 
 .nbe-minimap-edges circle {
-  fill: #dcc;
-  stroke-width: 2px;
-  stroke: #dcc;
+  fill: #ef6c00;
+  stroke-width: 0;
 }
 
 .nbe-minimap-vertices rect {
-   fill: #f0f0f0;
+   fill: #fcfcfc;
    stroke-width: 2px;
-   stroke: #dcc;
+   stroke: #bbb;
 }
-
 
 .nbe-minimap .nbe-minimap-links .nbe-link {
    stroke-width: 4;
@@ -293,6 +291,9 @@
 }
 .nbe-theme-fusebox-app .nbe-type-ACTION .nbe-edge-icon {
    background: #ff943d;
+}
+.nbe-theme-fusebox-app .nbe-minimap-edges .nbe-type-ACTION {
+   fill: #ff943d;
 }
 .nbe-theme-fusebox-app .nbe-type-ACTION.nbe-selected .nbe-edge-icon {
    background: #ef6c00;
@@ -361,6 +362,9 @@
 .nbe-theme-fusebox-app .nbe-type-FLAG .nbe-edge-icon {
    background: #80c883;
 }
+.nbe-theme-fusebox-app .nbe-minimap-edges .nbe-type-FLAG {
+   fill: #80c883;
+}
 .nbe-theme-fusebox-app .nbe-type-FLAG.nbe-selected .nbe-edge-icon {
    background: #4caf50;
 }
@@ -427,6 +431,9 @@
 }
 .nbe-theme-fusebox-app .nbe-type-RESOURCE .nbe-edge-icon {
    background: #916dd1;
+}
+.nbe-theme-fusebox-app .nbe-minimap-edges .nbe-type-RESOURCE {
+   fill: #916dd1;
 }
 .nbe-theme-fusebox-app .nbe-type-RESOURCE.nbe-selected .nbe-edge-icon {
    background: #673ab7;

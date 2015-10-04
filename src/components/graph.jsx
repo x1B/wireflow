@@ -110,6 +110,7 @@ const Graph = React.createClass({
         <Minimap measurements={measurements}
                  canvasSize={canvasSize}
                  types={types}
+                 edges={edges}
                  vertices={vertices}
                  layout={layout}
                  settings={settings}

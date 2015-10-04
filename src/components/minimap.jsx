@@ -14,6 +14,7 @@ const Minimap = React.createClass({
   render() {
 
     const {
+      edges,
       vertices,
       types,
       settings,
@@ -57,7 +58,7 @@ const Minimap = React.createClass({
           {this.vertices( layout, measurements )}
         </g>
         <g className='nbe-minimap-edges'>
-          {this.edges( layout, measurements )}
+          {this.edges( layout, measurements, edges )}
         </g>
       </svg>
       <div className='nbe-minimap-handle'
@@ -116,7 +117,7 @@ const Minimap = React.createClass({
     return eventHandler && eventHandler( event );
   },
 
-  edges( layout, measurements ) {
+  edges( layout, measurements, edges ) {
     return layout.edges.entrySeq().map( ([ id, { left, top } ]) => {
       const { dimensions } = measurements.edges.get( id ) || {};
       if( !dimensions ) {
@@ -124,7 +125,9 @@ const Minimap = React.createClass({
       }
       const { width } = dimensions;
       const r = width / 2;
-      return <circle key={id} cx={left + r} cy={top + r} r={r} />;
+      const cls = 'nbe-type-' + edges.get( id ).type;
+      return <circle className={cls} key={id}
+                     cx={left + r} cy={top + r} r={r} />;
     } ).filter( _ => _ !== null );
   },
 
