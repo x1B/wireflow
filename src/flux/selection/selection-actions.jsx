@@ -42,7 +42,19 @@ const ClearSelection = Record({
   type: () => ClearSelection
 }, 'ClearSelection');
 
+const CopySelection = Record({
+  copyEvent: null,
+  type: () => CopySelection
+}, 'CopySelection' );
+
+const PasteSelection = Record({
+  pasteEvent: null,
+  type: () => PasteSelection
+}, 'PasteSelection' );
+
 export default {
+  CopySelection,
+  PasteSelection,
   DeleteSelection,
   ResizeSelection,
   MoveSelection,

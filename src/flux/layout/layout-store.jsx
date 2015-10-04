@@ -1,7 +1,7 @@
 import { List, Map } from 'immutable';
 
 import settings from '../../util/settings';
-import { calculateLayout } from '../../util/layout';
+import { calculateLayout } from '../../util/auto-layout';
 
 import { RemoveVertex, RemoveEdge } from '../graph/graph-actions';
 import { SaveState, RestoreState } from '../history/history-actions';

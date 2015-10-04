@@ -18,10 +18,13 @@ import { Layout, Coords, Dimensions } from '../flux/layout/layout-model';
 import { Settings, READ_ONLY } from '../flux/settings/settings-model';
 import { Graph as GraphModel } from '../flux/graph/graph-model';
 import {
-  ViewportMoved, ViewportMeasured
+  UiUndo, UiRedo, CreateCheckpoint
+} from '../flux/history/history-actions';
+import {
+  ViewportMoved, ViewportMeasured, HandleFocusReceived, HandleFocusLost
 } from '../flux/settings/settings-actions';
 import {
-  ResizeSelection, ClearSelection
+  ResizeSelection, ClearSelection, DeleteSelection
 } from '../flux/selection/selection-actions';
 
 
@@ -220,10 +223,46 @@ const Graph = React.createClass({
   },
 
   componentDidMount() {
+    window.addEventListener( 'resize', this.measure );
     this.measure();
+
     const domGraph = React.findDOMNode( this.refs.graph );
-    window.addEventListener( 'resize', () => this.measure() );
-    keyboard( domGraph, this.bubble, () => this.props.settings.mode === READ_ONLY );
+    const bubble = ( act ) => this.bubble( act );
+    const graph = this;
+    keyboard(
+      domGraph, {
+        isReadOnly() {
+          return graph.props.settings.mode === READ_ONLY;
+        },
+        onFocusReceived() {
+          bubble( HandleFocusReceived({ domNode: domGraph }) );
+        },
+        onFocusLost() {
+          bubble( HandleFocusLost({ domNode: domGraph }) );
+        },
+        onUndo() {
+          bubble( UiUndo() );
+        },
+        onRedo() {
+          bubble( UiRedo() );
+        },
+        onDelete() {
+          bubble( CreateCheckpoint({ before: 'Delete Selection' }) );
+          bubble( DeleteSelection() );
+        },
+        onCut() {
+          bubble( CreateCheckpoint({ before: 'Cut Selection' }) );
+          bubble( CutSelection() );
+        },
+        onCopy() {
+          bubble( CopySelection() );
+        },
+        onPaste() {
+          bubble( CreateCheckpoint({ before: 'Paste Clipboard' }) );
+          bubble( PasteClipboard() );
+        }
+      }
+    );
   },
 
   componentDidUpdate() {

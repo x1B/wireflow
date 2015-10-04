@@ -29,7 +29,7 @@ const Selection = Record({
 
 class SelectionStore {
 
-  constructor( dispatcher, layoutStore, graphStore ) {
+  constructor( dispatcher, selectionStore, layoutStore, graphStore ) {
     this.dispatcher = dispatcher;
     this.fakeClipboard = Clipboard();
     this.moveReference = { id: null };
@@ -96,34 +96,13 @@ class SelectionStore {
     dispatcher.register( DeleteSelection, _ => this.delete() );
 
     dispatcher.register( CutSelection, act => {
-      this.copyToClipboard( act.cutEvent );
+      this.copyToClipboard();
       this.delete();
     } );
-
-    dispatcher.register( CopySelection, act => {
-      this.copyToClipboard( act.copyEvent );
-    } );
-
-    dispatcher.register( CopySelection, act => {
-      this.copyToClipboard( act.copyEvent );
-    } );
   }
 
-  copyToClipboard( clipboardEvent ) {
-    this.fakeClipboard = Clipboard( /* :TODO: */ );
-    if( clipboardEvent ) {
-      const jsonClipboard = JSON.stringify( this.fakeClipboard.toJS() );
-      clipboardEvent.clipboardData.setData( 'application/json', jsonClipboard );
-      clipboardEvent.clipboardData.setData( 'text/plain', jsonClipboard );
-    }
-  }
-
-  pasteClipboard( pasteEvent ) {
-    if( pasteEvent ) {
-      const jsonClipboard = JSON.stringify( this.fakeClipboard.toJS() );
-      copyEvent.clipboardData.setData( 'application/json', jsonClipboard );
-      copyEvent.clipboardData.setData( 'text/plain', jsonClipboard );
-    }
+  copyToClipboard() {
+    // :TODO:
   }
 
   delete() {
