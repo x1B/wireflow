@@ -25,8 +25,8 @@ class LayoutStore {
 
   constructor( dispatcher, layout, graphStore ) {
     this.dispatcher = dispatcher;
-
     this.graphStore = graphStore;
+
     this.storeId = this.constructor.name;
     this.layout = layout;
     this.measurements = Measurements();
@@ -89,7 +89,6 @@ class LayoutStore {
     } );
   }
 
-
   save() {
     this.dispatcher.dispatch( SaveState({
       storeId: this.storeId,
@@ -97,6 +96,29 @@ class LayoutStore {
     }) );
   }
 
+  insert( newLayout, renameRules ) {
+    var disjointLayout;
+    if( renameRules ) {
+      const vertexRules = renameRules.get( 'vertices' );
+      const edgeRules = renameRules.get( 'edges' );
+
+      const edges = {};
+      newLayout.edges.forEach( (edge, eId) => {
+        edges[ edgeRules.get( eId ) ] = edge;
+      } );
+      const vertices = {};
+      newLayout.vertices.forEach( (vertex, vId) => {
+        vertices[ vertexRules.get( vId ) ] = vertex;
+      } );
+    }
+    else {
+      disjointLayout = newLayout;
+    }
+
+    this.layout = this.layout
+      .set( 'edges', this.layout.edges.merge( disjointLayout.edges ) )
+      .set( 'vertices', this.layout.vertices.merge( disjointLayout.vertices ) );
+  }
 
   moveSelection( selection, referenceLayout, offset ) {
     const { left, top } = offset;
@@ -104,7 +126,7 @@ class LayoutStore {
     [ 'vertices', 'edges' ].forEach( kind =>
       selection[ kind ].forEach( id => {
         targetLayout = targetLayout.updateIn( [ kind, id ], coords =>
-          Coords({
+          coords && Coords({
             left: coords.left + left,
             top: coords.top + top
           })
@@ -114,7 +136,6 @@ class LayoutStore {
     this.layout = targetLayout;
     this.save();
   }
-
 
   placeEdge( edge, from, to ) {
     const { measurements, layout } = this;

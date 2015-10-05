@@ -119,13 +119,17 @@ const Minimap = React.createClass({
 
   edges( layout, measurements, edges ) {
     return layout.edges.entrySeq().map( ([ id, { left, top } ]) => {
+      const edge = edges.get( id );
+      if( !edge ) {
+        return null;
+      }
       const { dimensions } = measurements.edges.get( id ) || {};
       if( !dimensions ) {
         return null;
       }
       const { width } = dimensions;
       const r = width / 2;
-      const cls = 'nbe-type-' + edges.get( id ).type;
+      const cls = 'nbe-type-' + edge.type;
       return <circle className={cls} key={id}
                      cx={left + r} cy={top + r} r={r} />;
     } ).filter( _ => _ !== null );

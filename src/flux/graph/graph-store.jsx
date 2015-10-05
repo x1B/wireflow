@@ -1,9 +1,9 @@
-import { List } from 'immutable';
+import { List, Map } from 'immutable';
 
 import { SaveState, RestoreState } from '../history/history-actions';
 import { HandleEdgeInserted } from '../layout/layout-actions';
 
-import { Directions, Ports, Edge } from './graph-model';
+import { Directions, Ports, Edge, Graph } from './graph-model';
 import {
   DisconnectPort,
   ConnectPort,
@@ -115,18 +115,7 @@ class GraphStore {
   }
 
   removeEdge( edgeId ) {
-    const mapVertexPorts = ( v, f ) => v.set( 'ports', Ports({
-      inbound: v.ports.inbound.map( f ),
-      outbound: v.ports.outbound.map( f )
-    }) );
-
-    const mapVertices = f =>
-      this.graph.setIn( [ 'vertices' ], this.graph.vertices.map( f ) );
-
-    const mapGraphPorts = f =>
-      mapVertices( v => mapVertexPorts( v, f ) );
-
-    this.graph = mapGraphPorts( p => p.set( 'edgeId',
+    this.graph = this.mapGraphPorts( this.graph, p => p.set( 'edgeId',
       p.edgeId === edgeId ? null : p.edgeId
     ) );
     this.pruneEmptyEdges();
@@ -154,6 +143,90 @@ class GraphStore {
       this.graph.edges.filter( edge => ports.has( edge.id ) )
     );
   }
+
+
+  // pure helpers
+
+  mapVertexPorts( v, f ) {
+    return v.set( 'ports', Ports({
+      inbound: v.ports.inbound.map( f ),
+      outbound: v.ports.outbound.map( f )
+    }) );
+  }
+
+  mapVertices( graph, f ) {
+    return graph.setIn( [ 'vertices' ], graph.vertices.map( f ) );
+  }
+
+  mapEdges( graph, f ) {
+    return graph.setIn( [ 'edges' ], graph.edges.map( f ) );
+  }
+
+  mapGraphPorts( graph, f ) {
+    return this.mapVertices( graph, v => this.mapVertexPorts( v, f ) );
+  }
+
+  insert( newGraph, renameRules ) {
+    var disjointGraph;
+    if( renameRules ) {
+      const edgeRules = renameRules.get( 'edges' );
+      const vertexRules = renameRules.get( 'vertices' );
+      const edges = {};
+      newGraph.edges.forEach( (edge, eId) => {
+        edges[ edgeRules.get( eId ) ] = edge;
+      } );
+      const vertices = {};
+      newGraph.vertices.forEach( (vertex, vId) => {
+        vertices[ vertexRules.get( vId ) ] = vertex;
+      } );
+      disjointGraph = this.mapGraphPorts(
+        Graph({ edges: Map( edges ), vertices: Map( vertices ) }),
+        p => ( p.edgeId && edgeRules.get( p.edgeId ) ) || p.edgeId
+      );
+    }
+    else {
+      disjointGraph = newGraph;
+    }
+
+    this.graph = this.graph
+      .set( 'edges', this.graph.edges.merge( disjointGraph.edges ) )
+      .set( 'vertices', this.graph.vertices.merge( disjointGraph.vertices ) );
+  }
+
+  renameRules( newGraph ) {
+    return Map({
+      edges: renameRules( this.graph.edges, newGraph.edges ),
+      vertices: renameRules( this.graph.vertices, newGraph.vertices )
+    });
+
+    function renameRules( existingMap, newMap ) {
+      const jsExistingKeys = existingMap.toJS();
+      const takenKeys = {};
+      const rules = {};
+      newMap.forEach( (_, key) => {
+        const newKey = disjointKey(
+          takenKeys,
+          disjointKey( jsExistingKeys, key )
+        );
+        rules[ key ] = newKey;
+        takenKeys[ newKey ] = true;
+      } );
+      return Map( rules );
+    }
+
+    function disjointKey( jsMap, key ) {
+      const matcher = /^(.*) ([0-9]+)$/;
+      if( !jsMap.hasOwnProperty( key ) ) {
+        return key;
+      }
+      if( !matcher.test( key ) ) {
+        return disjointKey( jsMap, key + ' 1' );
+      }
+      const number = parseInt( key.replace( matcher, '$2' ), 10 );
+      return disjointKey( jsMap, key.replace( matcher, '$1' ) + ' ' + number );
+    }
+  }
+
 }
 
 export default GraphStore;

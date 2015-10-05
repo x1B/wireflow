@@ -17,14 +17,22 @@ import { DragPort } from '../flux/layout/layout-actions';
 import { Layout, Coords, Dimensions } from '../flux/layout/layout-model';
 import { Settings, READ_ONLY } from '../flux/settings/settings-model';
 import { Graph as GraphModel } from '../flux/graph/graph-model';
+
 import {
   UiUndo, UiRedo, CreateCheckpoint
 } from '../flux/history/history-actions';
+
 import {
   ViewportMoved, ViewportMeasured, HandleFocusReceived, HandleFocusLost
 } from '../flux/settings/settings-actions';
+
 import {
-  ResizeSelection, ClearSelection, DeleteSelection
+  PasteClipboard,
+  CopySelection,
+  CutSelection,
+  ResizeSelection,
+  ClearSelection,
+  DeleteSelection
 } from '../flux/selection/selection-actions';
 
 
