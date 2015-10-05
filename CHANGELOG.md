@@ -2,6 +2,8 @@
 
 ## Last Changes
 
+- added favicon
+
 
 ## v0.3.0
 
