@@ -5,7 +5,7 @@ import { calculateLayout } from '../../util/auto-layout';
 
 import { RemoveVertex, RemoveEdge } from '../graph/graph-actions';
 import { SaveState, RestoreState } from '../history/history-actions';
-import { Coords, Measurements, convert } from './layout-model';
+import { Coords, Measurements, Layout, convert } from './layout-model';
 import {
   AutoLayout,
   HandleEdgeInserted,
@@ -99,21 +99,34 @@ class LayoutStore {
   insert( newLayout, renameRules ) {
     var disjointLayout;
     if( renameRules ) {
-      const vertexRules = renameRules.get( 'vertices' );
       const edgeRules = renameRules.get( 'edges' );
-
       const edges = {};
       newLayout.edges.forEach( (edge, eId) => {
-        edges[ edgeRules.get( eId ) ] = edge;
+        const newId = edgeRules.get( eId );
+        edges[ newId ] = edge;
       } );
+      const vertexRules = renameRules.get( 'vertices' );
       const vertices = {};
       newLayout.vertices.forEach( (vertex, vId) => {
-        vertices[ vertexRules.get( vId ) ] = vertex;
+        const newId = vertexRules.get( vId );
+        vertices[ newId ] = vertex;
       } );
+      disjointLayout = Layout({
+        edges: Map( edges ),
+        vertices: Map( vertices )
+      });
     }
     else {
       disjointLayout = newLayout;
     }
+
+    console.log( 'CURRENT L.E:', this.layout.edges.toJS() );
+    console.log( 'NEW L.E:    ', disjointLayout.edges.toJS() );
+    console.log( 'UNION L.E:  ', this.layout.edges.merge( disjointLayout.edges ).toJS() );
+
+    console.log( 'CURRENT L.V:', this.layout.vertices.toJS() );
+    console.log( 'NEW L.V:    ', disjointLayout.vertices.toJS() );
+    console.log( 'UNION L.V:  ', this.layout.vertices.merge( disjointLayout.vertices ) .toJS() );
 
     this.layout = this.layout
       .set( 'edges', this.layout.edges.merge( disjointLayout.edges ) )

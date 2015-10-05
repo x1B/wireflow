@@ -133,6 +133,7 @@ class SelectionStore {
     const renameRules = this.graphStore.renameRules( graph );
     this.graphStore.insert( graph, renameRules );
     this.layoutStore.insert( layout, renameRules );
+    this.graphStore.pruneEmptyEdges();
   }
 
   delete() {
@@ -194,8 +195,6 @@ class SelectionStore {
       measurements.edges.toJS(),
       layout.edges.toJS(),
       edgesToKeep
-    ).union(
-      this.implicitEdges( vertexSet )
     );
 
     this.selection = Selection({
@@ -217,7 +216,7 @@ class SelectionStore {
 
   implicitEdges( vertexSet ) {
     const vertices = this.graphStore.graph.vertices;
-    const edgeIds = [];
+    const edgeIds = {};
     vertexSet.valueSeq()
       .map( vId => vertices.get( vId ) )
       .flatMap( v => Directions.flatMap( d => v.ports[ d ] ) )
@@ -229,15 +228,18 @@ class SelectionStore {
   selectionGraph() {
     const s = this.selection;
     const graph = this.graphStore.graph;
+    const implicitEdges = this.implicitEdges( s.vertices );
     return Graph({
       vertices: graph.vertices.filter( (_, vId) => s.vertices.has( vId ) ),
-      edges: graph.edges.filter( (_, eId) => s.edges.has( eId ) )
+      edges: graph.edges.filter( (_, eId) =>
+        s.edges.has( eId ) || implicitEdges.has( eId )
+      )
     });
   }
 
   selectionLayout() {
     const s = this.selection;
-    const layout = this.graphStore.graph;
+    const layout = this.layoutStore.layout;
     return Layout({
       vertices: layout.vertices.filter( (_, vId) => s.vertices.has( vId ) ),
       edges: layout.edges.filter( (_, eId) => s.edges.has( eId ) )

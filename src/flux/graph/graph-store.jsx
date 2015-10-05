@@ -173,20 +173,32 @@ class GraphStore {
       const vertexRules = renameRules.get( 'vertices' );
       const edges = {};
       newGraph.edges.forEach( (edge, eId) => {
-        edges[ edgeRules.get( eId ) ] = edge;
+        const newId = edgeRules.get( eId );
+        edges[ newId ] = edge.setIn( [ 'id' ], newId );
       } );
       const vertices = {};
       newGraph.vertices.forEach( (vertex, vId) => {
-        vertices[ vertexRules.get( vId ) ] = vertex;
+        const newId = vertexRules.get( vId );
+        vertices[ newId ] = vertex.setIn( [ 'id' ], newId );
       } );
       disjointGraph = this.mapGraphPorts(
         Graph({ edges: Map( edges ), vertices: Map( vertices ) }),
-        p => ( p.edgeId && edgeRules.get( p.edgeId ) ) || p.edgeId
+        p => p.set( 'edgeId', (
+          p.edgeId && edgeRules.get( p.edgeId ) ) || p.edgeId
+        )
       );
     }
     else {
       disjointGraph = newGraph;
     }
+
+    console.log( 'CURRENT G.E:', this.graph.edges.toJS() );
+    console.log( 'NEW G.E:    ', disjointGraph.edges.toJS() );
+    console.log( 'UNION G.E:', this.graph.edges.merge( disjointGraph.edges ).toJS() );
+
+    console.log( 'CURRENT G.V:', this.graph.vertices.toJS() );
+    console.log( 'NEW G.V:    ', disjointGraph.vertices.toJS() );
+    console.log( 'UNION G.V:', this.graph.vertices.merge( disjointGraph.vertices ).toJS() );
 
     this.graph = this.graph
       .set( 'edges', this.graph.edges.merge( disjointGraph.edges ) )
@@ -222,7 +234,7 @@ class GraphStore {
       if( !matcher.test( key ) ) {
         return disjointKey( jsMap, key + ' 1' );
       }
-      const number = parseInt( key.replace( matcher, '$2' ), 10 );
+      const number = 1 + parseInt( key.replace( matcher, '$2' ), 10 );
       return disjointKey( jsMap, key.replace( matcher, '$1' ) + ' ' + number );
     }
   }
