@@ -61,10 +61,10 @@ describe( 'A graph store', () => {
       } );
 
       it( 'removes it from the graph state', () => {
-        const a = store.graph.toJS();
-        const b = data.withoutVertexA.graph;
-        expect( diff( a, b ) ).toEqual( {} );
-        expect( diff( b, a ) ).toEqual( {} );
+        const actual = store.graph.toJS();
+        const expected = data.withoutVertexA.graph;
+        expect( diff( actual, expected ) ).toEqual( {} );
+        expect( diff( expected, actual ) ).toEqual( {} );
       } );
     } );
 
@@ -74,12 +74,74 @@ describe( 'A graph store', () => {
         dispatcher.handleAction( RemoveVertex({ vertexId: 'vC' }) );
       } );
 
-      it( 'removes it from the graph state', () => {
-        const a = store.graph.toJS();
-        const b = data.withoutVertexC.graph;
-        expect( diff( a, b ) ).toEqual( {} );
-        expect( diff( b, a ) ).toEqual( {} );
+      it( 'removes it from the graph state along with edges owned by the vertex', () => {
+        const actual = store.graph.toJS();
+        const expected = data.withoutVertexC.graph;
+        expect( diff( actual, expected ) ).toEqual( {} );
+        expect( diff( expected, actual ) ).toEqual( {} );
+      } );
+    } );
+
+    describe( 'asked to disconnect a slave port from a complex edge with three members', () => {
+      beforeEach( () => {
+        const vertex = store.graph.vertices.get( 'vC' );
+        const port = vertex.ports.inbound.get( 0 );
+        dispatcher.handleAction( DisconnectPort({
+          vertex: vertex,
+          port: port
+        }) );
       } );
 
+      it( 'removes it from the graph state', () => {
+        const actual = store.graph.toJS();
+        const expected = convert.graph( data.initial.graph ).toJS();
+        delete expected.vertices.vC.ports.inbound[ 0 ].edgeId;
+        expect( diff( actual, expected ) ).toEqual( {} );
+        expect( diff( expected, actual ) ).toEqual( {} );
+      } );
     } );
+
+
+    describe( 'asked to disconnect a master port from a complex edge with three members', () => {
+      beforeEach( () => {
+        const vertex = store.graph.vertices.get( 'vB' );
+        const port = vertex.ports.outbound.get( 0 );
+        dispatcher.handleAction( DisconnectPort({
+          vertex: vertex,
+          port: port
+        }) );
+      } );
+
+      it( 'removes it from the graph state', () => {
+        const actual = store.graph.toJS();
+        const expected = convert.graph( data.initial.graph ).toJS();
+        delete expected.vertices.vB.ports.outbound[ 0 ].edgeId;
+        expect( diff( actual, expected ) ).toEqual( {} );
+        expect( diff( expected, actual ) ).toEqual( {} );
+      } );
+    } );
+
+
+    describe( 'asked to disconnect the owning port from a simple edge', () => {
+      beforeEach( () => {
+        const vertex = store.graph.vertices.get( 'vC' );
+        const port = vertex.ports.inbound.get( 3 );
+        dispatcher.handleAction( DisconnectPort({
+          vertex: vertex,
+          port: port
+        }) );
+      } );
+
+      it( 'removes the entire edge from the graph state', () => {
+        const actual = store.graph.toJS();
+        const expected = convert.graph( data.initial.graph ).toJS();
+        delete expected.edges.a0;
+        delete expected.vertices.vC.ports.inbound[ 3 ].edgeId;
+        delete expected.vertices.vA.ports.outbound[ 1 ].edgeId;
+        delete expected.vertices.vB.ports.outbound[ 1 ].edgeId;
+        expect( diff( actual, expected ) ).toEqual( {} );
+        expect( diff( expected, actual ) ).toEqual( {} );
+      } );
+    } );
+
 } );
