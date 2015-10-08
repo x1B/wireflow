@@ -137,23 +137,19 @@ class GraphStore {
   }
 
   pruneEmptyEdges() {
-    const ports = this.graph.vertices.valueSeq()
+    const portsByEdge = this.graph.vertices.valueSeq()
       .flatMap( v => Directions.flatMap( d => v.ports[ d ] ) )
-      .map( p => p.edgeId )
-      .filter( id => id != null )
-      .groupBy( id => id );
+      .filter( p => p.edgeId != null )
+      .groupBy( p => p.edgeId );
 
-    const isSimple = ( e ) =>
-      this.types.get( e.type ).owningPort !== null;
+    const isSimple = ( e ) => this.types.get( e.type ).owningPort !== null;
 
-    const toPrune = this.graph.edges.filter(
-      edge => !ports.has( edge.id ) || ports.get( edge.id ).size <= ( isSimple( edge ) ? 1 : 0 ) );
-
-    console.log( 'CLOG prune edges: ', toPrune.toJS() ); // :TODO: DELETE ME
-
-    toPrune.forEach( e => {
-      this.disconnectAll( e.id );
+    const toPrune = this.graph.edges.filter( e => {
+      const edgePorts = portsByEdge.get( e.id );
+      return !edgePorts || edgePorts.size <= ( isSimple( e ) ? 1 : 0 );
     } );
+
+    toPrune.forEach( e => this.disconnectAll( e.id ) );
 
     this.graph = this.graph.set( 'edges',
       this.graph.edges.filter( e => !toPrune.has( e.id ) )

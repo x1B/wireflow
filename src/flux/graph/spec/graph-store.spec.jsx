@@ -179,4 +179,46 @@ describe( 'A graph store', () => {
     } );
   } );
 
+  describe( 'asked to remove a simple edge', () => {
+    beforeEach( () => {
+      dispatcher.handleAction( RemoveEdge({ edgeId: 'a0' }) );
+    } );
+
+    it( 'removes that edge', () => {
+      const actual = store.graph.toJS();
+      expect( actual.edges.a0 ).not.toBeDefined();
+    } );
+
+    it( 'disconnects all ports connected to it', () => {
+      const actual = store.graph.toJS();
+      const expected = convert.graph( data.initial.graph ).toJS();
+      delete expected.edges.a0;
+      expected.vertices.vA.ports.outbound[ 1 ].edgeId = null;
+      expected.vertices.vB.ports.outbound[ 1 ].edgeId = null;
+      expected.vertices.vC.ports.inbound[ 3 ].edgeId = null;
+      expect( diff( expected, actual ) ).toEqual( {} );
+    } );
+  } );
+
+  describe( 'asked to remove a complex edge', () => {
+    beforeEach( () => {
+      dispatcher.handleAction( RemoveEdge({ edgeId: 'r0' }) );
+    } );
+
+    it( 'removes that edge', () => {
+      const actual = store.graph.toJS();
+      expect( actual.edges.r0 ).not.toBeDefined();
+    } );
+
+    it( 'disconnects all ports connected to it', () => {
+      const actual = store.graph.toJS();
+      const expected = convert.graph( data.initial.graph ).toJS();
+      delete expected.edges.r0;
+      expected.vertices.vB.ports.outbound[ 0 ].edgeId = null;
+      expected.vertices.vC.ports.inbound[ 0 ].edgeId = null;
+      expected.vertices.vD.ports.inbound[ 0 ].edgeId = null;
+      expect( diff( expected, actual ) ).toEqual( {} );
+    } );
+  } );
+
 } );
