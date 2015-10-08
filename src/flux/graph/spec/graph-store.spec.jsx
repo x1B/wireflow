@@ -4,7 +4,7 @@ import DispatcherMock from '../../../testing/dispatcher-mock';
 import diff from './diff';
 
 import data from './data';
-import { List } from 'immutable';
+import { List, Map } from 'immutable';
 import { SaveState } from '../../history/history-actions';
 import {
   ConnectPort, DisconnectPort, RemoveVertex, RemoveEdge
@@ -220,5 +220,49 @@ describe( 'A graph store', () => {
       expect( diff( expected, actual ) ).toEqual( {} );
     } );
   } );
+
+  describe( 'called to generate rename rules', () => {
+    var rules;
+    beforeEach( () => {
+      const pseudoSelection = convert.graph({
+        vertices: { vA: store.graph.vertices.get( 'vA' ) },
+        edges: { a0: store.graph.edges.get( 'a0' ) }
+      });
+      rules = store.renameRules( pseudoSelection );
+    } );
+
+    it( 'provides a mapping for an isomorphic but disjoint graph', () => {
+      expect( rules.toJS() ).toEqual( {
+        vertices: { 'vA': 'vA 1' },
+        edges: { 'a0': 'a0 1' }
+      } );
+    } );
+  } );
+
+
+  describe( 'called to apply rename rules', () => {
+    var result;
+    beforeEach( () => {
+      const pseudoSelection = convert.graph({
+        vertices: { vA: store.graph.vertices.get( 'vA' ) },
+        edges: { a0: store.graph.edges.get( 'a0' ) }
+      });
+      const rules = Map({
+        vertices: Map({ 'vA': 'vA 1' }),
+        edges: Map({ 'a0': 'a0 1' })
+      });
+      result = store.applyRenameRules( pseudoSelection, rules );
+    } );
+
+    it( 'provides a mapping for an isomorphic but disjoint graph', () => {
+      const expected = convert.graph({
+        vertices: { 'vA 1': store.graph.vertices.get( 'vA' ) },
+        edges: { 'a0 1': store.graph.edges.get( 'a0' ) }
+      }).toJS();
+      expected.vertices[ 'vA 1' ].ports.outbound[ 1 ].edgeId = 'a0 1';
+      expect( diff( expected, result.toJS() ) ).toEqual( {} );
+    } );
+  } );
+
 
 } );

@@ -179,42 +179,34 @@ class GraphStore {
   }
 
   insert( newGraph, renameRules ) {
-    var disjointGraph;
-    if( renameRules ) {
-      const edgeRules = renameRules.get( 'edges' );
-      const vertexRules = renameRules.get( 'vertices' );
-      const edges = {};
-      newGraph.edges.forEach( (edge, eId) => {
-        const newId = edgeRules.get( eId );
-        edges[ newId ] = edge.setIn( [ 'id' ], newId );
-      } );
-      const vertices = {};
-      newGraph.vertices.forEach( (vertex, vId) => {
-        const newId = vertexRules.get( vId );
-        vertices[ newId ] = vertex.setIn( [ 'id' ], newId );
-      } );
-      disjointGraph = this.mapGraphPorts(
-        Graph({ edges: Map( edges ), vertices: Map( vertices ) }),
-        p => p.set( 'edgeId', (
-          p.edgeId && edgeRules.get( p.edgeId ) ) || p.edgeId
-        )
-      );
-    }
-    else {
-      disjointGraph = newGraph;
-    }
-
-    console.log( 'CURRENT G.E:', this.graph.edges.toJS() );
-    console.log( 'NEW G.E:    ', disjointGraph.edges.toJS() );
-    console.log( 'UNION G.E:', this.graph.edges.merge( disjointGraph.edges ).toJS() );
-
-    console.log( 'CURRENT G.V:', this.graph.vertices.toJS() );
-    console.log( 'NEW G.V:    ', disjointGraph.vertices.toJS() );
-    console.log( 'UNION G.V:', this.graph.vertices.merge( disjointGraph.vertices ).toJS() );
+    const disjointGraph = renameRules ?
+      this.applyRenameRules( renameRules ) :
+      newGraph;
 
     this.graph = this.graph
       .set( 'edges', this.graph.edges.merge( disjointGraph.edges ) )
       .set( 'vertices', this.graph.vertices.merge( disjointGraph.vertices ) );
+  }
+
+  applyRenameRules( newGraph, renameRules ) {
+    const edgeRules = renameRules.get( 'edges' );
+    const vertexRules = renameRules.get( 'vertices' );
+    const edges = {};
+    newGraph.edges.forEach( (edge, eId) => {
+      const newId = edgeRules.get( eId );
+      edges[ newId ] = edge.setIn( [ 'id' ], newId );
+    } );
+    const vertices = {};
+    newGraph.vertices.forEach( (vertex, vId) => {
+      const newId = vertexRules.get( vId );
+      vertices[ newId ] = vertex.setIn( [ 'id' ], newId );
+    } );
+    return this.mapGraphPorts(
+      Graph({ edges: Map( edges ), vertices: Map( vertices ) }),
+      p => p.set( 'edgeId', (
+        p.edgeId && edgeRules.get( p.edgeId ) ) || p.edgeId
+      )
+    );
   }
 
   renameRules( newGraph ) {
