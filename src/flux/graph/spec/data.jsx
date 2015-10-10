@@ -31,8 +31,8 @@ export default {
           ports: {
             inbound: [],
             outbound: [
-              { id: 'o0', type: 'RESOURCE', label: 'Resource (M)', direction: 'outbound' },
-              { id: 'o1', label: 'Confirm', type: 'ACTION', edgeId: 'a0', direction: 'outbound' }
+              { id: 'o0', edgeId: null, type: 'RESOURCE', label: 'Resource (M)', direction: 'outbound' },
+              { id: 'o1', edgeId: 'a0', type: 'ACTION', label: 'Confirm', direction: 'outbound' }
             ]
           }
         },
@@ -41,14 +41,14 @@ export default {
           label: 'Weird Stuff (B)',
           ports: {
             inbound: [
-              { id: 'i0', label: 'Some Resource (S)', type: 'RESOURCE', direction: 'inbound' },
-              { id: 'i1', label: 'Another Resource (S)', type: 'RESOURCE', direction: 'inbound' },
-              { id: 'i2', label: 'Play Music On', type: 'FLAG', direction: 'inbound' }
+              { id: 'i0', edgeId: null, label: 'Some Resource (S)', type: 'RESOURCE', direction: 'inbound' },
+              { id: 'i1', edgeId: null, label: 'Another Resource (S)', type: 'RESOURCE', direction: 'inbound' },
+              { id: 'i2', edgeId: null, label: 'Play Music On', type: 'FLAG', direction: 'inbound' }
             ],
             outbound: [
-              { id: 'o0', label: 'Other Resource (M)', type: 'RESOURCE', direction: 'outbound', edgeId: 'r0' },
-              { id: 'o1', label: 'Confirmed', type: 'ACTION', direction: 'outbound', edgeId: 'a0' },
-              { id: 'o2', label: 'Invalid', type: 'FLAG', direction: 'outbound', edgeId: 'f0' }
+              { id: 'o0', edgeId: 'r0', label: 'Other Resource (M)', type: 'RESOURCE', direction: 'outbound' },
+              { id: 'o1', edgeId: 'a0', label: 'Confirmed', type: 'ACTION', direction: 'outbound' },
+              { id: 'o2', edgeId: 'f0', label: 'Invalid', type: 'FLAG', direction: 'outbound' }
             ]
           }
         },
@@ -57,15 +57,15 @@ export default {
           label: 'A Big One (C)',
           ports: {
             inbound: [
-              { id: 'i0', label: 'First Resource (S)', type: 'RESOURCE', direction: 'inbound', edgeId: 'r0' },
-              { id: 'i1', label: 'Second Resource (S)', type: 'RESOURCE', direction: 'inbound' },
-              { id: 'i2', label: 'Take a Second', type: 'FLAG', direction: 'inbound', edgeId: 'f0' },
-              { id: 'i3', label: 'Save Action', type: 'ACTION', direction: 'inbound', edgeId: 'a0' }
+              { id: 'i0', edgeId: 'r0', label: 'First Resource (S)', type: 'RESOURCE', direction: 'inbound' },
+              { id: 'i1', edgeId: null, label: 'Second Resource (S)', type: 'RESOURCE', direction: 'inbound' },
+              { id: 'i2', edgeId: 'f0', label: 'Take a Second', type: 'FLAG', direction: 'inbound' },
+              { id: 'i3', edgeId: 'a0', label: 'Save Action', type: 'ACTION', direction: 'inbound' }
             ],
             outbound: [
-              { id: 'o0', label: 'Third Resource (M)', type: 'RESOURCE', direction: 'outbound' },
-              { id: 'o1', label: 'Fourth Resource (M)', type: 'RESOURCE', direction: 'outbound' },
-              { id: 'o2', label: 'Use the Fourth', type: 'FLAG', direction: 'outbound' }
+              { id: 'o0', edgeId: null, label: 'Third Resource (M)', type: 'RESOURCE', direction: 'outbound' },
+              { id: 'o1', edgeId: null, label: 'Fourth Resource (M)', type: 'RESOURCE', direction: 'outbound' },
+              { id: 'o2', edgeId: null, label: 'Use the Fourth', type: 'FLAG', direction: 'outbound' }
             ]
           }
         },
@@ -74,12 +74,12 @@ export default {
           label: 'More Stuff (D)',
           ports: {
             inbound: [
-              { id: 'i0', label: 'The Resource (S)', type: 'RESOURCE', direction: 'inbound', edgeId: 'r0' },
-              { id: 'i1', label: 'Shuffle Action', type: 'ACTION', direction: 'inbound' }
+              { id: 'i0', edgeId: 'r0', label: 'The Resource (S)', type: 'RESOURCE', direction: 'inbound' },
+              { id: 'i1', edgeId: null, label: 'Shuffle Action', type: 'ACTION', direction: 'inbound' }
             ],
             outbound: [
-              { id: 'o0', label: 'Another Resource (M)', type: 'RESOURCE', direction: 'outbound' },
-              { id: 'o1', label: 'Refresh Action', type: 'ACTION', direction: 'outbound' }
+              { id: 'o0', edgeId: null, label: 'Another Resource (M)', type: 'RESOURCE', direction: 'outbound' },
+              { id: 'o1', edgeId: null, label: 'Refresh Action', type: 'ACTION', direction: 'outbound' }
             ]
           }
         }

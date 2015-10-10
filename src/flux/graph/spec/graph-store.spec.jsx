@@ -248,7 +248,6 @@ describe( 'A graph store', () => {
         },
         edges: { a0: data.initial.graph.edges.a0 }
       });
-
       const rules = Map({
         vertices: Map({ 'vA': 'vA 1' }),
         edges: Map({ 'a0': 'a0 1' })
@@ -272,4 +271,35 @@ describe( 'A graph store', () => {
     } );
   } );
 
+  describe( 'called to insert a disjoint subgraph', () => {
+    beforeEach( () => {
+      const pseudoSelection = convert.graph({
+        vertices: { vA: data.initial.graph.vertices.vA },
+        edges: { a0: data.initial.graph.edges.a0 }
+      });
+      const rules = Map({
+        vertices: Map({ 'vA': 'vA 1' }),
+        edges: Map({ 'a0': 'a0 1' })
+      });
+      const subGraph = store.applyRenameRules( pseudoSelection, rules );
+      store.insert( subGraph );
+    } );
+
+    it( 'generates an isomorphic graph based on these rules', () => {
+      const vA1 = copy( data.initial.graph.vertices.vA );
+      vA1.id = 'vA 1';
+      vA1.ports.outbound[ 1 ].edgeId = 'a0 1';
+      const a01 = copy( data.initial.graph.edges.a0 );
+      a01.id = 'a0 1';
+      const expected = copy( data.initial.graph );
+      expected.edges[ 'a0 1' ] = a01;
+      expected.vertices[ 'vA 1' ] = vA1;
+      expect( diff( expected, store.graph.toJS() ) ).toEqual( {} );
+    } );
+  } );
+
 } );
+
+function copy( o ) {
+  return JSON.parse( JSON.stringify( o ) );
+}

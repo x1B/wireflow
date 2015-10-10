@@ -222,7 +222,6 @@ class GraphStore {
       .set( 'edges', this.graph.edges.merge( disjointGraph.edges ) )
       .set( 'vertices', this.graph.vertices.merge( disjointGraph.vertices ) );
   }
-
 }
 
 export default GraphStore;
