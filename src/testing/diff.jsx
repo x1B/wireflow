@@ -9,7 +9,7 @@
  * http://laxarjs.org/license
  */
 function diff( fromVal, toVal ) {
-   console.log( 'From: ', fromVal, '\n  To: ', toVal ); // :TODO: DELETE ME
+   // console.log( 'From: ', fromVal, '\n  To: ', toVal ); // :TODO: DELETE ME
 
    var subjectType = type( fromVal );
    var targetType = type( toVal );

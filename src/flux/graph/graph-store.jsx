@@ -106,11 +106,10 @@ class GraphStore {
     }
 
     const current = this.graph;
-    const next = current.setIn( portsPath, current.getIn( portsPath ).map( p => {
-      return p.id !== port.id ? p : port.set( 'edgeId', null );
-    } ) );
-
-    this.graph = next;
+    this.graph = current
+      .setIn( portsPath, current.getIn( portsPath ).map( p => {
+        return p.id !== port.id ? p : port.set( 'edgeId', null );
+      } ) );
     this.pruneEmptyEdges();
   }
 
@@ -131,7 +130,7 @@ class GraphStore {
   }
 
   disconnectAll( edgeId ) {
-    this.graph = this.mapGraphPorts( this.graph, p => p.set( 'edgeId',
+    this.graph = mapGraphPorts( this.graph, p => p.set( 'edgeId',
       p.edgeId === edgeId ? null : p.edgeId
     ) );
   }
@@ -158,56 +157,6 @@ class GraphStore {
 
 
   // pure helpers
-
-  mapVertexPorts( v, f ) {
-    return v.set( 'ports', Ports({
-      inbound: v.ports.inbound.map( f ),
-      outbound: v.ports.outbound.map( f )
-    }) );
-  }
-
-  mapVertices( graph, f ) {
-    return graph.setIn( [ 'vertices' ], graph.vertices.map( f ) );
-  }
-
-  mapEdges( graph, f ) {
-    return graph.setIn( [ 'edges' ], graph.edges.map( f ) );
-  }
-
-  mapGraphPorts( graph, f ) {
-    return this.mapVertices( graph, v => this.mapVertexPorts( v, f ) );
-  }
-
-  insert( newGraph, renameRules ) {
-    const disjointGraph = renameRules ?
-      this.applyRenameRules( renameRules ) :
-      newGraph;
-
-    this.graph = this.graph
-      .set( 'edges', this.graph.edges.merge( disjointGraph.edges ) )
-      .set( 'vertices', this.graph.vertices.merge( disjointGraph.vertices ) );
-  }
-
-  applyRenameRules( newGraph, renameRules ) {
-    const edgeRules = renameRules.get( 'edges' );
-    const vertexRules = renameRules.get( 'vertices' );
-    const edges = {};
-    newGraph.edges.forEach( (edge, eId) => {
-      const newId = edgeRules.get( eId );
-      edges[ newId ] = edge.setIn( [ 'id' ], newId );
-    } );
-    const vertices = {};
-    newGraph.vertices.forEach( (vertex, vId) => {
-      const newId = vertexRules.get( vId );
-      vertices[ newId ] = vertex.setIn( [ 'id' ], newId );
-    } );
-    return this.mapGraphPorts(
-      Graph({ edges: Map( edges ), vertices: Map( vertices ) }),
-      p => p.set( 'edgeId', (
-        p.edgeId && edgeRules.get( p.edgeId ) ) || p.edgeId
-      )
-    );
-  }
 
   renameRules( newGraph ) {
     return Map({
@@ -243,6 +192,53 @@ class GraphStore {
     }
   }
 
+  applyRenameRules( newGraph, renameRules ) {
+    const edgeRules = renameRules.get( 'edges' );
+    const vertexRules = renameRules.get( 'vertices' );
+    const edges = {};
+    newGraph.edges.forEach( (edge, eId) => {
+      const newId = edgeRules.get( eId );
+      edges[ newId ] = edge.setIn( [ 'id' ], newId );
+    } );
+    const vertices = {};
+    newGraph.vertices.forEach( (vertex, vId) => {
+      const newId = vertexRules.get( vId ) || vertex.id;
+      vertices[ newId ] = vertex.setIn( [ 'id' ], newId );
+    } );
+    return mapGraphPorts(
+      Graph({ edges: Map( edges ), vertices: Map( vertices ) }),
+      p => p.set( 'edgeId',
+        p.edgeId && edgeRules.get( p.edgeId ) || p.edgeId || null
+      )
+    );
+  }
+
+  insert( newGraph, renameRules ) {
+    const disjointGraph = renameRules ?
+      this.applyRenameRules( renameRules ) :
+      newGraph;
+
+    this.graph = this.graph
+      .set( 'edges', this.graph.edges.merge( disjointGraph.edges ) )
+      .set( 'vertices', this.graph.vertices.merge( disjointGraph.vertices ) );
+  }
+
 }
 
 export default GraphStore;
+
+
+function mapVertexPorts( v, f ) {
+  return v.set( 'ports', Ports({
+    inbound: v.ports.inbound.map( f ),
+    outbound: v.ports.outbound.map( f )
+  }) );
+}
+
+function mapVertices( graph, f ) {
+  return graph.setIn( [ 'vertices' ], graph.vertices.map( f ) );
+}
+
+function mapGraphPorts( graph, f ) {
+  return mapVertices( graph, v => mapVertexPorts( v, f ) );
+}

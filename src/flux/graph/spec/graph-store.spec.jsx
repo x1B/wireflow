@@ -1,7 +1,6 @@
 import GraphStore from '../graph-store';
 import DispatcherMock from '../../../testing/dispatcher-mock';
-
-import diff from './diff';
+import diff from '../../../testing/diff';
 
 import data from './data';
 import { List, Map } from 'immutable';
@@ -225,13 +224,13 @@ describe( 'A graph store', () => {
     var rules;
     beforeEach( () => {
       const pseudoSelection = convert.graph({
-        vertices: { vA: store.graph.vertices.get( 'vA' ) },
-        edges: { a0: store.graph.edges.get( 'a0' ) }
+        vertices: { vA: data.initial.graph.vertices.vA },
+        edges: { a0: data.initial.graph.edges.a0 }
       });
       rules = store.renameRules( pseudoSelection );
     } );
 
-    it( 'provides a mapping for an isomorphic but disjoint graph', () => {
+    it( 'provides a map to an isomorphic graph, disjoint to its own', () => {
       expect( rules.toJS() ).toEqual( {
         vertices: { 'vA': 'vA 1' },
         edges: { 'a0': 'a0 1' }
@@ -239,14 +238,17 @@ describe( 'A graph store', () => {
     } );
   } );
 
-
   describe( 'called to apply rename rules', () => {
     var result;
     beforeEach( () => {
       const pseudoSelection = convert.graph({
-        vertices: { vA: store.graph.vertices.get( 'vA' ) },
-        edges: { a0: store.graph.edges.get( 'a0' ) }
+        vertices: {
+          vA: data.initial.graph.vertices.vA,
+          vB: data.initial.graph.vertices.vB
+        },
+        edges: { a0: data.initial.graph.edges.a0 }
       });
+
       const rules = Map({
         vertices: Map({ 'vA': 'vA 1' }),
         edges: Map({ 'a0': 'a0 1' })
@@ -254,15 +256,20 @@ describe( 'A graph store', () => {
       result = store.applyRenameRules( pseudoSelection, rules );
     } );
 
-    it( 'provides a mapping for an isomorphic but disjoint graph', () => {
+    it( 'generates an isomorphic graph based on these rules', () => {
       const expected = convert.graph({
-        vertices: { 'vA 1': store.graph.vertices.get( 'vA' ) },
-        edges: { 'a0 1': store.graph.edges.get( 'a0' ) }
+        vertices: {
+          'vA 1': data.initial.graph.vertices.vA,
+          vB: data.initial.graph.vertices.vB
+        },
+        edges: { 'a0 1': data.initial.graph.edges.a0 }
       }).toJS();
+      expected.edges[ 'a0 1' ].id = 'a0 1';
+      expected.vertices[ 'vA 1' ].id = 'vA 1';
       expected.vertices[ 'vA 1' ].ports.outbound[ 1 ].edgeId = 'a0 1';
+      expected.vertices[ 'vB' ].ports.outbound[ 1 ].edgeId = 'a0 1';
       expect( diff( expected, result.toJS() ) ).toEqual( {} );
     } );
   } );
-
 
 } );
