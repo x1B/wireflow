@@ -1,7 +1,11 @@
 import { Map, List, Record } from 'immutable';
 import options from '../../util/options';
 
-const Graph = Record({ edges: Map(), vertices: Map() });
+const Graph = Record({
+  edges: Map(),
+  vertices: Map()
+});
+
 const Port = Record({
   id: null,
   label: '',
@@ -9,20 +13,43 @@ const Port = Record({
   type: null,
   edgeId: null
 });
-const Ports = Record({ inbound: List(), outbound: List() });
-const Vertex = Record({ id: null, label: '', ports: Ports() });
-const Edge = Record({ id: null, label: '', type: null });
-const Type = Record({ label: '', owningPort: null, hidden: false });
+
+const Ports = Record({
+  inbound: List(),
+  outbound: List()
+});
+
+const Vertex = Record({
+  id: null,
+  label: '',
+  ports: Ports()
+});
+
+const Edge = Record({
+  id: null,
+  label: '',
+  type: null
+});
+
+const Type = Record({
+  label: '',
+  owningPort: null,
+  hidden: false
+});
 
 const IN = 'inbound';
 const OUT = 'outbound';
 const Directions = List.of( IN, OUT );
 
 
+// convert from plain JS structures:
+
 function graph( jsGraph ) {
+  const jsEdges = Map( jsGraph.edges );
+  const jsVertices = Map( jsGraph.vertices );
   return Graph({
-    edges: Map( jsGraph.edges ).mapEntries( ([ k, v ]) => [ k, edge(v, k) ] ),
-    vertices: Map( jsGraph.vertices ).mapEntries( ([ k, v ]) => [ k, vertex(v, k) ] )
+    edges: jsEdges.mapEntries( ([ k, v ]) => [ k, edge(v, k) ] ),
+    vertices: jsVertices.mapEntries( ([ k, v ]) => [ k, vertex(v, k) ] )
   });
 }
 
@@ -49,7 +76,6 @@ function ports( jsPorts ) {
 function port( direction ) {
   return jsPort => Port( options( jsPort, { direction: direction } ) );
 }
-
 
 function types( jsTypes ) {
   return Map( jsTypes ).map( type );

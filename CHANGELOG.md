@@ -2,6 +2,7 @@
 
 ## Last Changes
 
+- added basic copy/paste (still broken for some cases)
 - added favicon
 
 

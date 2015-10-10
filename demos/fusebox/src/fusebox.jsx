@@ -34,8 +34,8 @@ const {
 const dispatcher = new Dispatcher( render );
 
 new HistoryStore( dispatcher );
-const graphStore = new GraphStore( dispatcher, graph( data.graph ), types( data.types ) );
-const layoutStore = new LayoutStore( dispatcher, layout( data.layout ), graphStore );
+const graphStore = new GraphStore( dispatcher, graph( data.test.graph ), types( data.test.types ) );
+const layoutStore = new LayoutStore( dispatcher, layout( data.test.layout ), graphStore );
 const settingsStore = new SettingsStore( dispatcher, Settings({ mode: READ_WRITE }) );
 const selectionStore = new SelectionStore( dispatcher, layoutStore, graphStore );
 

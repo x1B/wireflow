@@ -1,24 +1,3 @@
-// :TODO: move actual action wiring to graph component (similar to dragdrop)
-
-import {
-  HandleFocusReceived,
-  HandleFocusLost
-} from '../flux/settings/settings-actions';
-
-import {
-  DeleteSelection
-} from '../flux/selection/selection-actions';
-
-import {
-  UiUndo,
-  UiRedo,
-  CreateCheckpoint
-} from '../flux/history/history-actions';
-
-
-/** Maintain fake clipboard across instances if no system clipboard is available. */
-var fakeClipboard;
-
 const KEY_CODE_DELETE = 46;
 const KEY_CODE_C = 67;
 const KEY_CODE_V = 86;
@@ -27,7 +6,31 @@ const KEY_CODE_Y = 89;
 const KEY_CODE_Z = 90;
 const KEY_CODE_ESCAPE = 0x1B;
 
-export default function( domNode, eventHandler, isReadOnly ) {
+const noOp = () => true;
+
+export default function( domNode, options ) {
+
+  const {
+    isReadOnly,
+    onCut,
+    onCopy,
+    onPaste,
+    onDelete,
+    onFocusReceived,
+    onFocusLost,
+    onUndo,
+    onRedo
+  } = Object.assign( {
+    isReadOnly: noOp,
+    onCut: noOp,
+    onCopy: noOp,
+    onPaste: noOp,
+    onDelete: noOp,
+    onFocusReceived: noOp,
+    onFocusLost: noOp,
+    onUndo: noOp,
+    onRedo: noOp
+  }, options );
 
   /**
    * If the user agent supports clipboard events, the cut/copy/paste handlers will be called twice after
@@ -54,11 +57,11 @@ export default function( domNode, eventHandler, isReadOnly ) {
     if( focusHandlersInstalled ) {
       return;
     }
-    eventHandler( HandleFocusReceived({ domNode: domNode }) );
     document.addEventListener( 'keydown', handleKeys );
     document.body.addEventListener( 'copy', handleCopy );
     document.body.addEventListener( 'cut', handleCut );
     focusHandlersInstalled = true;
+    onFocusReceived();
   }
 
 
@@ -70,71 +73,59 @@ export default function( domNode, eventHandler, isReadOnly ) {
     document.body.removeEventListener( 'copy', handleCopy );
     document.body.removeEventListener( 'cut', handleCut );
     focusHandlersInstalled = false;
-    eventHandler( HandleFocusLost() );
+    onFocusLost();
   }
-
 
   function handleCopy( event ) {
     if( !clipboardPrepared ) {
-      copySelectionToClipboard();
+      onCopy( event );
     }
-    event.clipboardData.setData( 'application/json', fakeClipboard );
-    event.clipboardData.setData( 'text/plain', fakeClipboard );
     event.preventDefault();
     clipboardPrepared = false;
   }
-
 
   function handleCut( event ) {
     if( !clipboardPrepared ) {
-      copySelectionToClipboard();
-      eventHandler( DeleteSelection() );
+      onCut( event );
     }
-    event.clipboardData.setData( 'application/json', fakeClipboard );
-    event.clipboardData.setData( 'text/plain', fakeClipboard );
     event.preventDefault();
     clipboardPrepared = false;
   }
-
-
-  function copySelectionToClipboard() {
-    // :TODO:
-    // fakeClipboard = JSON.stringify( selectionController.copy() );
-    // ...
-  }
-
 
   function handleKeys( event ) {
     if( event.keyCode === KEY_CODE_DELETE ) {
       if( isReadOnly() ) { return; }
-      eventHandler( CreateCheckpoint({ before: 'Delete Selection' }) );
-      eventHandler( DeleteSelection() );
+      onDelete();
     }
     else if( event.keyCode === KEY_CODE_ESCAPE ) {
-      // :TODO:
+      // :TODO: cancel any ongoing drag operation
     }
     else if( event.metaKey || event.ctrlKey ) {
       switch( event.keyCode ) {
         case KEY_CODE_Z:
-          eventHandler( event.shiftKey ? UiRedo() : UiUndo() );
+          if( event.shiftKey ) {
+            onRedo();
+          }
+          else {
+            onUndo();
+          }
           return;
         case KEY_CODE_Y:
-          eventHandler( UiRedo() );
+          onRedo();
           return;
         case KEY_CODE_C:
-          copySelectionToClipboard();
+          onCopy();
           clipboardPrepared = true;
           return;
         case KEY_CODE_X:
           if( isReadOnly() ) { return; }
-          copySelectionToClipboard();
-          // :TODO:
+          onCut();
           clipboardPrepared = true;
           return;
         case KEY_CODE_V:
-          if( fakeClipboard ) {
-            // :TODO:
-          }
+          if( isReadOnly() ) { return; }
+          onPaste();
+          clipboardPrepared = true;
           return;
         default:
           // ok, just an unhandled key
