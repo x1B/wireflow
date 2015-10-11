@@ -30,6 +30,30 @@ const EdgeMeasurements = Record({
   dimensions: null
 }, 'EdgeMeasurements');
 
+function measurements( jsMeasurements ) {
+  return Measurements({
+    edges: Map( jsMeasurements.edges ).map( edgeMeasurements ),
+    vertices: Map( jsMeasurements.vertices ).map( vertexMeasurements )
+  });
+}
+
+function vertexMeasurements( jsVertexMeasurements ) {
+  return VertexMeasurements({
+    dimensions: dimensions( jsVertexMeasurements.dimensions ),
+    inbound: Map( jsVertexMeasurements.inbound ).map( coords ),
+    outbound: Map( jsVertexMeasurements.outbound ).map( coords )
+  });
+}
+
+function edgeMeasurements( jsEdgeMeasurements ) {
+  return EdgeMeasurements({
+    dimensions: Dimensions( jsEdgeMeasurements.dimensions )
+  });
+}
+
+function dimensions( jsDimensions ) {
+  return Dimensions( jsDimensions );
+}
 
 function coords( jsCoords ) {
   return Coords( jsCoords );
@@ -50,6 +74,10 @@ export default {
   VertexMeasurements,
   EdgeMeasurements,
   convert: {
+    measurements,
+    vertexMeasurements,
+    edgeMeasurements,
+    dimensions,
     coords,
     layout
   }

@@ -58,11 +58,13 @@ class LayoutStore {
 
     dispatcher.register( RemoveVertex, ev => {
       this.layout = this.layout.removeIn( [ 'vertices', ev.vertexId ] );
+      this.measurements = this.measurements.removeIn( [ 'vertices', ev.vertexId ] );
       this.save();
     } );
 
     dispatcher.register( RemoveEdge, ev => {
-      this.layout = this.layout.removeIn( [ 'vertices', ev.edgeId ] );
+      this.layout = this.layout.removeIn( [ 'edges', ev.edgeId ] );
+      this.measurements = this.measurements.removeIn( [ 'edges', ev.edgeId ] );
       this.save();
     } );
 
