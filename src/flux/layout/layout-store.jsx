@@ -99,40 +99,28 @@ class LayoutStore {
   }
 
   insert( newLayout, renameRules ) {
-    var disjointLayout;
-    if( renameRules ) {
-      const edgeRules = renameRules.get( 'edges' );
-      const edges = {};
-      newLayout.edges.forEach( (edge, eId) => {
-        const newId = edgeRules.get( eId );
-        edges[ newId ] = edge;
-      } );
-      const vertexRules = renameRules.get( 'vertices' );
-      const vertices = {};
-      newLayout.vertices.forEach( (vertex, vId) => {
-        const newId = vertexRules.get( vId );
-        vertices[ newId ] = vertex;
-      } );
-      disjointLayout = Layout({
-        edges: Map( edges ),
-        vertices: Map( vertices )
-      });
-    }
-    else {
-      disjointLayout = newLayout;
-    }
-
-    console.log( 'CURRENT L.E:', this.layout.edges.toJS() );
-    console.log( 'NEW L.E:    ', disjointLayout.edges.toJS() );
-    console.log( 'UNION L.E:  ', this.layout.edges.merge( disjointLayout.edges ).toJS() );
-
-    console.log( 'CURRENT L.V:', this.layout.vertices.toJS() );
-    console.log( 'NEW L.V:    ', disjointLayout.vertices.toJS() );
-    console.log( 'UNION L.V:  ', this.layout.vertices.merge( disjointLayout.vertices ) .toJS() );
-
+    const disjointLayout = renameRules ?
+      this.applyRenameRules( newLayout, renameRules ) :
+      newLayout;
     this.layout = this.layout
       .set( 'edges', this.layout.edges.merge( disjointLayout.edges ) )
       .set( 'vertices', this.layout.vertices.merge( disjointLayout.vertices ) );
+  }
+
+  applyRenameRules( newLayout, renameRules ) {
+    return Layout({
+      edges: renamed( newLayout.edges, renameRules.get( 'edges' ) ),
+      vertices: renamed( newLayout.vertices, renameRules.get( 'vertices' ) )
+    });
+
+    function renamed( map, rules ) {
+      const workingCopy = {};
+      map.forEach( (value, key) => {
+        const newKey = rules.get( key ) || key;
+        workingCopy[ newKey ] = value;
+      } );
+      return Map(workingCopy);
+    }
   }
 
   moveSelection( selection, referenceLayout, offset ) {

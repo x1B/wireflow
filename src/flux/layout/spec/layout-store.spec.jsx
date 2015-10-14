@@ -5,7 +5,7 @@ import diff from '../../../testing/diff';
 import data from './data';
 import graphData from '../../graph/spec/data';
 
-import { List } from 'immutable';
+import { List, Map } from 'immutable';
 import { RemoveEdge, RemoveVertex } from '../../graph/graph-actions';
 import {
   MeasureVertex,
@@ -228,4 +228,59 @@ describe( 'A layout store', () => {
     } );
   } );
 
+  describe( 'called to apply rename rules', () => {
+    var result;
+    beforeEach( () => {
+      const pseudoSelection = convert.layout({
+        vertices: {
+          vA: data.initial.layout.vertices.vA,
+          vB: data.initial.layout.vertices.vB
+        },
+        edges: { a0: data.initial.layout.edges.a0 }
+      });
+      const rules = Map({
+        vertices: Map({ 'vA': 'vA 1' }),
+        edges: Map({ 'a0': 'a0 1' })
+      });
+      result = store.applyRenameRules( pseudoSelection, rules );
+    } );
+
+    it( 'generates an isomorphic layout based on these rules', () => {
+      const expected = convert.layout({
+        vertices: {
+          'vA 1': data.initial.layout.vertices.vA,
+          vB: data.initial.layout.vertices.vB
+        },
+        edges: { 'a0 1': data.initial.layout.edges.a0 }
+      }).toJS();
+      expect( diff( expected, result.toJS() ) ).toEqual( {} );
+    } );
+  } );
+
+  describe( 'called to insert a disjoint layout', () => {
+    beforeEach( () => {
+      const pseudoSelection = convert.layout({
+        vertices: { vA: data.initial.layout.vertices.vA },
+        edges: { a0: data.initial.layout.edges.a0 }
+      });
+      const rules = Map({
+        vertices: Map({ 'vA': 'vA 1' }),
+        edges: Map({ 'a0': 'a0 1' })
+      });
+      const subLayout = store.applyRenameRules( pseudoSelection, rules );
+      store.insert( subLayout );
+    } );
+
+    it( 'extends its own layout with the supplied layout', () => {
+      const vA1 = copy( data.initial.layout.vertices.vA );
+      const a01 = copy( data.initial.layout.edges.a0 );
+      const expected = copy( data.initial.layout );
+      expected.edges[ 'a0 1' ] = a01;
+      expected.vertices[ 'vA 1' ] = vA1;
+      expect( diff( expected, store.layout.toJS() ) ).toEqual( {} );
+    } );
+  } );
+
 } );
+
+function copy( _ ) { return JSON.parse( JSON.stringify( _ ) ); }
