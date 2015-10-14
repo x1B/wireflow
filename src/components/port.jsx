@@ -5,14 +5,14 @@ import shallowEqual from '../util/shallow-equal';
 import count from '../util/metrics';
 
 import layoutActions from '../flux/layout/layout-actions';
-import { Coords } from '../flux/layout/layout-model';
+import { Coords, PortDragInfo } from '../flux/layout/layout-model';
 import graphActions from '../flux/graph/graph-actions';
 import { CreateCheckpoint } from '../flux/history/history-actions';
-import { IN, OUT } from '../flux/graph/graph-model';
+import { Connectable, IN, OUT } from '../flux/graph/graph-model';
 import { READ_WRITE } from '../flux/settings/settings-model';
 
-const { MeasurePort, DragPort, payload: { PortDragInfo } } = layoutActions;
-const { ConnectPort, DisconnectPort, payload: { Connectable } } = graphActions;
+const { MeasurePort, DragPort } = layoutActions;
+const { ConnectPort, DisconnectPort } = graphActions;
 
 const Port = React.createClass({
 

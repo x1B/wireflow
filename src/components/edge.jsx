@@ -5,14 +5,14 @@ import * as shallowEqual from '../util/shallow-equal';
 import count from '../util/metrics';
 
 import { CreateCheckpoint } from '../flux/history/history-actions';
-import { Coords, Dimensions } from '../flux/layout/layout-model';
-import { MeasureEdge, MoveEdge, payload } from '../flux/layout/layout-actions';
+import {
+  Coords, Dimensions, EdgeMeasurements
+} from '../flux/layout/layout-model';
+import { MeasureEdge, MoveEdge } from '../flux/layout/layout-actions';
 import {
   MoveSelection, SelectEdge, DeselectEdge, ClearSelection
 } from '../flux/selection/selection-actions';
 
-
-const { EdgeMeasurements } = payload;
 
 const Edge = React.createClass({
 

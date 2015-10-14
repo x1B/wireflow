@@ -37,6 +37,14 @@ const Type = Record({
   hidden: false
 });
 
+const Connectable = Record({
+  edgeId: null,
+  type: null,
+  vertexId: null,
+  portId: null,
+  direction: null
+}, 'Connectable');
+
 const IN = 'inbound';
 const OUT = 'outbound';
 const Directions = List.of( IN, OUT );
@@ -97,6 +105,8 @@ export default {
   Directions,
   IN,
   OUT,
+
+  Connectable,
 
   convert: {
     types,

@@ -23,23 +23,9 @@ const RemoveEdge = Record({
   type: () => RemoveEdge
 }, 'RemoveEdge');
 
-
-const Connectable = Record({
-  edgeId: null,
-  type: null,
-  vertexId: null,
-  portId: null,
-  direction: null
-}, 'Connectable');
-
-
 export default {
   DisconnectPort,
   ConnectPort,
   RemoveVertex,
-  RemoveEdge,
-
-  payload: {
-    Connectable
-  }
+  RemoveEdge
 };

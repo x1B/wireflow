@@ -159,14 +159,15 @@ class LayoutStore {
     const fromCoords = layout.vertices.get( from.vertexId );
     const toCoords = layout.vertices.get( to.vertexId );
 
-    const left = (fromCoords.left + fromMeasurements.dimensions.width + toCoords.left) / 2;
+    const left = (
+      fromCoords.left + fromMeasurements.dimensions.width + toCoords.left
+    ) / 2 - edgeOffset;
 
     const fromPortBox = fromMeasurements.getIn([ from.direction, from.portId ]);
     const toPortBox = toMeasurements.getIn([ to.direction, to.portId ]);
     const top = (
       fromCoords.top + fromPortBox.top + toCoords.top + toPortBox.top
-      - edgeOffset
-    ) / 2;
+    ) / 2 - edgeOffset;
 
     return this.layout.setIn( [ 'edges', edge.id ], Coords({
       left: left,

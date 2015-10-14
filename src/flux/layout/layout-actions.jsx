@@ -1,17 +1,16 @@
 import { Record } from 'immutable';
 
-import { Coords, VertexMeasurements, EdgeMeasurements } from './layout-model';
-import { payload } from '../graph/graph-actions';
+import { Connectable } from '../graph/graph-model';
+import {
+  Coords, VertexMeasurements, EdgeMeasurements, PortDragInfo
+} from './layout-model';
 
-
-// event payload used during port drag/drop
-const PortDragInfo = Record({
-  vertex: null,
-  port: null,
-  portCoords: null,
-  mouseCoords: null
-}, 'PortDragInfo');
-
+const HandleEdgeInserted = Record({
+  edge: null,
+  from: Connectable(),
+  to: Connectable(),
+  type: () => HandleEdgeInserted
+}, 'HandleEdgeInserted');
 
 const MeasurePort = Record({
   port: null,
@@ -31,7 +30,6 @@ const MeasureEdge = Record({
   type: () => MeasureEdge
 }, 'MeasureEdge');
 
-
 const DragPort = Record({
   info: PortDragInfo(),
   type: () => DragPort
@@ -49,15 +47,9 @@ const MoveVertex = Record({
   type: () => MoveVertex
 }, 'MoveVertex');
 
-
-const HandleEdgeInserted = Record({
-  edge: null,
-  from: payload.Connectable(),
-  to: payload.Connectable(),
-  type: () => HandleEdgeInserted
-}, 'HandleEdgeInserted');
-
-const AutoLayout = Record({ type: () => AutoLayout }, 'AutoLayout');
+const AutoLayout = Record({
+  type: () => AutoLayout
+}, 'AutoLayout');
 
 
 export default {
@@ -68,11 +60,5 @@ export default {
   MoveVertex,
   DragPort,
   HandleEdgeInserted,
-  AutoLayout,
-
-  payload: {
-    PortDragInfo,
-    EdgeMeasurements,
-    VertexMeasurements
-  }
+  AutoLayout
 };

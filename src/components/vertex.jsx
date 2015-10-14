@@ -6,7 +6,9 @@ import count from '../util/metrics';
 
 import { CreateCheckpoint } from '../flux/history/history-actions';
 import { IN, OUT } from '../flux/graph/graph-model';
-import { Coords, Dimensions } from '../flux/layout/layout-model';
+import {
+  Coords, Dimensions, VertexMeasurements
+} from '../flux/layout/layout-model';
 import layoutActions from '../flux/layout/layout-actions';
 import {
   ClearSelection, SelectVertex, DeselectVertex, MoveSelection
@@ -16,7 +18,7 @@ import Port from './port';
 
 
 const {
-  MeasureVertex, MeasurePort, MoveVertex, payload: { VertexMeasurements }
+  MeasureVertex, MeasurePort, MoveVertex
 } = layoutActions;
 
 const Vertex = React.createClass({

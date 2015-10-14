@@ -30,6 +30,13 @@ const EdgeMeasurements = Record({
   dimensions: null
 }, 'EdgeMeasurements');
 
+const PortDragInfo = Record({
+  vertex: null,
+  port: null,
+  portCoords: null,
+  mouseCoords: null
+}, 'PortDragInfo');
+
 function measurements( jsMeasurements ) {
   return Measurements({
     edges: Map( jsMeasurements.edges ).map( edgeMeasurements ),
@@ -73,6 +80,7 @@ export default {
   Measurements,
   VertexMeasurements,
   EdgeMeasurements,
+  PortDragInfo,
   convert: {
     measurements,
     vertexMeasurements,

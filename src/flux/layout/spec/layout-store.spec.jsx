@@ -17,8 +17,14 @@ import {
 } from '../layout-actions';
 import { SaveState } from '../../history/history-actions';
 
-import { convert as graphConvert } from '../../graph/graph-model';
-import { convert } from '../layout-model';
+import {
+  convert as graphConvert,
+  Edge,
+  Connectable,
+  IN,
+  OUT
+} from '../../graph/graph-model';
+import { convert, Coords } from '../layout-model';
 
 function dummyGraph() {
   return graphConvert.graph( graphData.initial.graph );
@@ -93,10 +99,6 @@ describe( 'A layout store', () => {
 
   describe( 'asked to remove a complex edge', () => {
     beforeEach( () => {
-      dispatcher.handleAction( MeasureEdge({
-        edge: dummyGraph().edges.get( 'r0' ),
-        measurements: dummyMeasurements().edges.get( 'r0' )
-      }) );
       dispatcher.handleAction( RemoveEdge({ edgeId: 'r0' }) );
     } );
 
@@ -105,10 +107,6 @@ describe( 'A layout store', () => {
       expect( actual.edges.r0 ).not.toBeDefined();
     } );
 
-    it( 'removes that edge from the measurements', () => {
-      const actual = store.measurements.toJS();
-      expect( actual.edges.r0 ).not.toBeDefined();
-    } );
   } );
 
   describe( 'asked to store vertex measurements', () => {
@@ -126,10 +124,6 @@ describe( 'A layout store', () => {
 
   describe( 'asked to remove a vertex', () => {
     beforeEach( () => {
-      dispatcher.handleAction( MeasureVertex({
-        vertex: dummyGraph().vertices.get( 'vA' ),
-        measurements: dummyMeasurements().vertices.get( 'vA' )
-      }) );
       dispatcher.handleAction( RemoveVertex({ vertexId: 'vA' }) );
     } );
 
@@ -139,6 +133,98 @@ describe( 'A layout store', () => {
 
     it( 'removes that vertex from the measurements', () => {
       expect( store.measurements.vertices.has( 'vA' ) ).toBe( false );
+    } );
+  } );
+
+  describe( 'asked to move a vertex', () => {
+    beforeEach( () => {
+      dispatcher.handleAction( MoveVertex({
+        vertex: dummyGraph().vertices.get( 'vA' ),
+        to: Coords({ left: 17, top: 4 })
+      }) );
+    } );
+
+    it( 'updates that vertices\' coordinates', () => {
+      expect( store.layout.vertices.get( 'vA' ).toJS() ).toEqual({
+        left: 17, top: 4
+      });
+    } );
+  } );
+
+  describe( 'asked to move an edge', () => {
+    beforeEach( () => {
+      dispatcher.handleAction( MoveEdge({
+        edge: dummyGraph().edges.get( 'r0' ),
+        to: Coords({ left: 170, top: 40 })
+      }) );
+    } );
+
+    it( 'updates that edges\' coordinates', () => {
+      expect( store.layout.edges.get( 'r0' ).toJS() ).toEqual({
+        left: 170, top: 40
+      });
+    } );
+  } );
+
+  describe( 'with measurements for all nodes', () => {
+
+    beforeEach( () => {
+      dummyMeasurements().vertices.forEach( (measurements, vId) => {
+        const vertex = dummyGraph().vertices.get( vId );
+        dispatcher.handleAction( MeasureVertex({ vertex, measurements }) );
+      });
+      dummyMeasurements().edges.forEach( (measurements, eId) => {
+        const edge = dummyGraph().edges.get( eId );
+        dispatcher.handleAction( MeasureEdge({ edge, measurements }) );
+      });
+    } );
+
+    describe( 'asked to remove a vertex', () => {
+      beforeEach( () => {
+        dispatcher.handleAction( RemoveVertex({ vertexId: 'vA' }) );
+      } );
+      it( 'removes that vertex from the measurements', () => {
+        expect( store.measurements.vertices.has( 'vA' ) ).toBe( false );
+      } );
+    } );
+
+    describe( 'asked to remove a complex edge', () => {
+      beforeEach( () => {
+        dispatcher.handleAction( RemoveEdge({ edgeId: 'r0' }) );
+      } );
+
+      it( 'removes that edge from the measurements', () => {
+        const actual = store.measurements.toJS();
+        expect( actual.edges.r0 ).not.toBeDefined();
+      } );
+    } );
+
+    describe( 'notified of a newly inserted complex edge', () => {
+      beforeEach( () => {
+        dispatcher.handleAction( HandleEdgeInserted({
+          edge: Edge({ id: 'r1', type: 'RESOURCE' }),
+          from: Connectable({ vertexId: 'vA', portId: 'o0', direction: OUT }),
+          to: Connectable({ vertexId: 'vC', portId: 'i1', direction: IN })
+        }) );
+      } );
+
+      it( 'places it between the ports it connects', () => {
+        const edgeOffset = 10;
+        const actual = store.layout.toJS();
+        expect( actual.edges.r1 ).toBeDefined();
+        expect( actual.edges.r1 ).toEqual({
+          left: -edgeOffset + 0.5 * (
+            data.initial.layout.vertices.vA.left +
+            data.initial.measurements.vertices.vA.outbound.o0.left +
+            data.initial.layout.vertices.vC.left +
+            data.initial.measurements.vertices.vC.inbound.i1.left ),
+          top: -edgeOffset + 0.5 * (
+            data.initial.layout.vertices.vA.top +
+            data.initial.measurements.vertices.vA.outbound.o0.top +
+            data.initial.layout.vertices.vC.top +
+            data.initial.measurements.vertices.vC.inbound.i1.top )
+        });
+      } );
     } );
   } );
 
