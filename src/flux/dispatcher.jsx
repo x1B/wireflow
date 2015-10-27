@@ -37,7 +37,7 @@ class Dispatcher {
     if( anyDispatched && !this.frameRequested ) {
       window.requestAnimationFrame( () => {
         this.frameRequested = false;
-        const markB = window.performance.now();
+        const markB = now();
         this.onAfterDispatch();
         count({ what: 'render', duration: now() - markB });
       } );

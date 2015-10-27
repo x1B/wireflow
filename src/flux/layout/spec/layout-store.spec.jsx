@@ -1,11 +1,9 @@
+import { List, Map } from 'immutable';
+
 import LayoutStore from '../layout-store';
 import DispatcherMock from '../../../testing/dispatcher-mock';
 import diff from '../../../testing/diff';
 
-import data from './data';
-import graphData from '../../graph/spec/data';
-
-import { List, Map } from 'immutable';
 import { RemoveEdge, RemoveVertex } from '../../graph/graph-actions';
 import {
   MeasureVertex,
@@ -25,6 +23,10 @@ import {
   OUT
 } from '../../graph/graph-model';
 import { convert, Coords } from '../layout-model';
+
+import data from './data';
+import graphData from '../../graph/spec/data';
+
 
 function dummyGraph() {
   return graphConvert.graph( graphData.initial.graph );
