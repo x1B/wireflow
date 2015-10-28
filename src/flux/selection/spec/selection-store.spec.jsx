@@ -34,6 +34,11 @@ import {
   convert as graphConvert
 } from '../../graph/graph-model';
 
+import {
+  RemoveVertex,
+  RemoveEdge
+} from '../../graph/graph-actions';
+
 import layoutData from '../../layout/spec/data';
 import graphData from '../../graph/spec/data';
 
@@ -174,18 +179,18 @@ describe( 'A selection store', () => {
     } );
   } );
 
-  describe( 'asked to resize the (non-existing) selection rectangle', () => {
+  describe( 'asked to size the (not yet existing) selection rectangle', () => {
     beforeEach( () => {
       dispatcher.handleAction( ResizeSelection({
-        coords: Coords({ left: 100, top: 50 }),
-        dimensions: Dimensions({ width: 600, height: 350 })
+        coords: Coords({ left: 55, top: 40 }),
+        dimensions: Dimensions({ width: 750, height: 140 })
       }) );
     } );
 
     it( 'sets up an initial rectangle', () => {
       const expected = {
-        coords: Coords({ left: 100, top: 50 }).toJS(),
-        dimensions: Dimensions({ width: 600, height: 350 }).toJS()
+        coords: Coords({ left: 55, top: 40 }).toJS(),
+        dimensions: Dimensions({ width: 750, height: 140 }).toJS()
       };
       const actual = store.selection.toJS();
       expect( diff( expected.coords, actual.coords ) ).toEqual({});
@@ -194,12 +199,95 @@ describe( 'A selection store', () => {
 
     it( 'adds intersecting vertices to the selection', () => {
       const actual = store.selection.vertices.toJS();
-      expect( diff( Set.of( 'vA', 'vB' ).toJS(), actual ) ).toEqual({});
+      expect( diff( Set.of( 'vA', 'vC' ).toJS(), actual ) ).toEqual({});
     } );
 
     it( 'adds intersecting edges to the selection', () => {
       const actual = store.selection.edges.toJS();
-      expect( diff( Set.of( 'r0', 'f0' ).toJS(), actual ) ).toEqual({});
+      expect( diff( Set.of( 'r0' ).toJS(), actual ) ).toEqual({});
+    } );
+
+    describe( 'then asked to grow it', () => {
+      beforeEach( () => {
+        dispatcher.handleAction( ResizeSelection({
+          coords: Coords({ left: 50, top: 40 }),
+          dimensions: Dimensions({ width: 800, height: 600 })
+        }) );
+      } );
+
+      it( 'adds intersecting vertices to the selection', () => {
+        const actual = store.selection.vertices.toJS();
+        const expected = Set.of( 'vA', 'vB', 'vC', 'vD' ).toJS();
+        expect( diff( expected, actual ) ).toEqual({});
+      } );
+
+      it( 'adds intersecting edges to the selection', () => {
+        const actual = store.selection.edges.toJS();
+        expect( diff( Set.of( 'r0', 'f0' ).toJS(), actual ) ).toEqual({});
+      } );
+    } );
+
+    describe( 'then asked to shrink it', () => {
+      beforeEach( () => {
+        dispatcher.handleAction( ResizeSelection({
+          coords: Coords({ left: 50, top: 40 }),
+          dimensions: Dimensions({ width: 400, height: 120 })
+        }) );
+      } );
+
+      it( 'removes non-intersecting vertices to the selection', () => {
+        const actual = store.selection.vertices.toJS();
+        expect( diff( Set.of( 'vA' ).toJS(), actual ) ).toEqual({});
+      } );
+
+      it( 'removes non-intersecting edges to the selection', () => {
+        const actual = store.selection.edges.toJS();
+        expect( diff( Set.of().toJS(), actual ) ).toEqual({});
+      } );
+    } );
+
+
+    describe( 'then asked to delete it', () => {
+      beforeEach( () => {
+        dispatcher.handleAction( DeleteSelection() );
+      } );
+
+      it( 'dispatches actions to remove the selected vertices', () => {
+        expect( dispatcher.dispatch ).toHaveBeenCalledWith( RemoveVertex({
+          vertexId: 'vA'
+        }) );
+        expect( dispatcher.dispatch ).toHaveBeenCalledWith( RemoveVertex({
+          vertexId: 'vC'
+        }) );
+      } );
+
+      it( 'dispatches actions to remove the selected edges', () => {
+        expect( dispatcher.dispatch ).toHaveBeenCalledWith( RemoveEdge({
+          edgeId: 'r0'
+        }) );
+      } );
+    } );
+
+    describe( 'when selected nodes are deleted', () => {
+      beforeEach( () => {
+        dispatcher.handleAction( RemoveVertex({
+          vertexId: 'vA'
+        }) );
+        dispatcher.handleAction( RemoveEdge({
+          edgeId: 'r0'
+        }) );
+
+      } );
+
+      it( 'modifies the selection vertices accordingly', () => {
+        const actual = store.selection.vertices.toJS();
+        expect( diff( Set.of( 'vC' ).toJS(), actual ) ).toEqual({});
+      } );
+
+      it( 'modifies the selection edges accordingly', () => {
+        const actual = store.selection.edges.toJS();
+        expect( diff( Set.of().toJS(), actual ) ).toEqual({});
+      } );
     } );
   } );
 
