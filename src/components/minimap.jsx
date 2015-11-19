@@ -28,12 +28,13 @@ const Minimap = React.createClass({
 
     const mapWidth = settings.minimap.width;
     const mapHeight = mapWidth * ( canvasSize.height / canvasSize.width );
+    const mapBoxHeight = mapWidth * Math.max( 0.3, canvasSize.height / canvasSize.width );
 
     const boxStyle = {
       width: ( viewport.width / canvasSize.width ) * mapWidth,
-      height: ( viewport.height / canvasSize.height ) * mapHeight,
+      height: ( viewport.height / canvasSize.height ) * mapBoxHeight,
       left: ( viewport.left / canvasSize.width ) * mapWidth,
-      top: ( viewport.top / canvasSize.height ) * mapHeight
+      top: ( viewport.top / canvasSize.height ) * mapBoxHeight
     };
 
     const showMap = viewport.width !== null && (
@@ -44,7 +45,7 @@ const Minimap = React.createClass({
 
     return <div className={classes}
                 onMouseDown={this.startDragReposition}
-                style={{ width: mapWidth, height: mapHeight }}>
+                style={{ width: mapWidth, height: mapBoxHeight }}>
       <div className='nbe-minimap-viewport'
            style={boxStyle} />
       <svg className='nbe-minimap-links'

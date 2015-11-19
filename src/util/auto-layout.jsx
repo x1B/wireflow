@@ -10,11 +10,11 @@ function calculateLayout( graph, measurements ) {
   };
 
   const dg = new dagre.graphlib.Graph();
-  // dagre.layout().nodeSep( 60 ).rankSep( 90 ).edgeSep( 0 ).rankDir( 'LR' ).run( dagreGraph );
+
   dg.setGraph( {
     rankdir: 'LR',
-    nodesep: 60,
-    ranksep: 90,
+    nodesep: 50,
+    ranksep: 60,
     edgesep: 0,
     marginx: 15,
     marginy: 15
@@ -29,7 +29,7 @@ function calculateLayout( graph, measurements ) {
   dagre.layout( dg );
   return {
     vertices: decode( 'V.', dg.nodes() ),
-    edges: decode( 'E.', dg.nodes() )
+    edges: decode( 'E.', dg.nodes(), { offsetY: 23, offsetX: -15 } )
   };
 
 
@@ -39,7 +39,7 @@ function calculateLayout( graph, measurements ) {
       const isInbound = groupNo === 0;
       group.forEach( ({ edgeId }) => {
         if( !edgeId ) { return; }
-        var dgNeighborId = 'E.' + edgeId;
+        let dgNeighborId = 'E.' + edgeId;
         if( !measurements.get( 'edges' ).get( edgeId ) ) {
           // invisible edge, "owned" by a vertex
           dgNeighborId = 'V.' + owners[ isInbound ? 'outbound' : 'inbound' ][ edgeId ];
@@ -75,15 +75,16 @@ function calculateLayout( graph, measurements ) {
   }
 
 
-  function decode( prefix, dgNodes ) {
-    var result = {};
+  function decode( prefix, dgNodes, options = {} ) {
+    const { offsetY = 0, offsetX = 0 } = options;
+    let result = {};
     dgNodes.forEach( dgNodeId => {
       const { label, width, height, x, y } = dg.node( dgNodeId );
       if( label.indexOf( prefix ) === 0 ) {
         const id = label.substring( prefix.length, label.length );
         result[ id ] = {
-          left: x - width / 2,
-          top: y - height / 2
+          left: x - width / 2 + offsetX,
+          top: y - height / 2 + offsetY
         };
       }
     } );
