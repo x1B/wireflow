@@ -39,8 +39,8 @@ const Vertex = React.createClass({
     const style = {
       position: 'absolute', // :TODO: move to stylesheet
       visibility: layout ? 'visible' : 'hidden',
-      left: layout.left,
-      top: layout.top
+      left: layout && layout.left,
+      top: layout && layout.top
     };
 
     const selectedClass = selected ? 'nbe-selected' : '';
