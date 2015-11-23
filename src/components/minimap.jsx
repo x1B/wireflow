@@ -15,7 +15,7 @@ const Minimap = React.createClass({
     const { viewport } = settings;
     const maxWidth = viewport.width * 0.8;
     const minBoxWidth = viewport.height * 0.1;
-    const maxHeight = viewport.height * 0.8;
+    const maxHeight = viewport.height * 0.95;
     const minBoxHeight = viewport.height * 0.1;
 
     const boxWidth = min( max( minBoxWidth, settings.minimap.width ), maxHeight );
@@ -53,10 +53,10 @@ const Minimap = React.createClass({
     } = this.mapDimensions( canvasSize, settings );
 
     const viewportStyle = {
-      width: ( viewport.width / canvasSize.width ) * boxWidth,
-      height: ( viewport.height / canvasSize.height ) * boxHeight,
-      left: ( viewport.left / canvasSize.width ) * boxWidth,
-      top: ( viewport.top / canvasSize.height ) * boxHeight
+      width: ( viewport.width / canvasSize.width ) * width,
+      height: ( viewport.height / canvasSize.height ) * height,
+      left: ( viewport.left / canvasSize.width ) * width,
+      top: ( viewport.top / canvasSize.height ) * height
     };
     const viewbox = [ 0, 0, canvasSize.width, canvasSize.height ].join( ' ' );
 
@@ -108,10 +108,10 @@ const Minimap = React.createClass({
 
   reposition( mapX, mapY ) {
     const { canvasSize, settings } = this.props;
-    const { boxWidth, boxHeight } = this.mapDimensions( canvasSize, settings );
+    const { width, height } = this.mapDimensions( canvasSize, settings );
     const { viewport } = settings;
-    const toLeft = (mapX / boxWidth) * canvasSize.width;
-    const toTop = (mapY / boxHeight) * canvasSize.height;
+    const toLeft = (mapX / width) * canvasSize.width;
+    const toTop = (mapY / height) * canvasSize.height;
     // center viewport at target coordinate:
     const left = max( 0,
       min( toLeft - viewport.width / 2, canvasSize.width - viewport.width ) );

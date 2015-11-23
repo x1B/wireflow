@@ -12,7 +12,9 @@ const Links = React.createClass({
   render() {
 
     const { measurements, layout, vertices, types } = this.props;
-
+    if( layout.vertices.isEmpty() && layout.edges.isEmpty() ) {
+      return <g />;
+    }
     count({ what: Links.displayName });
 
     return <g>{renderLinks()}</g>;
