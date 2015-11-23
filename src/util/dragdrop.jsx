@@ -49,19 +49,22 @@ export default function dragdrop( options ) {
   return { start };
 
 
-  function start( ev, payload, node ) {
+  function start( ev, payload, options ) {
     // we still need a minimum distance for actual drag
     dragStarted = false;
     const isLeftButton = ev.button === 0;
     const isTouch = ( ev.targetTouches || [] ).length;
 
-    const { target, clientX, clientY } = isTouch ? ev.targetTouches[ 0 ] : ev;
+    const pointerEvent = isTouch ? ev.targetTouches[ 0 ] : ev;
+    const { clientX, clientY } = pointerEvent;
+    const target = ( options && options.target ) || pointerEvent.target;
+
     const { left, top } = target.getBoundingClientRect();
     const offsetX = clientX - left;
     const offsetY = clientY - top;
     if( (isLeftButton || isTouch) && onBeforeStart( ev, offsetX, offsetY ) ) {
       base = { baseX: offsetX, baseY: offsetY };
-      dragNode = node || ev.currentTarget;
+      dragNode = ( options && options.dragNode ) || ev.currentTarget;
       dragPayload = payload;
       [ startClientX, startClientY ] = [ clientX, clientY ];
 

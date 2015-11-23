@@ -11,6 +11,26 @@ const { min, max } = Math;
 
 const Minimap = React.createClass({
 
+  mapDimensions( canvasSize, settings ) {
+    const { viewport } = settings;
+    const maxWidth = viewport.width * 0.8;
+    const minBoxWidth = viewport.height * 0.1;
+    const maxHeight = viewport.height * 0.8;
+    const minBoxHeight = viewport.height * 0.1;
+
+    const boxWidth = min( max( minBoxWidth, settings.minimap.width ), maxHeight );
+    const boxHeight = min( max( minBoxHeight, boxWidth * ( canvasSize.height / canvasSize.width ) ), maxHeight );
+    const width = min( boxWidth, boxHeight * ( canvasSize.width / canvasSize.height ) );
+    const height = width * ( canvasSize.height / canvasSize.width );
+
+    return {
+      width,
+      height,
+      boxWidth,
+      boxHeight
+    };
+  },
+
   render() {
 
     const {
@@ -24,18 +44,21 @@ const Minimap = React.createClass({
     } = this.props;
 
     const { viewport } = settings;
-    const viewbox = [ 0, 0, canvasSize.width, canvasSize.height ].join( ' ' );
 
-    const mapWidth = settings.minimap.width;
-    const mapHeight = mapWidth * ( canvasSize.height / canvasSize.width );
-    const mapBoxHeight = mapWidth * Math.max( 0.3, canvasSize.height / canvasSize.width );
+    const {
+      width,
+      height,
+      boxWidth,
+      boxHeight
+    } = this.mapDimensions( canvasSize, settings );
 
-    const boxStyle = {
-      width: ( viewport.width / canvasSize.width ) * mapWidth,
-      height: ( viewport.height / canvasSize.height ) * mapBoxHeight,
-      left: ( viewport.left / canvasSize.width ) * mapWidth,
-      top: ( viewport.top / canvasSize.height ) * mapBoxHeight
+    const viewportStyle = {
+      width: ( viewport.width / canvasSize.width ) * boxWidth,
+      height: ( viewport.height / canvasSize.height ) * boxHeight,
+      left: ( viewport.left / canvasSize.width ) * boxWidth,
+      top: ( viewport.top / canvasSize.height ) * boxHeight
     };
+    const viewbox = [ 0, 0, canvasSize.width, canvasSize.height ].join( ' ' );
 
     const showMap = viewport.width !== null && (
       canvasSize.width > viewport.width ||
@@ -45,11 +68,12 @@ const Minimap = React.createClass({
 
     return <div className={classes}
                 onMouseDown={this.startDragReposition}
-                style={{ width: mapWidth, height: mapBoxHeight }}>
+                style={{ width: boxWidth, height: boxHeight }}
+                ref='mapContainer'>
       <div className='nbe-minimap-viewport'
-           style={boxStyle} />
+           style={viewportStyle} />
       <svg className='nbe-minimap-links'
-           style={{ width: mapWidth, height: mapHeight }}
+           style={{ width, height }}
            viewBox={viewbox}>
         <Links measurements={measurements}
                types={types}
@@ -78,14 +102,16 @@ const Minimap = React.createClass({
       onMove: ({ base: { baseX, baseY }, dragX, dragY, dragNode }) => {
         this.reposition( baseX + dragX, baseY + dragY );
       }
-    }).start( ev );
+    }).start( ev, null, { target: React.findDOMNode( this.refs.mapContainer ) } );
     ev.stopPropagation();
   },
 
   reposition( mapX, mapY ) {
-    const { settings: { minimap, viewport }, canvasSize } = this.props;
-    const toLeft = (mapX / minimap.width) * canvasSize.width;
-    const toTop = (mapY / this.mapHeight()) * canvasSize.height;
+    const { canvasSize, settings } = this.props;
+    const { boxWidth, boxHeight } = this.mapDimensions( canvasSize, settings );
+    const { viewport } = settings;
+    const toLeft = (mapX / boxWidth) * canvasSize.width;
+    const toTop = (mapY / boxHeight) * canvasSize.height;
     // center viewport at target coordinate:
     const left = max( 0,
       min( toLeft - viewport.width / 2, canvasSize.width - viewport.width ) );
@@ -95,12 +121,15 @@ const Minimap = React.createClass({
   },
 
   startDragResize( ev ) {
-    const { settings: { minimap } } = this.props;
+    const { canvasSize, settings } = this.props;
+    const { minimap } = settings;
+    const { boxWidth, boxHeight } = this.mapDimensions( canvasSize, settings );
+
     dragdrop({
       onMove: ({ dragPayload: { baseWidth, baseHeight }, dragX, dragY, dragNode }) => {
         this.resize( baseWidth + dragX, baseHeight + dragY );
       }
-    }).start( ev, { baseWidth: minimap.width, baseHeight: minimap.height } );
+    }).start( ev, { baseWidth: boxWidth, baseHeight: boxHeight } );
     ev.stopPropagation();
   },
 
