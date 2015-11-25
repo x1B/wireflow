@@ -39,6 +39,7 @@ const Minimap = React.createClass({
       types,
       settings,
       layout,
+      selection,
       measurements,
       canvasSize
     } = this.props;
@@ -78,7 +79,8 @@ const Minimap = React.createClass({
         <Links measurements={measurements}
                types={types}
                vertices={vertices}
-               layout={layout} />
+               layout={layout}
+               selection={selection} />
         <g className='nbe-minimap-vertices'>
           {this.vertices( layout, measurements )}
         </g>

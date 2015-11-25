@@ -125,7 +125,8 @@ const Graph = React.createClass({
                  vertices={vertices}
                  layout={layout}
                  settings={settings}
-                 eventHandler={self.handleEvent} />
+                 eventHandler={self.handleEvent}
+                 selection={selection} />
         <div className="nbe-graph-viewport"
              onScroll={this.handleScroll}>
           <div className="nbe-graph-canvas" style={canvasStyle}>
@@ -139,7 +140,8 @@ const Graph = React.createClass({
               <Links measurements={measurements}
                      types={types}
                      vertices={vertices}
-                     layout={layout} />
+                     layout={layout}
+                     selection={selection} />
               <GhostPort dragInfo={portDragInfo} />
             </svg>
           </div>

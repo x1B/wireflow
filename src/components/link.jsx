@@ -20,12 +20,13 @@ const Link = React.createClass({
       fromLayout,
       toLayout,
       fromMeasurements,
-      toMeasurements
+      toMeasurements,
+      isSelected
     } = this.props;
 
     const type = ( fromPort || toPort ).type;
 
-    const classes = [ 'nbe-link', 'nbe-type-' + type ].join( ' ' );
+    const classes = [ 'nbe-link', 'nbe-type-' + type, isSelected ? 'nbe-selected' : '' ].join( ' ' );
     count({ what: Link.displayName });
 
     if( !fromMeasurements || !toMeasurements ) {

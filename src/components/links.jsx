@@ -11,7 +11,7 @@ const Links = React.createClass({
 
   render() {
 
-    const { measurements, layout, vertices, types } = this.props;
+    const { measurements, layout, vertices, types, selection } = this.props;
     if( layout.vertices.isEmpty() && layout.edges.isEmpty() ) {
       return <g />;
     }
@@ -44,6 +44,8 @@ const Links = React.createClass({
       const isOutbound = direction === OUT;
       const otherDirection = isOutbound ? IN : OUT;
 
+      const hereSelected = selection.vertices.has( vertexId );
+
       return vertex.ports[ direction ]
         .filter( hasExactlyOneNeighbor( isOutbound ) )
         .map( port => {
@@ -54,9 +56,9 @@ const Links = React.createClass({
           const herePort = port;
 
           const owningPort = types.get( port.type ).owningPort;
-          const [ thereLayout, thereMeasurements, therePort ] = owningPort ?
+          const [ thereLayout, thereMeasurements, therePort, thereSelected ] = owningPort ?
             neighborTable[ otherDirection ][ edgeId ] :
-            [ edgeLayouts.get( edgeId ), edgeMeasurements.get( edgeId ), '' ];
+            [ edgeLayouts.get( edgeId ), edgeMeasurements.get( edgeId ), '', selection.edges.has( edgeId ) ];
 
           const [ fromLayout, toLayout ] = isOutbound ?
             [ hereLayout, thereLayout ] :
@@ -76,7 +78,8 @@ const Links = React.createClass({
                        fromLayout={fromLayout}
                        toLayout={toLayout}
                        fromMeasurements={fromMeasurements}
-                       toMeasurements={toMeasurements} />;
+                       toMeasurements={toMeasurements}
+                       isSelected={hereSelected || thereSelected} />;
       } );
     }
 
@@ -105,7 +108,10 @@ const Links = React.createClass({
             const edgeId = port.edgeId;
             if( edgeId ) {
               matchingMeasurements[ edgeId ] = [
-                vertexLayout, vertexMeasurements, port
+                vertexLayout,
+                vertexMeasurements,
+                port,
+                selection.vertices.has( id )
               ];
             }
           } );
