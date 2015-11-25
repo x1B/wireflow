@@ -2,6 +2,7 @@ import { List, Map } from 'immutable';
 
 import settings from '../../util/settings';
 import { calculateLayout } from '../../util/auto-layout';
+import { calculateMeasurements } from '../../util/auto-measurements';
 
 import { RemoveVertex, RemoveEdge } from '../graph/graph-actions';
 import { SaveState, RestoreState } from '../history/history-actions';
@@ -23,16 +24,22 @@ const { layout: { edgeOffset } } = settings;
  */
 class LayoutStore {
 
-  constructor( dispatcher, layout, graphStore ) {
+  constructor( dispatcher, graphStore, options = {} ) {
     this.dispatcher = dispatcher;
     this.graphStore = graphStore;
 
     this.storeId = this.constructor.name;
-    this.layout = layout;
-    this.measurements = Measurements();
+    this.measurements = options.measurements || convert.measurements(
+      calculateMeasurements( graphStore.graph )
+    );
+    console.log( "MEASUREMENTS", this.measurements.toJS() );
+    this.layout = options.layout || convert.layout(
+      calculateLayout( graphStore.graph, Map(this.measurements) )
+    );
+    console.log( "LAYOUT", this.layout.toJS() );
     this.save();
 
-
+    /*
     dispatcher.register( MeasureVertex, ev => {
       this.measurements = this.measurements.setIn(
         [ 'vertices', ev.vertex.id ],
@@ -48,6 +55,7 @@ class LayoutStore {
       );
       this.save();
     } );
+    */
 
     dispatcher.register( AutoLayout, ev => {
       this.layout = convert.layout(

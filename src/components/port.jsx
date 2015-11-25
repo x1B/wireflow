@@ -106,6 +106,7 @@ const Port = React.createClass({
 
 
   componentDidMount() {
+    /*
     const { port, eventHandler } = this.props;
     const node = React.findDOMNode( this.refs.handle );
     const coords = Coords({
@@ -113,6 +114,7 @@ const Port = React.createClass({
       top: node.offsetTop + (node.offsetHeight / 2)
     });
     eventHandler( MeasurePort({ port: port, center: coords }) );
+    */
   },
 
 

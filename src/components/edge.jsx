@@ -78,7 +78,7 @@ const Edge = React.createClass({
   },
 
   componentDidMount() {
-    this.measure();
+    // this.measure();
   },
 
   bubble( event ) {

@@ -154,6 +154,7 @@ const Graph = React.createClass({
                 vertex={vertex}
                 selected={selection.vertices.has(vertex.id)}
                 layout={layout.vertices.get( vertex.id )}
+                measurements={measurements.vertices.get( vertex.id )}
                 eventHandler={self.handleEvent} />
       ).toJS();
     }
@@ -166,6 +167,7 @@ const Graph = React.createClass({
               edge={edge}
               selected={selection.edges.has(edge.id)}
               layout={layout.edges.get( edge.id )}
+              measurements={measurements.edges.get( edge.id )}
               eventHandler={self.handleEvent} />
       )
       .toJS();

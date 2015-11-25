@@ -79,8 +79,8 @@ function calculateLayout( graph, measurements ) {
     const { offsetY = 0, offsetX = 0 } = options;
     let result = {};
     dgNodes.forEach( dgNodeId => {
-      const { label, width, height, x, y } = dg.node( dgNodeId );
-      if( label.indexOf( prefix ) === 0 ) {
+      const { label, width, height, x, y } = dg.node( dgNodeId ) || {};
+      if( label && label.indexOf( prefix ) === 0 ) {
         const id = label.substring( prefix.length, label.length );
         result[ id ] = {
           left: x - width / 2 + offsetX,

@@ -23,16 +23,9 @@ const {
 
 const Vertex = React.createClass({
 
-  getInitialState() {
-    return {
-      measurements: VertexMeasurements()
-    };
-  },
-
-
   render() {
     const self = this;
-    const { vertex, selected, layout, eventHandler, settings } = self.props;
+    const { vertex, selected, layout, measurements, eventHandler, settings } = self.props;
     count({ what: Vertex.displayName });
     const { ports, label } = vertex;
 
@@ -40,7 +33,9 @@ const Vertex = React.createClass({
       position: 'absolute', // :TODO: move to stylesheet
       visibility: layout ? 'visible' : 'hidden',
       left: layout && layout.left,
-      top: layout && layout.top
+      top: layout && layout.top,
+      width: measurements && measurements.dimensions.width,
+      height: measurements && measurements.dimensions.height
     };
 
     const selectedClass = selected ? 'nbe-selected' : '';
@@ -105,16 +100,6 @@ const Vertex = React.createClass({
 
 
   handleEvent( event ) {
-    var type = event.type();
-    if( type === MeasurePort ) {
-      const { port, center } = event;
-      this.setState( ({ measurements }) => {
-        var newMeasurements = measurements.setIn( [ port.direction, port.id ], center );
-        this.propagateMeasurements( newMeasurements );
-        return { measurements: newMeasurements };
-      } );
-      return;
-    }
     this.bubble( event );
   },
 
@@ -122,41 +107,6 @@ const Vertex = React.createClass({
   bubble( event ) {
     const { eventHandler } = this.props;
     return eventHandler && eventHandler( event );
-  },
-
-
-  propagateMeasurements( measurements ) {
-    if( this.isComplete( measurements ) ) {
-      var { vertex } = this.props;
-      this.bubble( MeasureVertex( { vertex, measurements } ) );
-    }
-  },
-
-
-  isComplete( measurements ) {
-    const { ports } = this.props.vertex;
-    return measurements.dimensions
-      && measurements.inbound.size === ports.inbound.size
-      && measurements.outbound.size === ports.outbound.size;
-  },
-
-
-  measure() {
-    const domVertex = React.findDOMNode( this.refs.vertex );
-    this.setState( ({ measurements }) => {
-      const newMeasurements =
-        measurements.set( 'dimensions', Dimensions({
-          width: domVertex.offsetWidth,
-          height: domVertex.offsetHeight
-        }) );
-      this.propagateMeasurements( newMeasurements );
-      return { measurements: newMeasurements };
-    } );
-  },
-
-
-  componentDidMount() {
-    this.measure();
   },
 
 
