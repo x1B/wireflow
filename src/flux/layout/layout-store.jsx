@@ -32,14 +32,11 @@ class LayoutStore {
     this.measurements = options.measurements || convert.measurements(
       calculateMeasurements( graphStore.graph )
     );
-    console.log( "MEASUREMENTS", this.measurements.toJS() );
     this.layout = options.layout || convert.layout(
       calculateLayout( graphStore.graph, Map(this.measurements) )
     );
-    console.log( "LAYOUT", this.layout.toJS() );
     this.save();
 
-    /*
     dispatcher.register( MeasureVertex, ev => {
       this.measurements = this.measurements.setIn(
         [ 'vertices', ev.vertex.id ],
@@ -55,7 +52,6 @@ class LayoutStore {
       );
       this.save();
     } );
-    */
 
     dispatcher.register( AutoLayout, ev => {
       this.layout = convert.layout(

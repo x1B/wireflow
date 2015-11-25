@@ -63,7 +63,6 @@ const Minimap = React.createClass({
     const showMap = viewport.width !== null && (
       canvasSize.width > viewport.width ||
       canvasSize.height > viewport.height );
-    console.log( "settings: ", settings.toJS() );
 
     const classes = 'nbe-minimap' + ( showMap ? '' : ' nbe-hidden' );
 
@@ -178,7 +177,6 @@ const Minimap = React.createClass({
   },
 
   shouldComponentUpdate( nextProps ) {
-    console.log( "should? ", !shallowEqual( nextProps, this.props ) );
     return !shallowEqual( nextProps, this.props );
   }
 
