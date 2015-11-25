@@ -14,9 +14,9 @@ const Minimap = React.createClass({
   mapDimensions( canvasSize, settings ) {
     const { viewport } = settings;
     const maxWidth = viewport.width * 0.8;
-    const minBoxWidth = viewport.height * 0.1;
+    const minBoxWidth = viewport.width * 0.02;
     const maxHeight = viewport.height * 0.95;
-    const minBoxHeight = viewport.height * 0.1;
+    const minBoxHeight = viewport.height * 0.02;
 
     const boxWidth = min( max( minBoxWidth, settings.minimap.width ), maxHeight );
     const boxHeight = min( max( minBoxHeight, boxWidth * ( canvasSize.height / canvasSize.width ) ), maxHeight );
