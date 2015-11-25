@@ -218,10 +218,14 @@ const Graph = React.createClass({
 
   measure() {
     const domGraph = React.findDOMNode( this.refs.graph );
-    this.bubble( ViewportMeasured({
-      width: domGraph.offsetWidth,
-      height: domGraph.offsetHeight
-    }) );
+    const { viewport } = this.props.settings;
+    if( domGraph.offsetWidth !== viewport.width ||
+        domGraph.offsetHeight !== viewport.height ) {
+      this.bubble( ViewportMeasured({
+        width: domGraph.offsetWidth,
+        height: domGraph.offsetHeight
+      }) );
+    }
   },
 
   handleScroll( ev ) {
@@ -233,8 +237,8 @@ const Graph = React.createClass({
   },
 
   componentDidMount() {
-    window.addEventListener( 'resize', this.measure );
     this.measure();
+    window.addEventListener( 'resize', this.measure );
 
     const domGraph = React.findDOMNode( this.refs.graph );
     const bubble = ( act ) => this.bubble( act );
@@ -277,6 +281,8 @@ const Graph = React.createClass({
 
   componentDidUpdate() {
     const { settings: { viewport } } = this.props;
+    this.measure();
+
     if( viewport.movedBy === ':GRAPH:' ) {
       return;
     }

@@ -11,7 +11,7 @@ import { CreateCheckpoint } from '../flux/history/history-actions';
 import { Connectable, IN, OUT } from '../flux/graph/graph-model';
 import { READ_WRITE } from '../flux/settings/settings-model';
 
-const { MeasurePort, DragPort } = layoutActions;
+const { DragPort } = layoutActions;
 const { ConnectPort, DisconnectPort } = graphActions;
 
 const Port = React.createClass({
@@ -103,20 +103,6 @@ const Port = React.createClass({
       }
     }
   },
-
-
-  componentDidMount() {
-    /*
-    const { port, eventHandler } = this.props;
-    const node = React.findDOMNode( this.refs.handle );
-    const coords = Coords({
-      left: node.offsetLeft + (node.offsetWidth / 2),
-      top: node.offsetTop + (node.offsetHeight / 2)
-    });
-    eventHandler( MeasurePort({ port: port, center: coords }) );
-    */
-  },
-
 
   shouldComponentUpdate( nextProps, nextState ) {
     return !shallowEqual( nextProps, this.props );

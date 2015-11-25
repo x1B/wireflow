@@ -77,10 +77,6 @@ const Edge = React.createClass({
     );
   },
 
-  componentDidMount() {
-    // this.measure();
-  },
-
   bubble( event ) {
     const { eventHandler } = this.props;
     return eventHandler && eventHandler( event );
