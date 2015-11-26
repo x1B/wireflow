@@ -198,15 +198,6 @@
    white-space: nowrap;
 }
 
-.nbe-selection {
-   border: 1px dashed #e91e63;
-   background: rgba(233, 30, 99, 0.1);
-   position: absolute;
-   top: 10px;
-   left: 10px;
-   width: 100px;
-   height: 100px;
-}
 
 .nbe-vertex .nbe-port.nbe-drop-hover > .nbe-port-handle {
    background: #e91e63;
@@ -283,6 +274,45 @@
    stroke-width: 4;
 }
 
+
+
+
+/* SELECTION */
+
+.nbe-selection {
+   border: 1px dashed #e91e63;
+   background: rgba(233, 30, 99, 0.1);
+   position: absolute;
+   top: 10px;
+   left: 10px;
+   width: 100px;
+   height: 100px;
+}
+
+.nbe-theme-fusebox-app.nbe-highlight-selection .nbe-vertex:not(.nbe-selected) .nbe-port-handle,
+.nbe-theme-fusebox-app.nbe-highlight-selection .nbe-edge:not(.nbe-selected) .nbe-edge-icon {
+  background: #BBB;
+}
+
+.nbe-theme-fusebox-app.nbe-highlight-selection .nbe-vertex:not(.nbe-selected) .nbe-vertex-header {
+  background: #BBB;
+}
+
+.nbe-theme-fusebox-app.nbe-highlight-selection .nbe-link:not(.nbe-selected) {
+   stroke: #BBB;
+}
+
+.nbe-theme-fusebox-app.nbe-highlight-selection .nbe-minimap-edges .nbe-minimap-edge:not(.nbe-selected) {
+  fill: #BBB;
+}
+.nbe-theme-fusebox-app.nbe-highlight-selection .nbe-minimap-vertices .nbe-minimap-vertex:not(.nbe-selected) {
+  fill: #BBB;
+}
+
+
+
+/* ACTION */
+
 .nbe-theme-fusebox-app .nbe-type-ACTION > .nbe-port-handle {
    background: #ff943d;
 }
@@ -314,13 +344,16 @@
 .nbe-theme-fusebox-app .nbe-link.nbe-type-ACTION.nbe-selected {
    stroke: #ef6c00;
 }
+
 .nbe-theme-fusebox-app.nbe-highlight-type-ACTION .nbe-port:not(.nbe-type-ACTION) > .nbe-port-handle,
 .nbe-theme-fusebox-app.nbe-highlight-type-ACTION .nbe-edge:not(.nbe-type-ACTION) > .nbe-edge-icon {
-   background: #646464;
+  background: #BBB;
 }
+
 .nbe-theme-fusebox-app.nbe-highlight-type-ACTION .nbe-link:not(.nbe-type-ACTION) {
-   stroke: #646464;
+   stroke: #BBB;
 }
+
 .nbe-theme-fusebox-app.nbe-hide-type-ACTION .nbe-type-ACTION {
    display: none;
 }
@@ -352,6 +385,11 @@
       box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 10px 2px #eeeeee, 0px 0px 12px 4px transparent;
    }
 }
+
+
+
+
+/* FLAG */
 
 .nbe-theme-fusebox-app .nbe-type-FLAG > .nbe-port-handle {
    background: #80c883;
@@ -423,6 +461,11 @@
    }
 }
 
+
+
+
+/* RESOURCES */
+
 .nbe-theme-fusebox-app .nbe-type-RESOURCE > .nbe-port-handle {
    background: #916dd1;
 }
@@ -492,6 +535,11 @@
       box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 10px 2px #eeeeee, 0px 0px 12px 4px transparent;
    }
 }
+
+
+
+
+/* CONTAINER */
 
 .nbe-theme-fusebox-app .nbe-type-CONTAINER > .nbe-port-handle {
    background: #8ab4f8;
@@ -596,118 +644,4 @@
 }
 .nbe-zoom-100 .nbe-link {
    stroke-width: 2;
-}
-
-.nbe-zoom-75 {
-   font-size: 9px;
-   border-radius: 2px;
-}
-.nbe-zoom-75 .nbe-graph-canvas {
-   background-size: 38px 38px;
-}
-.nbe-zoom-75 .nbe-port {
-   line-height: 12px;
-   font-size: 8px;
-}
-.nbe-zoom-75 .nbe-port-handle {
-   width: 8.25px;
-   height: 8.25px;
-   border-radius: 4.5px;
-   margin: 2.25px 3.75px -2.25px 3.75px;
-}
-.nbe-zoom-75 .nbe-vertex-header {
-   height: 16.5px;
-   padding: 3px 3.75px 0.75px 3.75px;
-   font-size: 9px;
-}
-.nbe-zoom-75 .nbe-edge-icon {
-   width: 15px;
-   height: 15px;
-   border-radius: 15px;
-   box-shadow: 0 1.5px 1.5px #a0a0a0;
-}
-.nbe-zoom-75 .nbe-edge-label {
-   width: 75px;
-   left: -30px;
-   top: 16.5px;
-   font-size: 9px;
-}
-.nbe-zoom-75 .nbe-link {
-   stroke-width: 1.5;
-}
-
-.nbe-zoom-50 {
-   font-size: 6px;
-   border-radius: 1px;
-}
-.nbe-zoom-50 .nbe-graph-canvas {
-   background-size: 25px 25px;
-}
-.nbe-zoom-50 .nbe-port {
-   line-height: 8px;
-   font-size: 6px;
-}
-.nbe-zoom-50 .nbe-port-handle {
-   width: 5.5px;
-   height: 5.5px;
-   border-radius: 3px;
-   margin: 1.5px 2.5px -1.5px 2.5px;
-}
-.nbe-zoom-50 .nbe-vertex-header {
-   height: 11px;
-   padding: 2px 2.5px 0.5px 2.5px;
-   font-size: 6px;
-}
-.nbe-zoom-50 .nbe-edge-icon {
-   width: 10px;
-   height: 10px;
-   border-radius: 10px;
-   box-shadow: 0 1px 1px #a0a0a0;
-}
-.nbe-zoom-50 .nbe-edge-label {
-   width: 50px;
-   left: -20px;
-   top: 11px;
-   font-size: 6px;
-}
-.nbe-zoom-50 .nbe-link {
-   stroke-width: 1.5;
-}
-
-.nbe-zoom-25 {
-   font-size: 3px;
-   border-radius: 1px;
-}
-.nbe-zoom-25 .nbe-graph-canvas {
-   background-size: 13px 13px;
-}
-.nbe-zoom-25 .nbe-port {
-   line-height: 4px;
-   font-size: 3px;
-}
-.nbe-zoom-25 .nbe-port-handle {
-   width: 2.75px;
-   height: 2.75px;
-   border-radius: 1.5px;
-   margin: 0.75px 1.25px -0.75px 1.25px;
-}
-.nbe-zoom-25 .nbe-vertex-header {
-   height: 5.5px;
-   padding: 1px 1.25px 0.25px 1.25px;
-   font-size: 3px;
-}
-.nbe-zoom-25 .nbe-edge-icon {
-   width: 5px;
-   height: 5px;
-   border-radius: 5px;
-   box-shadow: 0 0.5px 0.5px #a0a0a0;
-}
-.nbe-zoom-25 .nbe-edge-label {
-   width: 25px;
-   left: -10px;
-   top: 5.5px;
-   font-size: 3px;
-}
-.nbe-zoom-25 .nbe-link {
-   stroke-width: 1.5;
 }

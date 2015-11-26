@@ -77,10 +77,12 @@ const Graph = React.createClass({
 
     const focusClass =
       hasFocus ? 'nbe-has-focus' : '';
-    const highlightClass =
+    const highlightTypeClass =
       portDragInfo ? `nbe-highlight-type-${portDragInfo.port.type}` : '';
+    const highlightSelectionClass =
+      ( selection.edges.isEmpty() && selection.vertices.isEmpty() ) ? '' : 'nbe-highlight-selection';
     const classes =
-      `nbe-graph nbe-zoom-${zoom} ${focusClass} ${highlightClass} ${className}`;
+      `nbe-graph nbe-zoom-${zoom} ${focusClass} ${highlightTypeClass} ${highlightSelectionClass} ${className}`;
 
     const dd = () => dragdrop({
       onMove: ({ dragPayload: { left, top, isExtension }, dragX, dragY, dragNode }) => {

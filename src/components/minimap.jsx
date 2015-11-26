@@ -82,10 +82,10 @@ const Minimap = React.createClass({
                layout={layout}
                selection={selection} />
         <g className='nbe-minimap-vertices'>
-          {this.vertices( layout, measurements )}
+          {this.vertices( layout, measurements, selection.vertices )}
         </g>
         <g className='nbe-minimap-edges'>
-          {this.edges( layout, measurements, edges, types )}
+          {this.edges( layout, measurements, edges, types, selection.edges )}
         </g>
       </svg>
       <div className='nbe-minimap-handle'
@@ -149,7 +149,7 @@ const Minimap = React.createClass({
     return eventHandler && eventHandler( event );
   },
 
-  edges( layout, measurements, edges, types ) {
+  edges( layout, measurements, edges, types, edgeSelection ) {
     return layout.edges.entrySeq().map( ([ id, { left, top } ]) => {
       const edge = edges.get( id );
       if( !edge || types.get( edge.type ).owningPort ) {
@@ -161,20 +161,25 @@ const Minimap = React.createClass({
       }
       const { width } = dimensions;
       const r = width / 2;
-      const cls = 'nbe-type-' + edge.type;
+      const cls = 'nbe-minimap-edge'
+         + ' nbe-type-' + edge.type
+         + ( edgeSelection.has( id ) ? ' nbe-selected' : ' ' );
       return <circle className={cls} key={id}
                      cx={left + r} cy={top + r} r={r} />;
     } ).filter( _ => _ !== null );
   },
 
-  vertices( layout, measurements ) {
+  vertices( layout, measurements, vertexSelection ) {
     return layout.vertices.entrySeq().map( ([ id, { left, top } ]) => {
       const { dimensions } = measurements.vertices.get( id ) || {};
       if( !dimensions ) {
         return null;
       }
       const { width, height } = dimensions;
-      return <rect key={id} x={left} y={top} height={height} width={width} />;
+      const cls = 'nbe-minimap-vertex'
+         + ( vertexSelection.has( id ) ? ' nbe-selected' : ' ' );
+      return <rect className={cls} key={id}
+                   x={left} y={top} height={height} width={width} />;
     } ).filter( _ => _ !== null );
   },
 
