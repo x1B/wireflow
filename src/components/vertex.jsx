@@ -30,8 +30,7 @@ const Vertex = React.createClass({
     const { ports, label } = vertex;
 
     const style = {
-      position: 'absolute', // :TODO: move to stylesheet
-      visibility: layout ? 'visible' : 'hidden',
+      visibility: layout ? null : 'hidden',
       left: layout && layout.left,
       top: layout && layout.top,
       width: measurements && measurements.dimensions.width,
@@ -39,7 +38,8 @@ const Vertex = React.createClass({
     };
 
     const selectedClass = selected ? 'nbe-selected' : '';
-    const classes = `nbe-vertex nbe-node ${selectedClass}`;
+    const classes =
+      `nbe-vertex nbe-node nbe-kind-${vertex.kind} ${selectedClass}`;
 
     const dd = () => dragdrop({
       onStart: () => {

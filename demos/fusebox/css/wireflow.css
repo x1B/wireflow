@@ -29,12 +29,6 @@
    }
 }
 
-/**
- * Use this to declare user-defined edge types.
- */
-[data-ng-cloak] {
-   display: none !important;
-}
 
 .nbe-graph {
    background: #eeeeee;
@@ -68,6 +62,11 @@
 .nbe-graph-nodes {
    position: relative;
    z-index: 1;
+}
+
+.nbe-node,
+.nbe-edge-icon {
+  position: absolute;
 }
 
 .nbe-links {
@@ -141,11 +140,6 @@
    border-color: #f9f9f9;
 }
 
-.nbe-vertex,
-.nbe-edge-icon {
-   position: absolute;
-}
-
 .nbe-vertex {
    box-shadow: 0 1px 3px 0 #a0a0a0;
    border-radius: 2px;
@@ -160,7 +154,6 @@
 .nbe-vertex-header {
    border-radius: 2px 2px 0 0;
    text-align: center;
-   background: #e57373;
    font-family: "Roboto", "Arial", sans-serif;
    font-weight: bold;
    color: #fff;
@@ -207,9 +200,85 @@
    color: #e91e63;
 }
 
-.nbe-vertex.nbe-selected .nbe-vertex-header {
+
+
+
+/* VERTEX KINDS */
+
+
+.nbe-vertex.nbe-kind-DEFAULT .nbe-vertex-header {
+  background: #e57373;
+}
+.nbe-vertex.nbe-kind-DEFAULT.nbe-selected .nbe-vertex-header {
    background: #c62828;
 }
+.nbe-minimap-vertex.nbe-kind-DEFAULT {
+  fill: #e57373;
+}
+.nbe-highlight-selection .nbe-minimap-vertex.nbe-kind-DEFAULT.nbe-selected {
+  fill: #c62828;
+}
+
+
+.nbe-theme-fusebox-app .nbe-vertex.nbe-kind-ACTIVITY .nbe-vertex-header {
+   background: #95d095;
+}
+.nbe-theme-fusebox-app .nbe-vertex.nbe-kind-ACTIVITY.nbe-selected .nbe-vertex-header {
+   background: #4fb04f;
+}
+.nbe-theme-fusebox-app .nbe-minimap-vertex.nbe-kind-ACTIVITY {
+   fill: #95d095;
+}
+.nbe-theme-fusebox-app .nbe-minimap-vertex.nbe-kind-ACTIVITY.nbe-selected {
+   fill: #4fb04f;
+}
+
+
+.nbe-theme-fusebox-app .nbe-vertex.nbe-kind-WIDGET .nbe-vertex-header {
+   background: #eeb45d;
+}
+.nbe-theme-fusebox-app .nbe-vertex.nbe-kind-WIDGET.nbe-selected .nbe-vertex-header {
+   background: #f90;
+}
+.nbe-theme-fusebox-app .nbe-minimap-vertex.nbe-kind-WIDGET {
+   fill: #eeb45d;
+}
+.nbe-theme-fusebox-app .nbe-minimap-vertex.nbe-kind-WIDGET.nbe-selected {
+   fill: #f90;
+}
+
+
+.nbe-theme-fusebox-app .nbe-vertex.nbe-kind-PAGE .nbe-vertex-header {
+   background: #e57373;
+}
+.nbe-theme-fusebox-app .nbe-vertex.nbe-kind-PAGE.nbe-selected .nbe-vertex-header {
+   background: #c62828;
+}
+.nbe-theme-fusebox-app .nbe-minimap-vertex.nbe-kind-PAGE {
+   fill: #e57373;
+}
+.nbe-theme-fusebox-app .nbe-minimap-vertex.nbe-kind-PAGE.nbe-selected {
+   fill: #c62828;
+}
+
+
+.nbe-theme-fusebox-app .nbe-vertex.nbe-kind-LAYOUT .nbe-vertex-header {
+   background: #4285f4;
+}
+.nbe-theme-fusebox-app .nbe-vertex.nbe-kind-LAYOUT.nbe-selected .nbe-vertex-header {
+   background: #8ab4f8;
+}
+.nbe-theme-fusebox-app .nbe-minimap-vertex.nbe-kind-LAYOUT {
+   fill: #4285f4;
+}
+.nbe-theme-fusebox-app .nbe-minimap-vertex.nbe-kind-LAYOUT.nbe-selected {
+   fill: #8ab4f8;
+}
+
+
+
+
+/* MINIMAP */
 
 .nbe-minimap {
    background: rgba(255, 255, 255, 0.85);
@@ -248,7 +317,7 @@
 
 .nbe-minimap .nbe-minimap-viewport {
    position: absolute;
-   background: rgba(128, 128, 128, 0.25);
+   background: rgba(192, 128, 0, 0.25);
 }
 
 .nbe-minimap svg {
@@ -264,8 +333,7 @@
   stroke-width: 0;
 }
 
-.nbe-minimap-vertices rect {
-   fill: #e57373;
+.nbe-minimap-vertices .nbe-minimap-vertex {
    stroke-width: 2px;
    stroke: #bbb;
 }
@@ -289,25 +357,26 @@
    height: 100px;
 }
 
-.nbe-theme-fusebox-app.nbe-highlight-selection .nbe-vertex:not(.nbe-selected) .nbe-port-handle,
-.nbe-theme-fusebox-app.nbe-highlight-selection .nbe-edge:not(.nbe-selected) .nbe-edge-icon {
+.nbe-highlight-selection .nbe-vertex:not(.nbe-selected) .nbe-port-handle,
+.nbe-highlight-selection .nbe-edge:not(.nbe-selected) .nbe-edge-icon {
   background: #BBB;
 }
 
-.nbe-theme-fusebox-app.nbe-highlight-selection .nbe-vertex:not(.nbe-selected) .nbe-vertex-header {
+.nbe-highlight-selection .nbe-vertex:not(.nbe-selected) .nbe-vertex-header {
   background: #BBB;
 }
 
-.nbe-theme-fusebox-app.nbe-highlight-selection .nbe-link:not(.nbe-selected) {
-   stroke: #BBB;
+.nbe-highlight-selection .nbe-link:not(.nbe-selected) {
+   stroke: #BBB!important;
 }
 
-.nbe-theme-fusebox-app.nbe-highlight-selection .nbe-minimap-edges .nbe-minimap-edge:not(.nbe-selected) {
+.nbe-highlight-selection .nbe-minimap-edges .nbe-minimap-edge:not(.nbe-selected) {
   fill: #BBB;
 }
-.nbe-theme-fusebox-app.nbe-highlight-selection .nbe-minimap-vertices .nbe-minimap-vertex:not(.nbe-selected) {
+.nbe-highlight-selection .nbe-minimap-vertices .nbe-minimap-vertex:not(.nbe-selected) {
   fill: #BBB;
 }
+
 
 
 
@@ -563,6 +632,7 @@
    animation-duration: 0.5s;
    animation-iteration-count: infinite;
 }
+
 .nbe-theme-fusebox-app .nbe-link.nbe-type-CONTAINER {
    stroke: #8ab4f8;
 }
@@ -607,6 +677,9 @@
       box-shadow: 0 1px 3px 0 #a0a0a0, 0px 0px 10px 2px #eeeeee, 0px 0px 12px 4px transparent;
    }
 }
+
+
+
 
 .nbe-zoom-100 {
    font-size: 12px;

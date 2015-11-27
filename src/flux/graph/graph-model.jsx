@@ -22,6 +22,7 @@ const Ports = Record({
 const Vertex = Record({
   id: null,
   label: '',
+  kind: 'DEFAULT',
   ports: Ports()
 });
 

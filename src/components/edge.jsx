@@ -22,8 +22,7 @@ const Edge = React.createClass({
     count({ what: Edge.displayName });
 
     const style = {
-      position: 'absolute', // :TODO: move to stylesheet
-      visibility: layout ? 'visible' : 'hidden',
+      visibility: layout ? null : 'hidden',
       left: layout ? layout.left : 50,
       top: layout ? layout.top : 50
     };

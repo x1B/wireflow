@@ -82,7 +82,7 @@ const Minimap = React.createClass({
                layout={layout}
                selection={selection} />
         <g className='nbe-minimap-vertices'>
-          {this.vertices( layout, measurements, selection.vertices )}
+          {this.vertices( layout, measurements, vertices, selection.vertices )}
         </g>
         <g className='nbe-minimap-edges'>
           {this.edges( layout, measurements, edges, types, selection.edges )}
@@ -161,24 +161,27 @@ const Minimap = React.createClass({
       }
       const { width } = dimensions;
       const r = width / 2;
-      const cls = 'nbe-minimap-edge'
-         + ' nbe-type-' + edge.type
-         + ( edgeSelection.has( id ) ? ' nbe-selected' : ' ' );
-      return <circle className={cls} key={id}
+      const selectionStateClass =
+        edgeSelection.has( id ) ? 'nbe-selected' : '';
+      const classes =
+        `nbe-minimap-edge nbe-type-${edge.type} ${selectionStateClass}`;
+      return <circle className={classes} key={id}
                      cx={left + r} cy={top + r} r={r} />;
     } ).filter( _ => _ !== null );
   },
 
-  vertices( layout, measurements, vertexSelection ) {
+  vertices( layout, measurements, vertices, vertexSelection ) {
     return layout.vertices.entrySeq().map( ([ id, { left, top } ]) => {
       const { dimensions } = measurements.vertices.get( id ) || {};
       if( !dimensions ) {
         return null;
       }
+      const { kind } = vertices.get( id );
       const { width, height } = dimensions;
-      const cls = 'nbe-minimap-vertex'
-         + ( vertexSelection.has( id ) ? ' nbe-selected' : ' ' );
-      return <rect className={cls} key={id}
+      const selectionStateClass = vertexSelection.has( id ) ? 'nbe-selected' : '';
+      const classes =
+        `nbe-minimap-vertex nbe-kind-${kind} ${selectionStateClass}`;
+      return <rect className={classes} key={id}
                    x={left} y={top} height={height} width={width} />;
     } ).filter( _ => _ !== null );
   },
