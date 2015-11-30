@@ -1,6 +1,7 @@
 import React from 'react';
 
 import shallowEqual from '../util/shallow-equal';
+import { layout as layoutSettings } from '../util/settings';
 import dragdrop from '../util/dragdrop';
 import { ViewportMoved, MinimapResized } from '../flux/settings/settings-actions';
 
@@ -159,8 +160,8 @@ const Minimap = React.createClass({
       if( !dimensions ) {
         return null;
       }
-      const { width } = dimensions;
-      const r = width / 2;
+
+      const r = layoutSettings.edgeOffset;
       const selectionStateClass =
         edgeSelection.has( id ) ? 'nbe-selected' : '';
       const classes =
