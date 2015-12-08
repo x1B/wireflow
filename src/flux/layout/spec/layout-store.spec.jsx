@@ -53,8 +53,10 @@ describe( 'A layout store', () => {
 
   beforeEach( () => {
     dispatcher = new DispatcherMock();
-    graphStoreMock = {};
-    store = new LayoutStore( dispatcher, dummyLayout(), graphStoreMock );
+    graphStoreMock = { graph: dummyGraph() };
+    store = new LayoutStore( dispatcher, graphStoreMock, {
+      layout: dummyLayout()
+    } );
   } );
 
   it( 'stores the layout passed at creation', () => {

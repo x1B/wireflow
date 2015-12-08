@@ -28,6 +28,7 @@ export default {
         vA: {
           id: 'vA',
           label: 'Command Button (A)',
+          kind: 'DEFAULT',
           ports: {
             inbound: [],
             outbound: [
@@ -39,6 +40,7 @@ export default {
         vB: {
           id: 'vB',
           label: 'Weird Stuff (B)',
+          kind: 'DEFAULT',
           ports: {
             inbound: [
               { id: 'i0', edgeId: null, label: 'Some Resource (S)', type: 'RESOURCE', direction: 'inbound' },
@@ -55,6 +57,7 @@ export default {
         vC: {
           id: 'vC',
           label: 'A Big One (C)',
+          kind: 'DEFAULT',
           ports: {
             inbound: [
               { id: 'i0', edgeId: 'r0', label: 'First Resource (S)', type: 'RESOURCE', direction: 'inbound' },
@@ -72,6 +75,7 @@ export default {
         vD: {
           id: 'vD',
           label: 'More Stuff (D)',
+          kind: 'DEFAULT',
           ports: {
             inbound: [
               { id: 'i0', edgeId: 'r0', label: 'The Resource (S)', type: 'RESOURCE', direction: 'inbound' },
