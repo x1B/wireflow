@@ -263,16 +263,16 @@
 
 
 .nbe-theme-fusebox-app .nbe-vertex.nbe-kind-LAYOUT .nbe-vertex-header {
-   background: #4285f4;
+  background: #8ab4f8;
 }
 .nbe-theme-fusebox-app .nbe-vertex.nbe-kind-LAYOUT.nbe-selected .nbe-vertex-header {
-   background: #8ab4f8;
+  background: #4285f4;
 }
 .nbe-theme-fusebox-app .nbe-minimap-vertex.nbe-kind-LAYOUT {
-   fill: #4285f4;
+  fill: #8ab4f8;
 }
 .nbe-theme-fusebox-app .nbe-minimap-vertex.nbe-kind-LAYOUT.nbe-selected {
-   fill: #8ab4f8;
+  fill: #4285f4;
 }
 
 
