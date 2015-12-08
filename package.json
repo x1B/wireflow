@@ -13,7 +13,7 @@
     "grunt-contrib-watch": "^0.6.1"
   },
   "scripts": {
-    "start": "grunt start",
+    "start": "bower install && grunt start",
     "prepublish": "babel --extension jsx src/ --out-dir=build/ && babel --extension jsx demos/fusebox/src/ --out-dir=demos/fusebox/build/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

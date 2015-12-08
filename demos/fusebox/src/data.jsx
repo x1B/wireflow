@@ -85,8 +85,8 @@ export default {
     },
     layout: {
       vertices: {
-        vA: { left: 292, top: 74 },
-        vB: { left: 265, top: 209 },
+        vA: { left: 212, top: 74 },
+        vB: { left: 115, top: 209 },
         vC: { left: 805, top: 41 },
         vD: { left: 818, top: 244 }
       },

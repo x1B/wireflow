@@ -32,10 +32,9 @@ const {
 
 
 const dispatcher = new Dispatcher( render );
-
 new HistoryStore( dispatcher );
 const graphStore = new GraphStore( dispatcher, graph( data.test.graph ), types( data.test.types ) );
-const layoutStore = new LayoutStore( dispatcher, layout( data.test.layout ), graphStore );
+const layoutStore = new LayoutStore( dispatcher, graphStore, { layout: layout( data.test.layout ) } );
 const settingsStore = new SettingsStore( dispatcher, Settings({ mode: READ_WRITE }) );
 const selectionStore = new SelectionStore( dispatcher, layoutStore, graphStore );
 
@@ -54,6 +53,7 @@ function autoLayout() {
 
 
 function render() {
+
   React.render(
     <div className='demo-wrapper'>
       <div className='demo-menu'>

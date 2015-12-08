@@ -45,7 +45,7 @@ export function calculateMeasurements( graph ) {
 }
 
 function estimateWidth( vertex ) {
-  const w = ({ label, id }) => 5 * ( label || id || '' ).length;
+  const w = ({ label, id }) => 6 * ( label || id || '' ).length;
   const max = (a, b) => a > b ? a : b;
   const { ports } = vertex;
   const numPortRows = max( ports.inbound.size, ports.outbound.size );
