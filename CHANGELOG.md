@@ -3,7 +3,7 @@
 ## Last Changes
 
 
-## v0.4.0-alpha.0
+## v0.4.0-alpha.1
 
 - no longer rely on DOM/CSS measurements to size vertices
 - added "kind" attribute for vertices

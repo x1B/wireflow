@@ -1,0 +1,2 @@
+define(['exports', '../flux/layout/spec/layout-store.spec', '../flux/graph/spec/graph-store.spec', '../flux/history/spec/history-store.spec', '../flux/selection/spec/selection-store.spec'], function (exports, _fluxLayoutSpecLayoutStoreSpec, _fluxGraphSpecGraphStoreSpec, _fluxHistorySpecHistoryStoreSpec, _fluxSelectionSpecSelectionStoreSpec) {'use strict';});
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJhbGwtc3BlY3MuanMiLCJzb3VyY2VSb290Ijoic3JjIiwic291cmNlc0NvbnRlbnQiOltdfQ==
