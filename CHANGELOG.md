@@ -2,6 +2,12 @@
 
 ## Last Changes
 
+
+## v0.4.0-alpha.0
+
+- no longer rely on DOM/CSS measurements to size vertices
+- added "kind" attribute for vertices
+- improved minimap sizing and rendering, especially for large graphs
 - added basic copy/paste (still broken for some cases)
 - added favicon
 
