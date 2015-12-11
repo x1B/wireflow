@@ -45,11 +45,12 @@ export function calculateMeasurements( graph ) {
 }
 
 function estimateWidth( vertex ) {
-  const w = ({ label, id }) => 6 * ( label || id || '' ).length;
+  const w = ({ label, id }) => 40 + 5.5 * ( label || id || '' ).length;
   const max = (a, b) => a > b ? a : b;
   const { ports } = vertex;
-  const numPortRows = max( ports.inbound.size, ports.outbound.size );
-  return w( vertex )
-    + ports.inbound.map( w ).reduce( max, 40 )
-    + ports.outbound.map( w ).reduce( max, 40 );
+
+  const portsWidth =
+    ports.inbound.map( w ).reduce( max, 40 ) +
+    ports.outbound.map( w ).reduce( max, 40 )
+  return max( w( vertex ),portsWidth );
 }

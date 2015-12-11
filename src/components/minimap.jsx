@@ -14,15 +14,22 @@ const Minimap = React.createClass({
 
   mapDimensions( canvasSize, settings ) {
     const { viewport } = settings;
-    const maxWidth = viewport.width * 0.8;
+    const maxWidth = viewport.width * 0.9;
     const minBoxWidth = viewport.width * 0.02;
     const maxHeight = viewport.height * 0.95;
     const minBoxHeight = viewport.height * 0.02;
 
-    const boxWidth = min( max( minBoxWidth, settings.minimap.width ), maxHeight );
-    const boxHeight = min( max( minBoxHeight, boxWidth * ( canvasSize.height / canvasSize.width ) ), maxHeight );
-    const width = min( boxWidth, boxHeight * ( canvasSize.width / canvasSize.height ) );
-    const height = width * ( canvasSize.height / canvasSize.width );
+    const boxWidth = min(
+      max( minBoxWidth, settings.minimap.width ),
+      maxWidth );
+    const boxHeight = min(
+      max( minBoxHeight, boxWidth * ( canvasSize.height / canvasSize.width ) ),
+      maxHeight );
+
+    const width =
+      min( boxWidth, boxHeight * ( canvasSize.width / canvasSize.height ) );
+    const height =
+      width * ( canvasSize.height / canvasSize.width );
 
     return {
       width,
@@ -68,12 +75,12 @@ const Minimap = React.createClass({
 
     const classes = 'nbe-minimap' + ( showMap ? '' : ' nbe-hidden' );
 
-    return <div className={classes}
+    return (<div className={classes}
                 onMouseDown={this.startDragReposition}
                 style={{ width: boxWidth, height: boxHeight }}
                 ref='mapContainer'>
       <div className='nbe-minimap-viewport'
-           style={viewportStyle} />
+           style={viewportStyle}></div>
       <svg className='nbe-minimap-links'
            style={{ width, height }}
            viewBox={viewbox}>
@@ -81,7 +88,7 @@ const Minimap = React.createClass({
                types={types}
                vertices={vertices}
                layout={layout}
-               selection={selection} />
+               selection={selection}></Links>
         <g className='nbe-minimap-vertices'>
           {this.vertices( layout, measurements, vertices, selection.vertices )}
         </g>
@@ -90,8 +97,8 @@ const Minimap = React.createClass({
         </g>
       </svg>
       <div className='nbe-minimap-handle'
-           onMouseDown={this.startDragResize}/>
-    </div>;
+           onMouseDown={this.startDragResize} />
+    </div>);
   },
 
 
