@@ -2,6 +2,9 @@
 
 import Graph from './components/graph';
 
+import calculateLayout from './util/auto-layout';
+import calculateMeasurements from './util/auto-measurements';
+
 import graphModel from './flux/graph/graph-model';
 import GraphStore from './flux/graph/graph-store';
 
@@ -44,6 +47,10 @@ export default {
     actions: settingsActions,
     model: settingsModel,
     SettingsStore
+  },
+  util: {
+    calculateLayout,
+    calculateMeasurements
   },
   Dispatcher,
   components: {
