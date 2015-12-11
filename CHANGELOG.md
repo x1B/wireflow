@@ -3,6 +3,11 @@
 ## Last Changes
 
 
+## v0.4.0-alpha.2
+
+- fixed vertex width and maximum minimap width
+
+
 ## v0.4.0-alpha.1
 
 - no longer rely on DOM/CSS measurements to size vertices
