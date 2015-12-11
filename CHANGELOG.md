@@ -2,6 +2,9 @@
 
 ## Last Changes
 
+
+## v0.4.0-alpha.3
+
 - fixed possible null-pointer related to dom measurements
 
 
