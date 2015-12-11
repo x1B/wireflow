@@ -222,6 +222,9 @@ const Graph = React.createClass({
 
   measure() {
     const domGraph = React.findDOMNode( this.refs.graph );
+    if( !domGraph ) {
+      return;
+    }
     const { viewport } = this.props.settings;
     if( domGraph.offsetWidth !== viewport.width ||
         domGraph.offsetHeight !== viewport.height ) {
