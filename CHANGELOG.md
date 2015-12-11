@@ -2,6 +2,7 @@
 
 ## Last Changes
 
+- fixed possible null-pointer related to dom measurements
 - fixed vertex width and maximum minimap width
 
 
