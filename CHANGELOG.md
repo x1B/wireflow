@@ -2,6 +2,8 @@
 
 ## Last Changes
 
+- fixed vertex width and maximum minimap width
+
 
 ## v0.4.0
 
