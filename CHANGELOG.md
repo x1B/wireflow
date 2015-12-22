@@ -2,6 +2,7 @@
 
 ## Last Changes
 
+- (#2) fixed moving nodes so that the canvas grows to the left/top as well as to the right/bottom
 - fixed possible null-pointer related to dom measurements
 - fixed vertex width and maximum minimap width
 
