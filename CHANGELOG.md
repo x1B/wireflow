@@ -2,6 +2,8 @@
 
 ## Last Changes
 
+- (#2) fixed moving nodes so that the canvas grows to the left/top as well as to the right/bottom
+
 
 ## v0.4.0-alpha.3
 

@@ -19,6 +19,9 @@ import {
 
 const { layout: { edgeOffset } } = settings;
 
+const ZERO = Coords({ left: 0, top: 0 });
+const { min } = Math;
+
 /**
  * Manages the graph layout prop.
  */
@@ -73,7 +76,9 @@ class LayoutStore {
     } );
 
     dispatcher.register( MoveVertex, ev => {
+      const correctionOffset = this.correctionOffset( ev.to );
       this.layout = this.layout.setIn( [ 'vertices', ev.vertex.id ], ev.to );
+      this.layout = this.withCorrection( this.layout, correctionOffset );
       this.save();
     } );
 
@@ -127,20 +132,56 @@ class LayoutStore {
     }
   }
 
+  correctionOffset( nodeCoords, knownCorrectionOffset = ZERO ) {
+    if( nodeCoords.left >= 0 && nodeCoords.right >= 0 ) {
+      return knownCorrectionOffset;
+    }
+    const cX = min( nodeCoords.left, knownCorrectionOffset.left );
+    const cY = min( nodeCoords.top, knownCorrectionOffset.top );
+    return Coords({
+      left: cX < 0 ? min( cX, -30 ) : cX,
+      top: cY < 0 ? min( cY, -30 ) : cY,
+    });
+  }
+
+  withCorrection( layout, offset ) {
+    if( offset === ZERO ) {
+      return layout;
+    }
+
+    var targetLayout = layout;
+    [ 'vertices', 'edges' ].forEach( kind => {
+      targetLayout = targetLayout.update( kind, items =>
+        items.map( coords => coords && Coords({
+          left: coords.left - offset.left,
+          top: coords.top - offset.top
+        }) ) );
+    } );
+    return targetLayout;
+  }
+
+
   moveSelection( selection, referenceLayout, offset ) {
     const { left, top } = offset;
+
     var targetLayout = referenceLayout;
+    var targetCorrection = ZERO;
+
     [ 'vertices', 'edges' ].forEach( kind =>
       selection[ kind ].forEach( id => {
-        targetLayout = targetLayout.updateIn( [ kind, id ], coords =>
-          coords && Coords({
+        targetLayout = targetLayout.updateIn( [ kind, id ], coords => {
+          if( !coords ) { return coords; }
+          const newCoords = Coords({
             left: coords.left + left,
             top: coords.top + top
-          })
-        );
+          });
+          targetCorrection = this.correctionOffset( newCoords, targetCorrection );
+          return newCoords;
+        } );
       } )
     );
-    this.layout = targetLayout;
+
+    this.layout = this.withCorrection( targetLayout, targetCorrection );
     this.save();
   }
 
