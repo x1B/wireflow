@@ -1,5 +1,9 @@
 import { Record } from 'immutable';
 
+const ActivateVertex = Record({
+  vertex: null,
+  type: () => ActivateVertex
+}, 'ActivateVertex');
 
 const DisconnectPort = Record({
   vertex: null,
@@ -24,6 +28,7 @@ const RemoveEdge = Record({
 }, 'RemoveEdge');
 
 export default {
+  ActivateVertex,
   DisconnectPort,
   ConnectPort,
   RemoveVertex,

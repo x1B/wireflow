@@ -262,6 +262,20 @@
 }
 
 
+.nbe-theme-fusebox-app .nbe-vertex.nbe-kind-COMPOSITION .nbe-vertex-header {
+   background: #e57373;
+}
+.nbe-theme-fusebox-app .nbe-vertex.nbe-kind-COMPOSITION.nbe-selected .nbe-vertex-header {
+   background: #c62828;
+}
+.nbe-theme-fusebox-app .nbe-minimap-vertex.nbe-kind-COMPOSITION {
+   fill: #e57373;
+}
+.nbe-theme-fusebox-app .nbe-minimap-vertex.nbe-kind-COMPOSITION.nbe-selected {
+   fill: #c62828;
+}
+
+
 .nbe-theme-fusebox-app .nbe-vertex.nbe-kind-LAYOUT .nbe-vertex-header {
   background: #8ab4f8;
 }

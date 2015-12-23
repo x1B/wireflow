@@ -6,6 +6,7 @@ import count from '../util/metrics';
 
 import { CreateCheckpoint } from '../flux/history/history-actions';
 import { IN, OUT } from '../flux/graph/graph-model';
+import { ActivateVertex } from '../flux/graph/graph-actions';
 import {
   Coords, Dimensions, VertexMeasurements
 } from '../flux/layout/layout-model';
@@ -73,8 +74,11 @@ const Vertex = React.createClass({
 
     const startDrag = ( ev ) => dd().start( ev, { coords: layout, id: {} } );
 
+    const activate = ( ev ) => { this.bubble( ActivateVertex({ vertex }) ) };
+
     return (
       <div style={style} className={classes} ref="vertex"
+           onDoubleClick={activate}
            onMouseDown={startDrag}>
         <div className="nbe-vertex-header">{label}</div>
         <div className="nbe-port-group">
@@ -97,7 +101,6 @@ const Vertex = React.createClass({
               settings={settings} /> ).toJS();
     }
   },
-
 
   handleEvent( event ) {
     this.bubble( event );

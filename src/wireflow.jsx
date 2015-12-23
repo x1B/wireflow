@@ -5,6 +5,7 @@ import Graph from './components/graph';
 import calculateLayout from './util/auto-layout';
 import calculateMeasurements from './util/auto-measurements';
 
+import graphActions from './flux/graph/graph-actions';
 import graphModel from './flux/graph/graph-model';
 import GraphStore from './flux/graph/graph-store';
 
@@ -40,6 +41,7 @@ export default {
     LayoutStore
   },
   graph: {
+    actions: graphActions,
     model: graphModel,
     GraphStore
   },

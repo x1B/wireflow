@@ -2,6 +2,7 @@
 
 ## Last Changes
 
+- (#5) allow to enter/activate vertices through double-click
 - (#2) fixed moving nodes so that the canvas grows to the left/top as well as to the right/bottom
 - fixed possible null-pointer related to dom measurements
 - fixed vertex width and maximum minimap width
