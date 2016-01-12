@@ -26,14 +26,13 @@ const Vertex = React.createClass({
 
   render() {
     const self = this;
-    const { vertex, selected, layout, measurements, eventHandler, settings } = self.props;
+    const { vertex, selected, layout, measurements, eventHandler, mode } = self.props;
     count({ what: Vertex.displayName });
     const { ports, label } = vertex;
 
     const style = {
       visibility: layout ? null : 'hidden',
-      left: layout && layout.left,
-      top: layout && layout.top,
+      transform: layout && 'translate(' + layout.left + 'px, ' + layout.top + 'px)',
       width: measurements && measurements.dimensions.width,
       height: measurements && measurements.dimensions.height
     };
@@ -98,7 +97,7 @@ const Vertex = React.createClass({
               port={port}
               vertex={vertex}
               eventHandler={self.handleEvent}
-              settings={settings} /> ).toJS();
+              mode={mode} /> ).toJS();
     }
   },
 
@@ -113,9 +112,8 @@ const Vertex = React.createClass({
   },
 
 
-  shouldComponentUpdate( nextProps, nextState ) {
-    return !shallowEqual( nextState, this.state )
-        || !shallowEqual( nextProps, this.props );
+  shouldComponentUpdate( nextProps ) {
+    return !shallowEqual( nextProps, this.props );
   }
 
 });

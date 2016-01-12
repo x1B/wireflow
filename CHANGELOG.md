@@ -2,6 +2,8 @@
 
 ## Last Changes
 
+- (#1) significant performance improvements after profiling:
+  dirty-checking, some memoization, CSS transform for node positions
 - (#5) allow to enter/activate vertices through double-click
 - (#2) fixed moving nodes so that the canvas grows to the left/top as well as to the right/bottom
 - fixed possible null-pointer related to dom measurements

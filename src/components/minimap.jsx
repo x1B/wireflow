@@ -61,11 +61,12 @@ const Minimap = React.createClass({
       boxHeight
     } = this.mapDimensions( canvasSize, settings );
 
+    const viewportStyleLeft = ( viewport.left / canvasSize.width ) * width;
+    const viewportStyleTop = ( viewport.top / canvasSize.height ) * height;
     const viewportStyle = {
       width: ( viewport.width / canvasSize.width ) * width,
       height: ( viewport.height / canvasSize.height ) * height,
-      left: ( viewport.left / canvasSize.width ) * width,
-      top: ( viewport.top / canvasSize.height ) * height
+      transform: 'translate(' + viewportStyleLeft + 'px, ' + viewportStyleTop + 'px)'
     };
     const viewbox = [ 0, 0, canvasSize.width, canvasSize.height ].join( ' ' );
 

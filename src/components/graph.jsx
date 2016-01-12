@@ -153,7 +153,7 @@ const Graph = React.createClass({
 
     function renderVertices() {
       return vertices.valueSeq().map( vertex =>
-        <Vertex settings={settings}
+        <Vertex mode={settings.mode}
                 key={vertex.id}
                 vertex={vertex}
                 selected={selection.vertices.has(vertex.id)}
@@ -201,6 +201,12 @@ const Graph = React.createClass({
   },
 
   canvasSize( measurements, layout ) {
+    // profiling shows that this is expensive: memoize.
+    // Actually, we may want to move this to a store.
+    if( this.lastMeasurements === measurements && this.lastLayout === layout ) {
+      return this.lastCanvasSize;
+    }
+
     var w = 0;
     var h = 0;
     const padding = 50;
@@ -214,10 +220,15 @@ const Graph = React.createClass({
     };
     measurements.vertices.forEach( measure( layout.vertices.toJS() ) );
     measurements.edges.forEach( measure( layout.edges.toJS() ) );
-    return {
+
+    this.lastMeasurements = measurements;
+    this.lastLayout = layout;
+    this.lastCanvasSize = {
       width: w + padding,
       height: h + padding
     };
+
+    return this.lastCanvasSize;
   },
 
   measure() {

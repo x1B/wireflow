@@ -17,12 +17,12 @@ const { ConnectPort, DisconnectPort } = graphActions;
 const Port = React.createClass({
 
   render() {
-    const { port, vertex, eventHandler, settings } = this.props;
+    const { port, vertex, eventHandler, mode } = this.props;
     count({ what: Port.displayName });
     const classes = `nbe-port nbe-type-${port.type}`;
 
     const dd = () => dragdrop({
-      onBeforeStart: () => settings.mode === READ_WRITE,
+      onBeforeStart: () => mode === READ_WRITE,
       onMove: ({ dragPayload: { left, top }, dragX, dragY, dragNode }) => {
         count({ what: '!DragPort' });
         eventHandler( DragPort({
@@ -97,7 +97,7 @@ const Port = React.createClass({
     );
 
     function disconnect() {
-      if( settings.mode === READ_WRITE ) {
+      if( mode === READ_WRITE ) {
         eventHandler( CreateCheckpoint() );
         eventHandler( DisconnectPort({ vertex: vertex, port: port }) );
       }

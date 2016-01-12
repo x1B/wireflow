@@ -23,8 +23,7 @@ const Edge = React.createClass({
 
     const style = {
       visibility: layout ? null : 'hidden',
-      left: layout ? layout.left : 50,
-      top: layout ? layout.top : 50
+      transform: layout && 'translate(' + layout.left + 'px, ' + layout.top + 'px)'
     };
 
     const selectedClass = selected ? 'nbe-selected' : '';

@@ -133,7 +133,7 @@ class LayoutStore {
   }
 
   correctionOffset( nodeCoords, knownCorrectionOffset = ZERO ) {
-    if( nodeCoords.left >= 0 && nodeCoords.right >= 0 ) {
+    if( nodeCoords.left >= 0 && nodeCoords.top >= 0 ) {
       return knownCorrectionOffset;
     }
     const cX = min( nodeCoords.left, knownCorrectionOffset.left );
@@ -148,6 +148,7 @@ class LayoutStore {
     if( offset === ZERO ) {
       return layout;
     }
+    console.log( "CORRECTION!" );
 
     var targetLayout = layout;
     [ 'vertices', 'edges' ].forEach( kind => {

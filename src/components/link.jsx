@@ -13,7 +13,6 @@ const { layout: { edgeOffset } } = settings;
 const Link = React.createClass({
 
   render() {
-
     const {
       fromPort,
       toPort,

@@ -14,7 +14,7 @@ export default function shallowEqual( objA, objB ) {
 
    // Test for A's keys different from B.
    for (key in objA) {
-      if (objA.hasOwnProperty(key) && (!objB.hasOwnProperty(key) || objA[key] !== objB[key])) {
+      if (objA.hasOwnProperty(key) && (!objB.hasOwnProperty(key) || objA[key] != objB[key])) {
          return false;
       }
    }
