@@ -2,6 +2,9 @@
 
 ## Last Changes
 
+
+## v0.5.1
+
 - cleanup: removed evil console.log
 
 
