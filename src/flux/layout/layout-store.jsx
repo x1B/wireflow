@@ -148,7 +148,6 @@ class LayoutStore {
     if( offset === ZERO ) {
       return layout;
     }
-    console.log( "CORRECTION!" );
 
     var targetLayout = layout;
     [ 'vertices', 'edges' ].forEach( kind => {
