@@ -2,6 +2,9 @@
 
 ## Last Changes
 
+
+## v0.5.0
+
 - (#1) significant performance improvements after profiling:
   dirty-checking, some memoization, CSS transform for node positions
 - (#5) allow to enter/activate vertices through double-click
