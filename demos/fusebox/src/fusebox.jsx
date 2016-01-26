@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDom from 'react-dom';
 
 import data from './data';
 import api from '../wireflow';
@@ -54,7 +55,7 @@ function autoLayout() {
 
 function render() {
 
-  React.render(
+  ReactDom.render(
     <div className='demo-wrapper'>
       <div className='demo-menu'>
         <button onClick={autoLayout}>Auto-Layout</button>

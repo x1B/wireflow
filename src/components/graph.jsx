@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDom from 'react-dom';
 import { Map } from 'immutable';
 
 import shallowEqual from '../util/shallow-equal';
@@ -232,7 +233,7 @@ const Graph = React.createClass({
   },
 
   measure() {
-    const domGraph = React.findDOMNode( this.refs.graph );
+    const domGraph = ReactDom.findDOMNode( this.refs.graph );
     if( !domGraph ) {
       return;
     }
@@ -258,7 +259,7 @@ const Graph = React.createClass({
     this.measure();
     window.addEventListener( 'resize', this.measure );
 
-    const domGraph = React.findDOMNode( this.refs.graph );
+    const domGraph = ReactDom.findDOMNode( this.refs.graph );
     const bubble = ( act ) => this.bubble( act );
     const graph = this;
     keyboard(
@@ -304,7 +305,7 @@ const Graph = React.createClass({
     if( viewport.movedBy === ':GRAPH:' ) {
       return;
     }
-    const domGraph = React
+    const domGraph = ReactDom
       .findDOMNode( this.refs.graph )
       .querySelector( '.nbe-graph-viewport' );
     domGraph.scrollTop = viewport.top;

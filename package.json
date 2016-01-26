@@ -2,10 +2,14 @@
   "name": "wireflow",
   "version": "0.5.0-pre",
   "description": "Node based editing for the web (react-based)",
-  "main": "src/nbe.jsx",
+  "main": "build/nbe.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/x1b/wireflow.git"
+  },
   "dependencies": {},
   "devDependencies": {
-    "babel": "^5.6.14",
+    "babel": "^5.8.35",
     "eslint": "^0.24.1",
     "eslint-plugin-react": "^2.7.0",
     "grunt": "~0.4.4",
