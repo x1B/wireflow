@@ -2,5 +2,7 @@
   "sourceMaps": "inline",
   "modules": "amd",
   "retainLines": true,
-  "sourceRoot": "src"
+  "sourceRoot": "src",
+  "optimisation.react.inlineElements": true,
+  "optimisation.react.constantElements": true
 }
