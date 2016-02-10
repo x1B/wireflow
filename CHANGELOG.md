@@ -2,6 +2,9 @@
 
 ## Last Changes
 
+
+## v0.6.0
+
 - (#4) upgraded React to v0.14.x
 - cleanup: removed evil console.log
 
