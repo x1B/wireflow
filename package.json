@@ -18,6 +18,7 @@
     "eslint": "^0.24.1",
     "eslint-plugin-react": "^2.7.0",
     "grunt": "~0.4.4",
+    "grunt-cli": "^1.2.0",
     "grunt-contrib-connect": "~0.10.1",
     "grunt-contrib-watch": "^0.6.1",
     "jasmine": "^2.5.3",
