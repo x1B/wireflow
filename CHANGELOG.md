@@ -2,6 +2,9 @@
 
 ## Last Changes
 
+
+## v0.7.0-alpha.1
+
 - (#6) fixed NPM bundle by including `lib`
 
 
