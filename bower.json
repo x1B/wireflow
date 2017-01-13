@@ -5,7 +5,7 @@
     "Michael Kurze <michael@thefoundation.de>"
   ],
   "description": "Node based editing for the web (react-based)",
-  "main": "build/wireflow.js",
+  "main": "lib/wireflow.js",
   "moduleType": [
     "amd"
   ],

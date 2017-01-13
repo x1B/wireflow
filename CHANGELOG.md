@@ -2,10 +2,12 @@
 
 ## Last Changes
 
+- (#6) fixed NPM bundle by including `lib`
+
 
 ## v0.7.0-alpha.0
 
-- (#7) modernizing infrastructure: moving to NPM
+- (#5) modernizing infrastructure: moving to NPM
 
 
 ## v0.6.0

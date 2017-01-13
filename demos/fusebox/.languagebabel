@@ -1,8 +1,8 @@
 {
   "babelMapsAddUrl": true,
   "babelSourcePath": "demos/fusebox/src",
-  "babelTranspilePath": "demos/fusebox/build",
-  "babelMapsPath": "demos/fusebox/build",
+  "babelTranspilePath": "demos/fusebox/lib",
+  "babelMapsPath": "demos/fusebox/lib",
   "createMap": false,
   "createTargetDirectories": true,
   "createTranspiledCode": true,

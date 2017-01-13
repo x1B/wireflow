@@ -1,6 +1,4 @@
 .idea
 bower_components
 node_modules
-/lib
-/demos/fusebox/lib
 npm-debug.log

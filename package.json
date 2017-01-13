@@ -2,7 +2,7 @@
   "name": "wireflow",
   "version": "0.7.0-alpha.0",
   "description": "Node based editing for the web (react-based)",
-  "main": "build/wireflow.js",
+  "main": "lib/wireflow.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/x1b/wireflow.git"
@@ -25,7 +25,7 @@
   },
   "scripts": {
     "start": "grunt start",
-    "prepublish": "babel --extension jsx src/ --out-dir=build/ && babel --extension jsx demos/fusebox/src/ --out-dir=demos/fusebox/build/",
+    "prepublish": "babel --extension jsx src/ --out-dir=lib/ && babel --extension jsx demos/fusebox/src/ --out-dir=demos/fusebox/lib/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Michael Kurze <michael.kurze@23x5.net>",

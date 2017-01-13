@@ -14,7 +14,7 @@ module.exports = function( grunt ) {
          livereload: 33000
        },
        build: {
-         files: [ 'build/**/*.js' ],
+         files: [ 'lib/**/*.js' ],
          tasks: [],
          spawn: false
        }
