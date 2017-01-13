@@ -2,6 +2,8 @@
 
 ## Last Changes
 
+- (#7) modernizing infrastructure: moving to NPM
+
 
 ## v0.6.0
 

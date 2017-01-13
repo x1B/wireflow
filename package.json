@@ -1,23 +1,30 @@
 {
   "name": "wireflow",
-  "version": "0.5.0-pre",
+  "version": "0.7.0-pre",
   "description": "Node based editing for the web (react-based)",
-  "main": "build/nbe.js",
+  "main": "build/wireflow.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/x1b/wireflow.git"
   },
-  "dependencies": {},
+  "dependencies": {
+    "immutable": "~3.7.6",
+    "requirejs": "~2.1.20",
+    "react": "~0.14.7",
+    "dagre": "~0.7.4"
+  },
   "devDependencies": {
     "babel": "^5.8.35",
     "eslint": "^0.24.1",
     "eslint-plugin-react": "^2.7.0",
     "grunt": "~0.4.4",
     "grunt-contrib-connect": "~0.10.1",
-    "grunt-contrib-watch": "^0.6.1"
+    "grunt-contrib-watch": "^0.6.1",
+    "jasmine": "^2.5.3",
+    "requirejs": "^2.1.22"
   },
   "scripts": {
-    "start": "bower install && grunt start",
+    "start": "grunt start",
     "prepublish": "babel --extension jsx src/ --out-dir=build/ && babel --extension jsx demos/fusebox/src/ --out-dir=demos/fusebox/build/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -24,6 +24,5 @@
     "dagre": "~0.7.4"
   },
   "devDependencies": {
-    "jasmine": "~2.3.4"
   }
 }
