@@ -2,6 +2,9 @@
 
 ## Last Changes
 
+
+## v0.7.0-alpha.0
+
 - (#7) modernizing infrastructure: moving to NPM
 
 
